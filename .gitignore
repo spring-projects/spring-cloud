@@ -6,3 +6,12 @@ _site
 *.sw?
 .project
 sample-pages
+.classpath
+.gradle/
+.settings/
+cloudfoundry-connector/
+cloudfoundry-ups-connector/
+core/
+heroku-connector/
+spring-service-connector/
+

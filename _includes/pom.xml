@@ -1,0 +1,32 @@
+<dependencies>
+    <dependency>
+        <groupId>{@= groupId @}</groupId>
+        <artifactId>spring-service-connector</artifactId>
+        <version>{@= version @}</version>
+    </dependency>
+    <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
+    <dependency>
+        <groupId>{@= groupId @}</groupId>
+        <artifactId>cloudfoundry-connector</artifactId>
+        <version>{@= version @}</version>
+    </dependency>
+    <!-- If you intend to deploy the app on Heroku, add the following -->
+    <!-- It is okay to add more than one cloud connector; the right one will
+         be picked during runtime -->
+    <dependency>
+        <groupId>{@= groupId @}</groupId>
+        <artifactId>heroku-connector</artifactId>
+        <version>{@= version @}</version>
+    </dependency>
+</dependencies>
+{@ if (repository) { @}
+<repositories>
+    <repository>
+        <id>{@= repository.id @}</id>
+        <name>{@= repository.name @}</name>
+        <url>{@= repository.url @}</url>
+        <snapshots>
+            <enabled>{@= repository.snapshotsEnabled @}</enabled>
+        </snapshots>
+    </repository>
+</repositories>{@ } @}

@@ -1,0 +1,11 @@
+dependencies {
+    compile '{@= groupId @}:spring-service-connector:{@= version @}'
+    // If you intend to deploy the app on Cloud Foundry, add the following
+    compile '{@= groupId @}:cloudfoundry-connector:{@= version @}'
+
+    // If you intend to deploy the app on Heroku, add the following
+    compile '{@= groupId @}:heroku-connector:{@= version @}'
+
+    // It is okay to add more than one cloud connector; the right one will
+    // be picked during runtime 
+}
