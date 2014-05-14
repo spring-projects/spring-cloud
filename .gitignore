@@ -9,9 +9,9 @@ sample-pages
 .classpath
 .gradle/
 .settings/
-cloudfoundry-connector/
-cloudfoundry-ups-connector/
-core/
-heroku-connector/
-spring-service-connector/
+spring-cloud-cloudfoundry-connector/
+spring-cloud-cloudfoundry-ups-connector/
+spring-cloud-core/
+spring-cloud-heroku-connector/
+spring-cloud-spring-service-connector/
 
