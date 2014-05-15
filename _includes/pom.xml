@@ -1,13 +1,13 @@
 <dependencies>
     <dependency>
         <groupId>{@= groupId @}</groupId>
-        <artifactId>spring-service-connector</artifactId>
+        <artifactId>spring-cloud-spring-service-connector</artifactId>
         <version>{@= version @}</version>
     </dependency>
     <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
     <dependency>
         <groupId>{@= groupId @}</groupId>
-        <artifactId>cloudfoundry-connector</artifactId>
+        <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
         <version>{@= version @}</version>
     </dependency>
     <!-- If you intend to deploy the app on Heroku, add the following -->
@@ -15,7 +15,7 @@
          be picked during runtime -->
     <dependency>
         <groupId>{@= groupId @}</groupId>
-        <artifactId>heroku-connector</artifactId>
+        <artifactId>spring-cloud-heroku-connector</artifactId>
         <version>{@= version @}</version>
     </dependency>
 </dependencies>
