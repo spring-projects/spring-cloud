@@ -8,16 +8,8 @@ badges:
   # Customize your project's badges. Delete any entries that do not apply.
   custom:
     - name: Source (GitHub)
-      url:  https://github.com/spring-projects/spring-cloud
+      url:  https://github.com/spring-cloud
       icon: github
-
-    - name: Issues (Github)
-      url:  https://github.com/spring-projects/spring-cloud/issues
-      icon: tracking
-
-    - name: CI (Bamboo)
-      url:  https://build.springsource.org/browse/CLOUD
-      icon: ci
 
     - name: StackOverflow
       url:  http://stackoverflow.com/questions/tagged/spring-cloud
@@ -31,42 +23,138 @@ badges:
 
 {% capture billboard_description %}
 
-Spring Cloud simplifies connecting to services and gaining operating environment awareness in cloud platforms like Cloud Foundry and Heroku. Special support for Spring application through Java and XML config makes it trivial for apps to connect to cloud services. Designed for extensibility, you can use one of the existing cloud connectors (Cloud Foundry and Heroku) or write one for your cloud platform. While supporting commonly used services (relational databases, MongoDB, Redis, Rabbit) out of the box, it allows extending it to your own services. Neither of these require modifying Spring Cloud itself; all you need to do is add jars for your extensions to your classpath.
+Spring Cloud provides tools for developers to quickly build some of
+the common patterns in distributed systems (e.g. configuration
+management, service discovery, circuit breakers, intelligent routing,
+micro-proxy, control bus, one-time tokens, global locks, leadership
+election, distributed sessions, cluster state). Coordination of
+distributed systems leads to boiler plate patterns, and using Spring
+Cloud developers can quickly stand up services and applications that
+implement those patterns. They will work well in any distributed
+environment, including the developer's own laptop, bare metal data
+centres, and managed platforms such as Pivotal Cloudfoundry.
 
 {% endcapture %}
 
 {% capture main_content %}
 
-Spring Cloud uses the following main concepts:
-
-* **Cloud Connector**: An interface that a cloud provider can implement to allow the rest of the library to work with a cloud platform.
-* **Service Connector**: An object, such as javax.sql.DataSource, that represent a connection to a service.
-* **Service information**: Information about the underlying service such as host, port, and credentials.
-* **Application information**: Information about application and instance in which these libraries are embedded.
-
-
-## Features
-
-Spring Cloud focuses on providing good out of box experience for typical use cases and extensibility mechanism to cover others. It feature two axis of extensibility:
-
-* *Java and XML config for Spring Applications*: Simple ways to create beans for services bound to the application.
-* **Cloud Platform Extensibility**: Through the concept of Cloud Connector, it allows extending Spring Cloud functionality to other cloud platforms.
-* **Service Information and Connector Extensibility**: Spring Cloud allows connecting to any kind of service as long as there is a way to extract its connection information from the application operating environment and (optionally) transform it into a service connector.
-
-### Constituent Projects
-
-* [Spring Cloud Core](https://github.com/spring-projects/spring-cloud/tree/master/spring-cloud-core): Core library that is cloud agnostic and Spring agnostic. Provides entry point for application developers that choose to programmatically access cloud services and application information. It also provides an extension mechanism to contribute cloud connectors and service connector creators.]
-* [Spring Cloud Service Connector for Spring](https://github.com/spring-projects/spring-cloud/tree/master/spring-cloud-spring-service-connector): Library that provides service connectors creators for javax.sql.DataSource and various connection factories spring-data projects.
-* [Cloudfoundry Connector](https://github.com/spring-projects/spring-cloud/tree/master/spring-cloud-cloudfoundry-connector): Cloud connector for Cloud Foundry.
-* [Heroku Connector](https://github.com/spring-projects/spring-cloud/tree/master/spring-cloud-heroku-connector): Cloud connector for Heroku.
-
+Spring Cloud builds on Spring Boot by providing a bunch of libraries
+that enhance the behaviour of an application when added to the
+classpath. You can take advantage of the basic default behaviour to
+get started really quickly, and then when you need to, you can
+configure or extend to create a custom solution. 
 
 <span id="quick-start"></span>
 ## Quick Start
 
-{% include download_widget.md %}
+You can create a Config Server with a single annotation:
 
-Then if you are working with a Spring application, follow instructions in [Spring Cloud Service Connector for Spring](https://github.com/spring-projects/spring-cloud/tree/master/spring-cloud-spring-service-connector). If you aren't using Spring, take a look at [Spring Cloud Core](https://github.com/spring-projects/spring-cloud/tree/master/spring-cloud-core).
+```groovy
+@Configuration
+@EnableAutoConfiguration
+@EnableConfigServer
+class ConfigServer {
+}
+```
+
+This app runs from the Spring Boot CLI (once the `spring-cloud-cli`
+extensions are installed), e.g.
+
+```
+$ spring install org.springframework.cloud:spring-cloud-cli:1.0.0.BUILD-SNAPSHOT
+$ spring run configserver.groovy -- --server.port=8888
+```
+
+Any other local application that includes `spring-cloud-config` as a
+dependency will be able to contact this server and pre-initialize the
+Spring `Environment` with external configuration managed by the
+server. The Spring Boot CLI (with the Cloud extensions) will do this
+automatically for all applications.
+
+```groovy
+@Configuration
+@EnableAutoConfiguration
+@Controller
+class ConfigClient {
+}
+```
+
+Run this app with the Spring Boot CLI and then visit
+http://localhost:8080/env (the `Environment` endpoint). Notice the
+property sources that come from the config server at the top of the
+results.
+
+(N.B. does not work if you can't connect to
+[github.com](https://github.com) because that's where the default
+configuration repository lives.)
+
+## Features
+
+Spring Cloud focuses on providing good out of box experience for typical use cases and extensibility mechanism to cover others. 
+
+* Distributed/versioned configuration
+* Service registration and discovery
+* Routing
+* Service-to-service calls
+* Load balancing
+* Circuit Breakers
+* Global locks
+* Leadership election and cluster state
+* Distributed messaging
+
+<a name="main-projects"></a>
+
+## Main Projects
+
+<!-- Spring Cloud Config -->
+{% capture project_description %}
+Centralized external configuration management backed by a git repository. The configuration resources map directly to Spring `Environment` but could be used by non-Spring applications if desired.
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-config" project_title="Spring Cloud Config" project_description=project_description %}
+
+<!-- Spring Cloud Netflix -->
+{% capture project_description %}
+Integration with various Netflix OSS components (Eureka, Hystrix, Zuul, Archaius, etc.).
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-netflix" project_title="Spring Cloud Config" project_description=project_description %}
+
+<!-- Spring Cloud Bus -->
+{% capture project_description %}
+An event bus for linking services and service instances together with distributed messaging. Useful for propagating state changes across a cluster (e.g. config change events).
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud-bus" repo_url="http://github.com/spring-cloud/spring-cloud-bus" project_title="Spring Cloud Bus" project_description=project_description %}
+
+<!-- Spring Cloud Cloudfoundry -->
+{% capture project_description %}
+Integrates your application with Pivotal Cloudfoundry. Makes it super easy to implement SSO and OAuth2 protected resources, and also to create a Cloudfoundry servive broker.
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-cloudfoundry" project_title="Spring Cloud Cloudfoundry" project_description=project_description %}
+
+<!-- Spring Cloud Connectors -->
+{% capture project_description %}
+Makes it easy for PaaS applications in a variety of platforms to connect to backend services like
+databases and message brokers (the project formerly known as "Spring Cloud").
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud-connectors" repo_url="http://github.com/spring-cloud/spring-cloud-connectors" project_title="Spring Cloud Connectors" project_description=project_description %}
+
+<!-- Spring Cloud Starters -->
+{% capture project_description %}
+Spring Boot-style starter projects to ease dependency management for consumers of Spring Cloud.
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-starters" project_title="Spring Cloud Starters" project_description=project_description %}
+
+<!-- Spring Cloud CLI -->
+{% capture project_description %}
+Spring Boot CLI plugin for creating Spring Cloud component applications quickly in Groovy
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-cli" project_title="Spring Cloud CLI" project_description=project_description %}
 
 {% endcapture %}
 
@@ -74,12 +162,12 @@ Then if you are working with a Spring application, follow instructions in [Sprin
 
 ### Sample Projects
 
-* [Spring Travel](https://github.com/cloudfoundry-samples/spring-travel)
-* [Spring Music](https://github.com/cloudfoundry-samples/spring-music)
-* [Spring Sendgrid](https://github.com/cloudfoundry-samples/spring-sendgrid)
+* [Config Server](https://github.com/spring-cloud-samples/configserver)
+* [Service Registry](https://github.com/spring-cloud-samples/eureka)
+* [Circuit Breaker Dashboard](https://github.com/cloudfoundry-samples/hystrix-dashboard)
+* [Business Application](https://github.com/cloudfoundry-samples/customers-stores) (Customers and Stores)
 
 {% endcapture %}
-
 
 {% include project_page.html %}
 </html>

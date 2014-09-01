@@ -20,7 +20,7 @@ name: Spring Cloud
 project: spring-cloud
 
 # Project github URL
-github_repo_url: http://github.com/spring-projects/spring-cloud
+github_repo_url: http://github.com/spring-cloud
 
 # If you want to include a custom pom.xml or gradle template set these value to true and add _include files
 custom_pom_template: true
