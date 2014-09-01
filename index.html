@@ -125,11 +125,11 @@ Integration with various Netflix OSS components (Eureka, Hystrix, Zuul, Archaius
 An event bus for linking services and service instances together with distributed messaging. Useful for propagating state changes across a cluster (e.g. config change events).
 {% endcapture %}
 
-{% include project_block.md site_url="/spring-cloud-bus" repo_url="http://github.com/spring-cloud/spring-cloud-bus" project_title="Spring Cloud Bus" project_description=project_description %}
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-bus" project_title="Spring Cloud Bus" project_description=project_description %}
 
 <!-- Spring Cloud Cloudfoundry -->
 {% capture project_description %}
-Integrates your application with Pivotal Cloudfoundry. Makes it super easy to implement SSO and OAuth2 protected resources, and also to create a Cloudfoundry servive broker.
+Integrates your application with Pivotal Cloudfoundry. Makes it easy to implement SSO and OAuth2 protected resources, and also to create a Cloudfoundry servive broker.
 {% endcapture %}
 
 {% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-cloudfoundry" project_title="Spring Cloud Cloudfoundry" project_description=project_description %}
@@ -140,7 +140,11 @@ Makes it easy for PaaS applications in a variety of platforms to connect to back
 databases and message brokers (the project formerly known as "Spring Cloud").
 {% endcapture %}
 
-{% include project_block.md site_url="/spring-cloud-connectors" repo_url="http://github.com/spring-cloud/spring-cloud-connectors" project_title="Spring Cloud Connectors" project_description=project_description %}
+{% capture site_url %}
+{{ site.projects_site_url }}/spring-cloud-connectors
+{% endcapture %}
+
+{% include project_block.md site_url=site_url repo_url="http://github.com/spring-cloud/spring-cloud-connectors" project_title="Spring Cloud Connectors" project_description=project_description %}
 
 <!-- Spring Cloud Starters -->
 {% capture project_description %}
