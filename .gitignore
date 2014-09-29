@@ -14,4 +14,4 @@ spring-cloud-cloudfoundry-ups-connector/
 spring-cloud-core/
 spring-cloud-heroku-connector/
 spring-cloud-spring-service-connector/
-
+*.iml
