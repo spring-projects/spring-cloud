@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.1">
+<title>Spring Cloud</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Spring Cloud</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_features">Features</a></li>
+<li><a href="#_spring_cloud_netflix">Spring Cloud Netflix</a>
+<ul class="sectlevel1">
+<li><a href="#_service_discovery_eureka_clients">Service Discovery: Eureka Clients</a></li>
+<li><a href="#_service_discovery_eureka_server">Service Discovery: Eureka Server</a></li>
+<li><a href="#_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</a></li>
+<li><a href="#_circuit_breaker_hystrix_dashboard">Circuit Breaker: Hystrix Dashboard</a>
+<ul class="sectlevel2">
+<li><a href="#_turbine">Turbine</a></li>
+</ul>
+</li>
+<li><a href="#_declarative_rest_client_feign">Declarative REST Client: Feign</a></li>
+<li><a href="#_client_side_load_balancer_ribbon">Client Side Load Balancer: Ribbon</a></li>
+<li><a href="#_external_configuration_archaius">External Configuration: Archaius</a></li>
+<li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a></li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_cluster">Spring Cloud Cluster</a></li>
+<li><a href="#_spring_platform_bus">Spring Platform Bus</a>
+<ul class="sectlevel1">
+<li><a href="#_quick_start">Quick Start</a></li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_for_cloud_foundry">Spring Cloud for Cloud Foundry</a>
+<ul class="sectlevel1">
+<li><a href="#_service_broker_example">Service Broker Example</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud provides tools for developers to quickly build some of
+the common patterns in distributed systems (e.g. configuration
+management, service discovery, circuit breakers, intelligent routing,
+micro-proxy, control bus, one-time tokens, global locks, leadership
+election, distributed sessions, cluster state). Coordination of
+distributed systems leads to boiler plate patterns, and using Spring
+Cloud developers can quickly stand up services and applications that
+implement those patterns. They will work well in any distributed
+environment, including the developer&#8217;s own laptop, bare metal data
+centres, and managed platforms such as Pivotal Cloudfoundry.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_features">Features</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud focuses on providing good out of box experience for typical use cases and extensibility mechanism to cover others.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Distributed/versioned configuration</p>
+</li>
+<li>
+<p>Service registration and discovery</p>
+</li>
+<li>
+<p>Routing</p>
+</li>
+<li>
+<p>Service-to-service calls</p>
+</li>
+<li>
+<p>Load balancing</p>
+</li>
+<li>
+<p>Circuit Breakers</p>
+</li>
+<li>
+<p>Global locks</p>
+</li>
+<li>
+<p>Leadership election and cluster state</p>
+</li>
+<li>
+<p>Distributed messaging</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in spring-cloud.adoc - include::../../../config/src/main/asciidoc/spring-cloud-config.adoc[]</p>
+</div>
+</div>
+</div>
+<h1 id="_spring_cloud_netflix" class="sect0">Spring Cloud Netflix</h1>
+<div class="paragraph">
+<p>This project provides Netflix OSS integrations for Spring Boot apps through autoconfiguration
+and binding to the Spring Environment and other Spring programming model idioms. With a few
+simple annotations you can quickly enable and configure the common patterns inside your
+application and build large distributed systems with battle-tested Netflix components. The
+patterns provided include Service Discovery (Eureka), Circuit Breaker (Hystrix),
+Intelligent Routing (Zuul) and Client Side Load Balancing (Ribbon).</p>
+</div>
+<div class="sect1">
+<h2 id="_service_discovery_eureka_clients">Service Discovery: Eureka Clients</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Example eureka client:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+@EnableEurekaClient
+@RestController
+public class Application {
+
+	@RequestMapping("/")
+	public String home() {
+		return "Hello world";
+	}
+
+	public static void main(String[] args) {
+		new SpringApplicationBuilder(Application.class).web(true).run(args);
+	}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(i.e. utterly normal Spring Boot app). Configuration is required to locate the Eureka server. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8080/v2/
+      default.defaultZone: http://localhost:8080/v2/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default application name, virtual host and non-secure port are taken from the <code>Environment</code> is
+<code>${spring.application.name}</code>, <code>${spring.application.name}.mydomain.net</code> and <code>${server.port}</code> respectively.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_service_discovery_eureka_server">Service Discovery: Eureka Server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Example eureka server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>@Configuration
+@EnableAutoConfiguration
+@EnableEurekaServer
+public class Application {
+
+	public static void main(String[] args) {
+		new SpringApplicationBuilder(Application.class).web(true).run(args);
+	}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The server has a home page with a UI, and HTTP API endpoints per the
+normal Eureka functionality under <code>/v2/*</code>.</p>
+</div>
+<div class="paragraph">
+<p>Eureka (apache &#8594; tomcat) see <a href="https://github.com/cfregly/fluxcapacitor/wiki/NetflixOSS-FAQ#eureka-service-discovery-load-balancer">flux capacitor</a> and <a href="https://groups.google.com/forum/?fromgroups#!topic/eureka_netflix/g3p2r7gHnN0">google group discussion</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_circuit_breaker_hystrix_dashboard">Circuit Breaker: Hystrix Dashboard</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_turbine">Turbine</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_declarative_rest_client_feign">Declarative REST Client: Feign</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_client_side_load_balancer_ribbon">Client Side Load Balancer: Ribbon</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_external_configuration_archaius">External Configuration: Archaius</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_router_and_filter_zuul">Router and Filter: Zuul</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<h1 id="_spring_cloud_cluster" class="sect0">Spring Cloud Cluster</h1>
+<div class="paragraph">
+<p>Spring Cloud Cluster offers a set of primitives for building "cluster"
+features into a distributed system. Example are leadership election,
+consistent storage of cluster state, global locks and one-time tokens.</p>
+</div>
+<h1 id="_spring_platform_bus" class="sect0">Spring Platform Bus</h1>
+<div class="paragraph">
+<p>Spring Cloud Bus links nodes of a distributed system with a lightweight message broker. This can then be used to broadcast state changes (e.g. configuration changes) or other management instructions.</p>
+</div>
+<div class="sect1">
+<h2 id="_quick_start">Quick Start</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<h1 id="_spring_cloud_for_cloud_foundry" class="sect0">Spring Cloud for Cloud Foundry</h1>
+<div class="paragraph">
+<p>Integration between <a href="https://github.com/cloudfoundry">Cloud Foundry</a>
+and <a href="https://github.com/spring-cloud">Spring Cloud</a>.</p>
+</div>
+<div class="sect1">
+<h2 id="_service_broker_example">Service Broker Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Example script to deploy and regis#ter a broker:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>DOMAIN=mydomain.net
+cf push app -p target/*.jar --no-start
+cf env app | grep SPRING_PROFILES_ACTIVE || cf set-env app SPRING_PROFILES_ACTIVE cloud
+cf env app | grep APPLICATION_DOMAIN || cf set-env app APPLICATION_DOMAIN ${DOMAIN}
+
+cf services | grep configserver &amp;&amp; cf bind app configserver
+
+cf restart app
+cf create-service-broker app user secure http://app.${DOMAIN}
+
+for f in `cf curl /v2/service_plans | grep '\"guid' | sed -e 's/.*: "//' -e 's/".*//'`; do
+    cf curl v2/service_plans/$f -X PUT -d '{"public":true}'
+done
+
+cf create-service app free appi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At which point you have a service called "app" and a service instance called "appi":</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$ cf marketplace
+OK
+
+service        plans   description
+app            free    Singleton service app
+$ cf services
+Getting services in org default / space development as admin...
+OK
+
+name           service        plan   bound apps
+appi           app            free</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Your application can define a configuration property
+<code>application.domain</code> (defaults to "cfapps.io") which will be used to
+construct the credentials for any app that binds to your service. Or
+it can define the URI directly using
+<code>cloudfoundry.service.definition.metadata.uri</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can change some other basic metadata by setting config properties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>cloudfoundry.service.definition.*</code> is bound to a
+<code>ServiceDefinition</code> (defined in spring-boot-cf-service-broker) which
+has optional setters for plans and metadata.</p>
+</li>
+<li>
+<p><code>cloudfoundry.service.broker.*</code> is bound to an internal bean. It has
+optional setters for "name" (the service name), "description" (user
+friendly description) and "prefix" (used to create a unique id from
+the name).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An app which binds to your service will get credentials that contain a
+"uri" property linking to your service. A Spring Boot app can bind to
+that through the <code>vcap.services.[service].credentials.uri</code> environment
+property.</p>
+</div>
+<div class="paragraph">
+<p>If your service also has a
+<a href="https://github.com/Netflix/eureka">Eureka core</a> dependency, and you
+can expose it as a Eureka service, then any service which registers
+with Eureka will also become a Cloud Foundry service.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2014-09-29 16:56:58 BST
+</div>
+</div>
+</body>
+</html>
