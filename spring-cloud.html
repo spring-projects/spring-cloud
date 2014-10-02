@@ -1033,6 +1033,35 @@ bootstrap context (via <code>spring.factories</code>). You could use this to
 insert additional properties from a different server, or from a
 database, for instance.</p>
 </div>
+<div class="paragraph">
+<p>As an example, consider the following trivial custom locator:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+public class CustomPropertySourceLocator implements PropertySourceLocator {
+
+    @Override
+    public PropertySource&lt;?&gt; locate() {
+        return new MapPropertySource("customProperty",
+                Collections.&lt;String, Object&gt;singletonMap("property.from.sample.custom.source", "worked as intended"));
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you create a jar with this class in it and then add a
+<code>META-INF/spring.factories</code> containing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>org.springframework.cloud.bootstrap.BootstrapConfiguration=sample.custom.CustomPropertySourceLocator</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then the "customProperty" <code>PropertySource</code> will show up in any
+application that includes that jar on its classpath.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1062,14 +1091,14 @@ Intelligent Routing (Zuul) and Client Side Load Balancing (Ribbon).
 @RestController
 public class Application {
 
-	@RequestMapping("/")
-	public String home() {
-		return "Hello world";
-	}
+    @RequestMapping("/")
+    public String home() {
+        return "Hello world";
+    }
 
-	public static void main(String[] args) {
-		new SpringApplicationBuilder(Application.class).web(true).run(args);
-	}
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(Application.class).web(true).run(args);
+    }
 
 }</code></pre>
 </div>
@@ -1105,9 +1134,9 @@ public class Application {
 @EnableEurekaServer
 public class Application {
 
-	public static void main(String[] args) {
-		new SpringApplicationBuilder(Application.class).web(true).run(args);
-	}
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(Application.class).web(true).run(args);
+    }
 
 }</code></pre>
 </div>
@@ -1124,7 +1153,35 @@ normal Eureka functionality under <code>/v2/*</code>.</p>
 <div class="sect1">
 <h2 id="_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Example boot app:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>@Configuration
+@EnableAutoConfiguration
+@EnableHystrix
+public class Application {
 
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(Application.class).web(true).run(args);
+    }
+
+}
+
+@Component
+public class StoreIntegration {
+    @HystrixCommand(fallbackMethod = "defaultStores")
+    public Object getStores(Map&lt;String, Object&gt; parameters) {
+        //do stuff that might fail
+    }
+
+    public Object defaultStores(Map&lt;String, Object&gt; parameters) {
+        return /* something useful */;
+    }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1139,13 +1196,81 @@ normal Eureka functionality under <code>/v2/*</code>.</p>
 <div class="sect1">
 <h2 id="_declarative_rest_client_feign">Declarative REST Client: Feign</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Example spring boot app</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+@EnableEurekaClient
+public class Application extends FeignConfigurer {
+    @Bean
+    public StoreClient storeClient() {
+        //loadBalance plugs Feign into ribbon.  feign() works without load balancing.
+        return loadBalance(StoreClient.class, "http://stores");
+    }
 
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>StoreClient.java</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>public interface StoreClient {
+    @RequestMapping(method = RequestMethod.GET, value = "/stores")
+    Stores getStores();
+
+    @RequestMapping(method = RequestMethod.POST, value = "/stores/{storeId}", consumes = "application/json")
+    Store update(@PathParameter("storeId") Long storeId, Store store);
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_client_side_load_balancer_ribbon">Client Side Load Balancer: Ribbon</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Usage of <code>LoadBalancerClient</code> directly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>public class MyClass {
+    @Autowired
+    private LoadBalancerClient loadBalancer;
 
+    public void doStuff() {
+        ServiceInstance instance = loadBalancer.choose("stores");
+        URI storesUri = URI.create(String.format("http://%s:%s", instance.getHost(), instance.getPort()));
+        // ... do something with the URI
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Indirect usage via <code>RestTemplate</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>public class MyClass {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public String doOtherStuff() {
+        String results = restTemplate.getForObject("http://stores/stores", String.class);
+        return results;
+    }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1272,7 +1397,7 @@ with Eureka will also become a Cloud Foundry service.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-10-01 15:14:44 BST
+Last updated 2014-10-02 11:42:44 BST
 </div>
 </div>
 </body>
