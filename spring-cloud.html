@@ -478,9 +478,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_installation">Installation</a></li>
 </ul>
 </li>
-<li><a href="#_spring_cloud_for_cloud_foundry">Spring Cloud for Cloud Foundry</a>
+<li><a href="#_spring_cloud_security">Spring Cloud Security</a>
 <ul class="sectlevel1">
-<li><a href="#_service_broker_example">Service Broker Example</a></li>
+<li><a href="#_quickstart">Quickstart</a>
+<ul class="sectlevel2">
+<li><a href="#_oauth_single_sign_on">OAuth Single Sign On</a></li>
+<li><a href="#_oauth_protected_resource">OAuth Protected Resource</a></li>
+<li><a href="#_token_relay">Token Relay</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -507,7 +513,8 @@ centres, and managed platforms such as Cloud Foundry.</p>
 <h2 id="_features">Features</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud focuses on providing good out of box experience for typical use cases and extensibility mechanism to cover others.</p>
+<p>Spring Cloud focuses on providing good out of box experience for typical use cases
+and extensibility mechanism to cover others.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1612,99 +1619,212 @@ $ spring install org.springframework.cloud:spring-cloud-cli:1.0.0.BUILD-SNAPSHOT
 </div>
 </div>
 </div>
-<h1 id="_spring_cloud_for_cloud_foundry" class="sect0">Spring Cloud for Cloud Foundry</h1>
+<h1 id="_spring_cloud_security" class="sect0">Spring Cloud Security</h1>
 <div class="openblock partintro">
 <div class="content">
-Integration between <a href="https://github.com/cloudfoundry">Cloud Foundry</a>
-and <a href="https://github.com/spring-cloud">Spring Cloud</a>.
+Spring Cloud Security offers a set of primitives for building secure
+applications and services with minimum fuss. A declarative model which
+can be heavily configured externally (or centrally) lends itself to
+the implementation of large systems of co-operating, remote components,
+usually with a central indentity management service. It is also extremely
+easy to use in a service platform like Cloud Foundry. Building on
+Spring Boot and Spring Security OAuth2 we can quickly create systems that
+implement common patterns like single sign on, token relay and token
+exchange.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_service_broker_example">Service Broker Example</h2>
+<h2 id="_quickstart">Quickstart</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_oauth_single_sign_on">OAuth Single Sign On</h3>
 <div class="paragraph">
-<p>Example script to deploy and regis#ter a broker:</p>
+<p>Here&#8217;s a Spring Cloud "Hello World" app with HTTP Basic
+authentication and a single user account:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Grab('spring-boot-starter-security')
+@Controller
+class Application {
+
+  @RequestMapping('/'
+  String home() {
+    'Hello World'
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can run it with <code>spring run app.groovy</code> and watch the logs for the password (username is "user"). So far this is just the default for a Spring Boot app.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s a Spring Cloud app with OAuth2 SSO:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Grab('spring-cloud-starter-security')
+@Controller
+@EnableOAuth2Sso
+class Application {
+
+  @RequestMapping('/'
+  String home() {
+    'Hello World'
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Spot the difference? This app will actually behave exactly the same as
+the previous one, because it doesn&#8217;t know it&#8217;s OAuth2 credentals
+yet.</p>
+</div>
+<div class="paragraph">
+<p>You can register an app in github quite easily, so try that if you
+want a production app on your own domain. If you are happy to test on
+localhost:8080, then set up these properties in your application
+configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">oauth2:
+  client:
+    clientId: bd1c0a783ccdd1c9b9e4
+    clientSecret: 1a9030fbca47a5b2c28e92f19050bb77824b5ad1
+    tokenUri: https://github.com/login/oauth/access_token
+    authorizationUri: https://github.com/login/oauth/authorize
+    authenticationScheme: form
+  resource:
+    userInfoUri: https://api.github.com/user
+    preferTokenInfo: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>run the app above and it will redirect to github for authorization. If
+you are already signed into github you won&#8217;t even notice that it has
+authenticated.  These credentials will only work if your app is
+running on port 8080.</p>
+</div>
+<div class="paragraph">
+<p>If you now drop the app into Cloud Foundry:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>DOMAIN=mydomain.net
-cf push app -p target/*.jar --no-start
-cf env app | grep SPRING_PROFILES_ACTIVE || cf set-env app SPRING_PROFILES_ACTIVE cloud
-cf env app | grep APPLICATION_DOMAIN || cf set-env app APPLICATION_DOMAIN ${DOMAIN}
-
-cf services | grep configserver &amp;&amp; cf bind app configserver
-
-cf restart app
-cf create-service-broker app user secure http://app.${DOMAIN}
-
-for f in `cf curl /v2/service_plans | grep '\"guid' | sed -e 's/.*: "//' -e 's/".*//'`; do
-    cf curl v2/service_plans/$f -X PUT -d '{"public":true}'
-done
-
-cf create-service app free appi</code></pre>
+<pre>$ spring jar app.jar app.groovy
+$ cf push -p app.jar</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>At which point you have a service called "app" and a service instance called "appi":</p>
+<p>and bind it to a service called "sso" with the following properties
+(e.g. created as a
+<a href="http://docs.pivotal.io/pivotalcf/devguide/services/user-provided.html">user-provided
+service</a>):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ cf marketplace
-OK
+<pre>$ cf create-user-provided-service sso -p '{clientId:"&lt;my-client&gt;",clientSecret:"&lt;my-secret&gt;",userInfoUri:"https://uaa.run.pivotal.io/userinfo",tokenUri: "https://login.run.pivotal.io/oauth/token",authorizationUri:"https://login.run.pivotal.io/oauth/authorize"}
+$ cf push app -p app.jar</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and then visit it in a browser, then it will redirect to the Cloud
+Foundry (PWS) login server instead of challenging for Basic
+authentication credentials. The <code>clientId</code> and <code>clientSecret</code> are
+credentials of a registered client in Cloud Foundry.  It&#8217;s quite hard
+to get a Cloud Foundry client registration for testing (but please ask
+at <a href="mailto:support@run.pivotal.io">support@run.pivotal.io</a> if you want one on PWS).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_oauth_protected_resource">OAuth Protected Resource</h3>
+<div class="paragraph">
+<p>You want to protect an API resource with an OAuth2 token? Here&#8217;s a
+simple example (paired with the client above):</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Grab('spring-cloud-starter-security')
+@RestController
+@EnableOAuth2Resource
+class Application {
 
-service        plans   description
-app            free    Singleton service app
-$ cf services
-Getting services in org default / space development as admin...
-OK
+  @RequestMapping('/'
+  def home() {
+    [message: 'Hello World']
+  }
 
-name           service        plan   bound apps
-appi           app            free</code></pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Your application can define a configuration property
-<code>application.domain</code> (defaults to "cfapps.io") which will be used to
-construct the credentials for any app that binds to your service. Or
-it can define the URI directly using
-<code>cloudfoundry.service.definition.metadata.uri</code>.</p>
+<p>and</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">oauth2:
+  resource:
+    userInfoUri: https://api.github.com/user
+    preferTokenInfo: false</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_token_relay">Token Relay</h3>
+<div class="paragraph">
+<p>If your app has a
+<a href="http://cloud.spring.io/spring-cloud.html#netflix-zuul-reverse-proxy">Spring
+Cloud Zuul</a> embedded reverse proxy (using <code>@EnableZuulProxy</code>) then you
+can ask it to forward OAuth2 access tokens downstream to the services
+it is proxying. Thus the SSO app above can be enhanced simply like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Controller
+@EnableOAuth2Sso
+@EnableZuulProxy
+class Application {
+
+  @RequestMapping('/'
+  String home() {
+    'Hello World'
+  }
+
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>You can change some other basic metadata by setting config properties:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>cloudfoundry.service.definition.*</code> is bound to a
-<code>ServiceDefinition</code> (defined in spring-boot-cf-service-broker) which
-has optional setters for plans and metadata.</p>
-</li>
-<li>
-<p><code>cloudfoundry.service.broker.*</code> is bound to an internal bean. It has
-optional setters for "name" (the service name), "description" (user
-friendly description) and "prefix" (used to create a unique id from
-the name).</p>
-</li>
-</ul>
+<p>and it will (in addition to loggin the user in and grabbing a token)
+pass the authentication token downstream to the <code>/proxy/*</code>
+services. If those services are implemented with
+<code>@EnableOAuth2Resource</code> then they will get a valid token in the
+correct header.</p>
 </div>
 <div class="paragraph">
-<p>An app which binds to your service will get credentials that contain a
-"uri" property linking to your service. A Spring Boot app can bind to
-that through the <code>vcap.services.[service].credentials.uri</code> environment
-property.</p>
+<p>How does it work? The <code>@EnableOAuth2Sso</code> annotation pulls in
+<code>spring-cloud-starter-security</code> (which you could do manually in a
+traditional app), and that has some autoconfiguration for a
+<code>ZuulFilter</code>, which itself is activated because Zuul is on the
+classpath (via <code>@EnableZuulProxy</code>). The
+<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/proxy/OAuth2TokenRelayFilter.java">filter</a>
+just extracts an access token from the currently authenticated user,
+and puts it in a request header for the downstream requests.</p>
 </div>
-<div class="paragraph">
-<p>If your service also has a
-<a href="https://github.com/Netflix/eureka">Eureka core</a> dependency, and you
-can expose it as a Eureka service, then any service which registers
-with Eureka will also become a Cloud Foundry service.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-10-07 22:58:40 UTC
+Last updated 2014-10-08 09:32:09 UTC
 </div>
 </div>
 </body>
