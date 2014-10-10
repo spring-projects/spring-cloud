@@ -425,6 +425,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_spring_cloud_config_server">Spring Cloud Config Server</a>
 <ul class="sectlevel2">
+<li><a href="#_security">Security</a></li>
 <li><a href="#_encryption_and_decryption">Encryption and Decryption</a></li>
 <li><a href="#_key_management">Key Management</a></li>
 <li><a href="#_creating_a_key_store_for_testing">Creating a Key Store for Testing</a></li>
@@ -439,6 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_the_bootstrap_application_context">The Bootstrap Application Context</a></li>
 <li><a href="#_customizing_the_bootstrap">Customizing the Bootstrap</a></li>
 <li><a href="#_customizing_the_property_sources">Customizing the Property Sources</a></li>
+<li><a href="#_security_2">Security</a></li>
 </ul>
 </li>
 </ul>
@@ -726,6 +728,24 @@ server is easily embeddable in a Spring Boot application using the
 <code>@EnableConfigServer</code> annotation.</p>
 </div>
 <div class="sect2">
+<h3 id="_security">Security</h3>
+<div class="paragraph">
+<p>You are free to secure your Config Server in any way that makes sense
+to you (from physical network security to OAuth2 bearer
+tokens), and Spring Security and Spring Boot make it easy to do pretty
+much anything.</p>
+</div>
+<div class="paragraph">
+<p>To use the default Spring Boot configured HTTP Basic security, just
+include Spring Security on the classpath (e.g. through
+<code>spring-boot-starter-security</code>). The default is a username of "user"
+and a randomly generated password, which isn&#8217;t going to be very useful
+in practice, so we recommend you configure the password (via
+<code>security.user.password</code>) and encrypt it (see below for instructions
+on how to do that).</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_encryption_and_decryption">Encryption and Decryption</h3>
 <div class="admonitionblock important">
 <table>
@@ -750,7 +770,9 @@ agents). If the remote property sources contain encryted content
 (values starting with <code>{cipher}</code>) they will be decrypted before
 sending to clients over HTTP. The main advantage of this set up is
 that the property values don&#8217;t have to be in plain text when they are
-"at rest" (e.g. in a git repository).</p>
+"at rest" (e.g. in a git repository). If a value cannot be decrypted
+it is replaced with an empty string, largely to prevent cipher text
+being used as a password in Spring Boot autconfigured HTTP basic.</p>
 </div>
 <div class="paragraph">
 <p>If you are setting up a remote config repository for config client
@@ -1097,6 +1119,47 @@ public class CustomPropertySourceLocator implements PropertySourceLocator {
 <div class="paragraph">
 <p>then the "customProperty" <code>PropertySource</code> will show up in any
 application that includes that jar on its classpath.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_security_2">Security</h3>
+<div class="paragraph">
+<p>If you use HTTP Basic security on the server then clients just need to
+know the password (and username if it isn&#8217;t the default). You can do
+that via the config server URI, or via separate username and password
+properties, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+     uri: https://user:secret@myconfig.mycompany.com</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+     uri: https://myconfig.mycompany.com
+     username: user
+     password: secret</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>spring.cloud.config.password</code> and <code>spring.cloud.config.username</code>
+values override anything that is provided in the URI.</p>
+</div>
+<div class="paragraph">
+<p>If you use another form of security you might need to provide a
+<code>RestTemplate</code> to the <code>ConfigServicePropertySourceLocator</code> (e.g. by
+grabbing it in the bootstrap context and injecting one).</p>
 </div>
 </div>
 </div>
@@ -1824,7 +1887,7 @@ and puts it in a request header for the downstream requests.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-10-08 09:32:09 UTC
+Last updated 2014-10-10 15:04:56 UTC
 </div>
 </div>
 </body>
