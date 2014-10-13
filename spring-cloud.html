@@ -1157,6 +1157,22 @@ properties, e.g.</p>
 values override anything that is provided in the URI.</p>
 </div>
 <div class="paragraph">
+<p>If you deploy your apps on Cloud Foundry then the best way to provide
+the password is through service credentials, e.g. in the URI, since
+then it doesn&#8217;t even need to be in a config file. An example which
+works locally and for a user-provided service on Cloud Foundry named
+"configserver":</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+     uri: ${vcap.services.configserver.credentials.uri:http://user:password@localhost:8888}</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>If you use another form of security you might need to provide a
 <code>RestTemplate</code> to the <code>ConfigServicePropertySourceLocator</code> (e.g. by
 grabbing it in the bootstrap context and injecting one).</p>
@@ -1660,7 +1676,7 @@ $ gvm use springboot 1.1.5.RELEASE</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ wget http://dl.bintray.com/dsyer/generic/install-0.0.1.jar</code></pre>
+<pre class="highlight"><code>$ wget http://dl.bintray.com/dsyer/generic/install-0.0.2.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1668,7 +1684,7 @@ $ gvm use springboot 1.1.5.RELEASE</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ cp install-0.0.1.jar ~/.gvm/springboot/1.1.5.RELEASE/lib</code></pre>
+<pre class="highlight"><code>$ cp install-0.0.2.jar ~/.gvm/springboot/1.1.5.RELEASE/lib</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1887,7 +1903,7 @@ and puts it in a request header for the downstream requests.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-10-10 21:35:14 UTC
+Last updated 2014-10-13 13:05:26 UTC
 </div>
 </div>
 </body>
