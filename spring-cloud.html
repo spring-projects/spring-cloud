@@ -1807,6 +1807,7 @@ service</a>):</p>
 <div class="listingblock">
 <div class="content">
 <pre>$ cf create-user-provided-service sso -p '{clientId:"&lt;my-client&gt;",clientSecret:"&lt;my-secret&gt;",userInfoUri:"https://uaa.run.pivotal.io/userinfo",tokenUri: "https://login.run.pivotal.io/oauth/token",authorizationUri:"https://login.run.pivotal.io/oauth/authorize"}
+$ cf bind-service app sso
 $ cf push app -p app.jar</pre>
 </div>
 </div>
@@ -1902,7 +1903,7 @@ and puts it in a request header for the downstream requests.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-10-13 13:23:07 UTC
+Last updated 2014-10-13 13:25:39 UTC
 </div>
 </div>
 </body>
