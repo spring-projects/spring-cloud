@@ -452,7 +452,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</a></li>
 </ul>
 </li>
-<li><a href="#_service_discovery_eureka_server">Service Discovery: Eureka Server</a></li>
+<li><a href="#_service_discovery_eureka_server">Service Discovery: Eureka Server</a>
+<ul class="sectlevel2">
+<li><a href="#_high_availability_zones_and_regions">High Availability, Zones and Regions</a></li>
+<li><a href="#_standalone_mode">Standalone Mode</a></li>
+<li><a href="#_peer_awareness">Peer Awareness</a></li>
+</ul>
+</li>
 <li><a href="#_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</a></li>
 <li><a href="#_circuit_breaker_hystrix_dashboard">Circuit Breaker: Hystrix Dashboard</a>
 <ul class="sectlevel2">
@@ -1205,7 +1211,7 @@ Intelligent Routing (Zuul) and Client Side Load Balancing (Ribbon).
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 @ComponentScan
 @EnableAutoConfiguration
 @EnableEurekaClient
@@ -1228,16 +1234,23 @@ public class Application {
 <p>(i.e. utterly normal Spring Boot app). Configuration is required to locate the Eureka server. Example:</p>
 </div>
 <div class="listingblock">
+<div class="title">application.yml</div>
 <div class="content">
-<pre class="highlight"><code>eureka:
+<pre>eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/</code></pre>
+      defaultZone: http://localhost:8761/eureka/</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The default application name, virtual host and non-secure port are taken from the <code>Environment</code> is
-<code>${spring.application.name}</code>, <code>${spring.application.name}.mydomain.net</code> and <code>${server.port}</code> respectively.</p>
+<p>where "defaultZone" is a magic string fallback value that provides the
+service URL for any client that doesn&#8217;t express a preference
+(i.e. it&#8217;s a useful default).</p>
+</div>
+<div class="paragraph">
+<p>The default application name (service ID), virtual host and non-secure
+port, taken from the <code>Environment</code>, are <code>${spring.application.name}</code>,
+<code>${spring.application.name}</code> and <code>${server.port}</code> respectively.</p>
 </div>
 <div class="paragraph">
 <p><code>@EnableEurekaClient</code> makes the app into both a Eureka "instance"
@@ -1276,7 +1289,7 @@ assumptions about the lease renewal period.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 @EnableAutoConfiguration
 @EnableEurekaServer
 public class Application {
@@ -1346,6 +1359,103 @@ springBoot {
 </tr>
 </table>
 </div>
+<div class="sect2">
+<h3 id="_high_availability_zones_and_regions">High Availability, Zones and Regions</h3>
+<div class="paragraph">
+<p>The Eureka server does not have a backend store, but the service
+instances in the registry all have to send heartbeats to keep their
+resistrations up to date (so this can be done in memory). Clients also
+have an in-memory cache of eureka registrations (so they don&#8217;t have to
+go to the registry for every single request to a service).</p>
+</div>
+<div class="paragraph">
+<p>By default every Eureka server is also a Eureka client and requires
+(at least one) service URL to locate a peer. If you don&#8217;t provide it
+the service will run and work, but it will shower your logs with a lot
+of noise about not being able to register with the peer.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_standalone_mode">Standalone Mode</h3>
+<div class="paragraph">
+<p>The combination of the two caches (client and server) and the
+heartbeats make a standalone Eureka server fairly resilient to
+failure, as long as there is some sort of monitor or elastic runtime
+keeping it alive (e.g. Cloud Foundry). In standalone mode, you might
+prefer to switch off the client side behaviour, so it doesn&#8217;t keep
+trying and failing to reach its peers. Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml (Standalone Eureka Server)</div>
+<div class="content">
+<pre>server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that the <code>serviceUrl</code> is pointing to the same host as the local
+instance.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_peer_awareness">Peer Awareness</h3>
+<div class="paragraph">
+<p>Eureka can be made even more resilient and available by running
+multiple instances and asking them to register with each other. In
+fact, this is the default behaviour, so all you need to do to make it
+work is add a valid <code>serviceUrl</code> to a peer, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml (Two Peer Aware Eureka Servers)</div>
+<div class="content">
+<pre>---
+spring:
+  profiles: peer1
+eureka:
+  instance:
+    hostname: peer1
+  client:
+    serviceUrl:
+      defaultZone: http://peer2/eureka/
+
+---
+spring:
+  profiles: peer2
+eureka:
+  instance:
+    hostname: peer2
+  client:
+    serviceUrl:
+      defaultZone: http://peer1/eureka/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example we have a YAML file that can be used to run the same
+server on 2 hosts (peer1 and peer2), by running it in different
+Spring profiles. You could use this configuration to test the peer
+awareness on a single host (there&#8217;s not much value in doing that in
+production) by manipulating <code>/etc/hosts</code> to resolve the host names. In
+fact, the <code>eureka.instance.hostname</code> is not needed if you are running
+on a machine that knows its own hostname (it is looked up using
+<code>java.net.InetAddress</code> by default).</p>
+</div>
+<div class="paragraph">
+<p>You can add multiple peers to a system, and as long as they are all
+connected to each other by at least one edge, they will synchronize
+the registrations amongst themselves. If the peers are physically
+separated (inside a data centre or between multiple data centres) then
+the system can in principle survive split-brain type failures.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1377,7 +1487,7 @@ springBoot {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@Configuration
+<pre>@Configuration
 @EnableAutoConfiguration
 @EnableHystrix
 public class Application {
@@ -1399,7 +1509,7 @@ public class StoreIntegration {
     public Object defaultStores(Map&lt;String, Object&gt; parameters) {
         return /* something useful */;
     }
-}</code></pre>
+}</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1445,7 +1555,7 @@ circuit, and what to do in case of a failure.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 @ComponentScan
 @EnableAutoConfiguration
 @EnableEurekaClient
@@ -1463,12 +1573,10 @@ public class Application extends FeignConfigurer {
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>StoreClient.java</p>
-</div>
 <div class="listingblock">
+<div class="title">StoreClient.java</div>
 <div class="content">
-<pre class="highlight"><code>public interface StoreClient {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface StoreClient {
     @RequestMapping(method = RequestMethod.GET, value = "/stores")
     Stores getStores();
 
@@ -1487,7 +1595,7 @@ public class Application extends FeignConfigurer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>public class MyClass {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyClass {
     @Autowired
     private LoadBalancerClient loadBalancer;
 
@@ -1504,7 +1612,7 @@ public class Application extends FeignConfigurer {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>public class MyClass {
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyClass {
     @Autowired
     private RestTemplate restTemplate;
 
@@ -1903,7 +2011,7 @@ and puts it in a request header for the downstream requests.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-10-23 19:59:43 UTC
+Last updated 2014-10-24 15:46:04 UTC
 </div>
 </div>
 </body>
