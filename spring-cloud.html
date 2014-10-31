@@ -1085,7 +1085,8 @@ application context gets the <code>Environment</code>.</p>
 <div class="sect2">
 <h3 id="_locating_remote_configuration_resources">Locating Remote Configuration Resources</h3>
 <div class="paragraph">
-<p>The Config Service serves property sources from <code>/{name}/{env}/{label}</code>, where the default bindings are</p>
+<p>The Config Service serves property sources from <code>/{name}/{env}/{label}</code>, where the default bindings in the
+client app are</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1193,18 +1194,25 @@ to set defaults.</p>
 <p>You can extend the context hierarchy by simply setting the parent
 context of any <code>ApplicationContext</code> you create, e.g. using its own
 interface, or with the <code>SpringApplicationBuilder</code> convenience methods
-(<code>parent()</code>, <code>child()</code> and <code>sibling()</code>). Note that the
-<code>SpringApplicationBuilder</code> allows you to share an <code>Environment</code>
-amongst the whole hierarchy, but that is not the default. Thus,
-sibling contexts in particular do not need to have the same profiles
-or property sources, even though they will share common things with
-their parent. Every context in the hierarchy will have its own
-"bootstrap" property source (possibly empty) to avoid promoting values
-inadvertently from parents down to their descendants. Every context in
-the hierarchy can also (in principle) have a different
-<code>spring.application.name</code> and hence a different remote property source
-if there is a Config Server. Remember that properties from a child
-context override those in the parent.</p>
+(<code>parent()</code>, <code>child()</code> and <code>sibling()</code>). The bootstrap context will be
+the parent of the most senior ancestor that you create yourself.
+Every context in the hierarchy will have its own "bootstrap" property
+source (possibly empty) to avoid promoting values inadvertently from
+parents down to their descendants.  Every context in the hierarchy can
+also (in principle) have a different <code>spring.application.name</code> and
+hence a different remote property source if there is a Config
+Server. Normal Spring application context behaviour rules apply to
+property resolution: properties from a child context override those in
+the parent, by name and also by property source name (if the child has
+a property source with the same name as the parent, the one from the
+parent is not included in the child).</p>
+</div>
+<div class="paragraph">
+<p>Note that the <code>SpringApplicationBuilder</code> allows you to share an
+<code>Environment</code> amongst the whole hierarchy, but that is not the
+default. Thus, sibling contexts in particular do not need to have the
+same profiles or property sources, even though they will share common
+things with their parent.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1726,6 +1734,23 @@ circuit, and what to do in case of a failure.</p>
 <div class="paragraph">
 <p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation.</p>
 </div>
+<div class="paragraph">
+<p><code>turbine.appConfig</code> is a list of eureka serviceId&#8217;s that turbine will use to lookup instances.  <code>turbine.aggregator.clusterConfig</code> is used to group instances together.  This comes from the eureka <code>InstanceInfo</code>.  The clusterName is a SPEL expression evaluated against the InstanceInfo.  The default clusterNameExpression is <code>appName</code>.  The turbine stream is then used in the Hystrix dashboard using a url that looks like: <a href="http://my.turbine.sever:8080/turbine.stream?cluster=CUSTOMERS" class="bare">http://my.turbine.sever:8080/turbine.stream?cluster=CUSTOMERS</a></p>
+</div>
+<div class="paragraph">
+<p>The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>turbine:
+  aggregator:
+    clusterConfig: CUSTOMERS
+  appConfig: customers</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The clusterName can be customized by a SPEL expression in <code>turbine.clusterNameExpression</code>.  For example, <code>turbine.clusterNameExpression=aSGName</code> would get the clustername from the AWS ASG name.</p>
+</div>
 </div>
 </div>
 </div>
@@ -2196,7 +2221,7 @@ and puts it in a request header for the downstream requests.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-10-30 11:46:37 UTC
+Last updated 2014-10-31 09:07:25 UTC
 </div>
 </div>
 </body>
