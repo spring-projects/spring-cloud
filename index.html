@@ -134,6 +134,17 @@ Integrates your application with Pivotal Cloudfoundry. Makes it easy to implemen
 
 {% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-cloudfoundry" project_title="Spring Cloud for Cloud Foundry" project_description=project_description %}
 
+<!-- Spring Cloud AWS -->
+{% capture project_description %}
+Easy integration with hosted Amazon Web Services. It offers a convenient way to interact with AWS provided services using well-known Spring idioms and APIs, such as the messaging or caching API. Developers can build their application around the hosted services without having to care about infrastructure or maintenance.
+{% endcapture %}
+
+{% capture site_url %}
+{{ site.projects_site_url }}/spring-cloud-aws
+{% endcapture %}
+
+{% include project_block.md site_url=site_url repo_url="http://github.com/spring-cloud/spring-cloud-aws" project_title="Spring Cloud for Amazon Web Services" project_description=project_description %}
+
 <!-- Spring Cloud Connectors -->
 {% capture project_description %}
 Makes it easy for PaaS applications in a variety of platforms to connect to backend services like
