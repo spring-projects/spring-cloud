@@ -425,11 +425,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_spring_cloud_config_server">Spring Cloud Config Server</a>
 <ul class="sectlevel2">
+<li><a href="#_environment_repository">Environment Repository</a></li>
+<li><a href="#_embedding_the_config_server">Embedding the Config Server</a></li>
 <li><a href="#_security">Security</a></li>
 <li><a href="#_encryption_and_decryption">Encryption and Decryption</a></li>
 <li><a href="#_key_management">Key Management</a></li>
 <li><a href="#_creating_a_key_store_for_testing">Creating a Key Store for Testing</a></li>
-<li><a href="#_embedding_the_config_server">Embedding the Config Server</a></li>
+<li><a href="#_embedding_the_config_server_2">Embedding the Config Server</a></li>
 </ul>
 </li>
 <li><a href="#_spring_cloud_config_client">Spring Cloud Config Client</a>
@@ -455,51 +457,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_service_discovery_eureka_clients">Service Discovery: Eureka Clients</a>
 <ul class="sectlevel2">
-<li><a href="#_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</a></li>
-</ul>
-</li>
-<li><a href="#_service_discovery_eureka_server">Service Discovery: Eureka Server</a>
-<ul class="sectlevel2">
-<li><a href="#_high_availability_zones_and_regions">High Availability, Zones and Regions</a></li>
-<li><a href="#_standalone_mode">Standalone Mode</a></li>
-<li><a href="#_peer_awareness">Peer Awareness</a></li>
-</ul>
-</li>
-<li><a href="#_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</a></li>
-<li><a href="#_circuit_breaker_hystrix_dashboard">Circuit Breaker: Hystrix Dashboard</a>
-<ul class="sectlevel2">
-<li><a href="#_turbine">Turbine</a></li>
-</ul>
-</li>
-<li><a href="#_declarative_rest_client_feign">Declarative REST Client: Feign</a></li>
-<li><a href="#_client_side_load_balancer_ribbon">Client Side Load Balancer: Ribbon</a></li>
-<li><a href="#_external_configuration_archaius">External Configuration: Archaius</a></li>
-<li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
-<ul class="sectlevel2">
-<li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
-<li><a href="#netflix-zuul-server">Standalone Zuul Server</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#_spring_cloud_cluster">Spring Cloud Cluster</a></li>
-<li><a href="#_spring_platform_bus">Spring Platform Bus</a>
-<ul class="sectlevel1">
-<li><a href="#_quick_start_2">Quick Start</a></li>
-</ul>
-</li>
-<li><a href="#_spring_boot_cloud_cli">Spring Boot Cloud CLI</a>
-<ul class="sectlevel1">
-<li><a href="#_installation">Installation</a></li>
-</ul>
-</li>
-<li><a href="#_spring_cloud_security">Spring Cloud Security</a>
-<ul class="sectlevel1">
-<li><a href="#_quickstart">Quickstart</a>
-<ul class="sectlevel2">
-<li><a href="#_oauth_single_sign_on">OAuth Single Sign On</a></li>
-<li><a href="#_oauth_protected_resource">OAuth Protected Resource</a></li>
-<li><a href="#_token_relay">Token Relay</a></li>
+<li><a href="#_using_the_discoveryclient">Using the DiscoveryClient</a></li>
 </ul>
 </li>
 </ul>
@@ -598,7 +556,7 @@ repository. Then try it out as a client:</p>
 </div>
 <div class="paragraph">
 <p>The default strategy for locating property sources is to clone a git
-repository (at "spring.cloud.config.server.uri") and use it to
+repository (at "spring.cloud.config.server.git.uri") and use it to
 initialize a mini <code>SpringApplication</code>. The mini-application&#8217;s
 <code>Environment</code> is used to enumerate property sources and publish them
 via a JSON endpoint. The service has resources in the form:</p>
@@ -745,6 +703,53 @@ repository&gt;/&lt;file name&gt;" contains the property "foo" with value
 configuration (name-value pairs, or equivalent YAML content).  The
 server is easily embeddable in a Spring Boot application using the
 <code>@EnableConfigServer</code> annotation.</p>
+</div>
+<div class="sect2">
+<h3 id="_environment_repository">Environment Repository</h3>
+<div class="paragraph">
+<p>Where do you want to store the configuration data for the Config
+Server? The strategy that governs this behaviour is the
+<code>EnvironmentRepository</code>, serving <code>Environment</code> objects. This
+<code>Environment</code> is a shallow copy of the domain from the Spring
+<code>Environment</code> (including <code>propertySources</code> as the main feature). The
+default implementation of <code>EnvironmentRepository</code> uses a Git backend,
+which is very convenient for managing upgrades and physical
+environments, and also for auditing changes. To change the location of
+the repository you can set the "spring.cloud.config.server.uri"
+configuration property in the Config Server (e.g. in
+<code>application.yml</code>). If you set it with a <code>file:</code> prefix it should work
+from a local repository so you can get started quickly and easily
+without a server (it doesn&#8217;t matter if it&#8217;s not bare because the
+Config Server never makes changes to the "remote" repository). To
+scale the Config Server up and make it highly available, however, you
+would need to have all instances of the server pointing to the same
+repository, so only a shared file system would work.</p>
+</div>
+<div class="paragraph">
+<p>There is also a "native" profile in the Config Server that doesn&#8217;t use
+Git, but just loads the config files from the local classpath (or
+anywhere else you want to point to with
+"spring.cloud.config.server.locations"). To use the native profile
+just launch the Config Server with "spring.profiles.active=native". In
+the native profile the repository only has the "current" set of
+configuration files, so the "label" specification in the HTTP
+resources is ignored (i.e. it&#8217;s like always pulling from "master" in
+the Git implementation).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_embedding_the_config_server">Embedding the Config Server</h3>
+<div class="paragraph">
+<p>The Config Server can be embedded in another web application by
+setting "spring.cloud.config.server.prefix" (default empty), e.g. to
+"/config". If you do that, then you probably want to bootstrap the app
+containing the Config Server from the same remote repository from
+which all the other remote apps get their configuration properties
+(otherwise it is just a normal Spring Boot application since it won&#8217;t
+have a Config Server to contact when it starts). To do that you just
+need to make sure that the (optional) property
+"spring.cloud.config.server.bootstrap" is "true".</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_security">Security</h3>
@@ -933,7 +938,7 @@ your <code>application.yml</code> for the Config Server:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_embedding_the_config_server">Embedding the Config Server</h3>
+<h3 id="_embedding_the_config_server_2">Embedding the Config Server</h3>
 <div class="paragraph">
 <p>The Config Server runs best as a standalone application, but if you
 need to you can embed it in another application. Just use the
@@ -1442,7 +1447,50 @@ ID, or VIP).</p>
 <p>See <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaInstanceConfigBean.java">EurekaInstanceConfigBean</a> and <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaClientConfigBean.java">EurekaClientConfigBean</a> for more details of the configurable options.</p>
 </div>
 <div class="sect2">
-<h3 id="_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</h3>
+<h3 id="_using_the_discoveryclient">Using the DiscoveryClient</h3>
+<div class="paragraph">
+<p>Once you have an app that is <code>@EnableEurekaClient</code> you can use it to
+discover service instances from the <a href="#spring-cloud-eureka-server">Eureka Server</a>. One way to do that is to use the native <code>DiscoveryClient</code>, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Autowired
+private DiscoveryClient discoveryClient;
+
+public String serviceUrl() {
+    InstanceInfo instance = discoveryClient.getNextServerFromEureka("STORES", false);
+    return instance.getHomePageUrl();
+}</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Don&#8217;t use the <code>DiscoveryClient</code> in <code>@PostConstruct</code> method (or
+anywhere where the <code>ApplicationContext</code> might not be started yet). It
+is initialized in a <code>SmartLifecycle</code> (with <code>phase=0</code>) so the earliest
+you can rely on it being available is in another <code>SmartLifecycle</code> with
+higher phase.</p>
+</div>
+<div class="paragraph">
+<p>=== Alternatives to the DiscoveryClient</p>
+</div>
+<div class="paragraph">
+<p>You don&#8217;t have to use the raw Netflix <code>DiscoveryClient</code> and usually it
+is more convenient to use it behind a wrapper of some sort. Spring
+Cloud has support for <a href="#spring-cloud-feign">Feign</a> (a REST client
+builder) and also <a href="#spring-cloud-ribbon">Spring <code>RestTemplate</code></a> using
+the logical Eureka service identifiers (VIPs) instead of physical
+URLs.</p>
+</div>
+<div class="paragraph">
+<p>=== Why is it so Slow to Register a Service?</p>
+</div>
 <div class="paragraph">
 <p>Being an instance also involves a periodic heartbeat to the registry
 (via the client&#8217;s <code>serviceUrl</code>) with default duration 30 seconds. A
@@ -1455,12 +1503,9 @@ production it&#8217;s probably better to stick with the default because
 there are some computations internally in the server that make
 assumptions about the lease renewal period.</p>
 </div>
+<div id="spring-cloud-eureka-server" class="paragraph">
+<p>== Service Discovery: Eureka Server</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_service_discovery_eureka_server">Service Discovery: Eureka Server</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>Example eureka server:</p>
 </div>
@@ -1485,13 +1530,10 @@ normal Eureka functionality under <code>/eureka/*</code>.</p>
 <div class="paragraph">
 <p>Eureka background reading: see <a href="https://github.com/cfregly/fluxcapacitor/wiki/NetflixOSS-FAQ#eureka-service-discovery-load-balancer">flux capacitor</a> and <a href="https://groups.google.com/forum/?fromgroups#!topic/eureka_netflix/g3p2r7gHnN0">google group discussion</a>.</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
 </td>
-<td class="content">
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>You can run the Eureka server as an executable JAR (or WAR) using the
 <a href="http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#build-tool-plugins">Spring
@@ -1532,12 +1574,11 @@ springBoot {
 }</code></pre>
 </div>
 </div>
-</td>
-</tr>
-</table>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>=== High Availability, Zones and Regions</p>
 </div>
-<div class="sect2">
-<h3 id="_high_availability_zones_and_regions">High Availability, Zones and Regions</h3>
 <div class="paragraph">
 <p>The Eureka server does not have a backend store, but the service
 instances in the registry all have to send heartbeats to keep their
@@ -1551,9 +1592,9 @@ go to the registry for every single request to a service).</p>
 the service will run and work, but it will shower your logs with a lot
 of noise about not being able to register with the peer.</p>
 </div>
+<div class="paragraph">
+<p>=== Standalone Mode</p>
 </div>
-<div class="sect2">
-<h3 id="_standalone_mode">Standalone Mode</h3>
 <div class="paragraph">
 <p>The combination of the two caches (client and server) and the
 heartbeats make a standalone Eureka server fairly resilient to
@@ -1582,9 +1623,9 @@ eureka:
 <p>Notice that the <code>serviceUrl</code> is pointing to the same host as the local
 instance.</p>
 </div>
+<div class="paragraph">
+<p>=== Peer Awareness</p>
 </div>
-<div class="sect2">
-<h3 id="_peer_awareness">Peer Awareness</h3>
 <div class="paragraph">
 <p>Eureka can be made even more resilient and available by running
 multiple instances and asking them to register with each other. In
@@ -1632,12 +1673,9 @@ the registrations amongst themselves. If the peers are physically
 separated (inside a data centre or between multiple data centres) then
 the system can in principle survive split-brain type failures.</p>
 </div>
+<div class="paragraph">
+<p>== Circuit Breaker: Hystrix Clients</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>Netflix has created a library called <a href="https://github.com/Netflix/Hystrix">Hystrix</a> that implements the <a href="http://martinfowler.com/bliki/CircuitBreaker.html">circuit breaker pattern</a>.  In a microservice architecture it is common to have multiple layers of service calls.</p>
 </div>
@@ -1691,10 +1729,18 @@ public class StoreIntegration {
 </div>
 <div class="paragraph">
 <p>The <code>@HystrixCommand</code> is provided by a Netflix contrib library called
-"javanica". Spring Cloud automatically wraps Spring beans with that
+<a href="https://github.com/Netflix/Hystrix/tree/master/hystrix-contrib/hystrix-javanica">"javanica"</a>.
+Spring Cloud automatically wraps Spring beans with that
 annotation in a proxy that is connected to the Hystrix circuit
 breaker. The circuit breaker calculates when to open and close the
 circuit, and what to do in case of a failure.</p>
+</div>
+<div class="paragraph">
+<p>To configure the <code>@HystrixCommand</code> you can use the <code>commandProperties</code>
+attribute with a list of <code>@HystrixProperty</code> annotations.  See
+<a href="https://github.com/Netflix/Hystrix/tree/master/hystrix-contrib/hystrix-javanica#configuration">here</a>
+for more details.  See the <a href="https://github.com/Netflix/Hystrix/wiki/Configuration">Hystrix wiki</a>
+for details on the properties available.</p>
 </div>
 <div class="paragraph">
 <p>The state of the connected circuit breakers are also exposed in the
@@ -1713,11 +1759,9 @@ circuit, and what to do in case of a failure.</p>
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>== Circuit Breaker: Hystrix Dashboard</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_circuit_breaker_hystrix_dashboard">Circuit Breaker: Hystrix Dashboard</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>One of the main benefits of Hystrix is the set of metrics it gathers about each HystrixCommand.  The Hystrix Dashboard displays the health of each circuit breaker in an efficient manner.</p>
 </div>
@@ -1730,8 +1774,9 @@ circuit, and what to do in case of a failure.</p>
 <div class="paragraph">
 <p>To run the Hystrix Dashboard annotate your Spring Boot main class with <code>@EnableHystrixDashboard</code>.  You then visit <code>/hystrix/index.html</code> and point the dashboard to an individual instances <code>/hystrix.stream</code> endpoint in a Hystrix client application.</p>
 </div>
-<div class="sect2">
-<h3 id="_turbine">Turbine</h3>
+<div class="paragraph">
+<p>=== Turbine</p>
+</div>
 <div class="paragraph">
 <p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation.</p>
 </div>
@@ -1752,12 +1797,9 @@ circuit, and what to do in case of a failure.</p>
 <div class="paragraph">
 <p>The clusterName can be customized by a SPEL expression in <code>turbine.clusterNameExpression</code>.  For example, <code>turbine.clusterNameExpression=aSGName</code> would get the clustername from the AWS ASG name.</p>
 </div>
+<div id="spring-cloud-feign" class="paragraph">
+<p>== Declarative REST Client: Feign</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_declarative_rest_client_feign">Declarative REST Client: Feign</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://github.com/Netflix/feign">Feign</a> is a declarative web service client.  It makes writing web service clients easier.  To use Feign create an interface and annotate it.  It has pluggable annotation support including Feign annotations and JAX-RS annotations. Feign also supports pluggable encoders and decoders.  Spring Cloud adds support for Spring MVC annotations and for using the same <code>HttpMessageConverters</code> used by default in Spring Web.  Spring Cloud integrates Ribbon and Eureka to provide a load balanced http client when using Feign.</p>
 </div>
@@ -1789,18 +1831,16 @@ public class Application extends FeignConfigurer {
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public interface StoreClient {
     @RequestMapping(method = RequestMethod.GET, value = "/stores")
-    Stores getStores();
+    List&lt;Store&gt; getStores();
 
     @RequestMapping(method = RequestMethod.POST, value = "/stores/{storeId}", consumes = "application/json")
     Store update(@PathParameter("storeId") Long storeId, Store store);
 }</code></pre>
 </div>
 </div>
+<div id="spring-cloud-ribbon" class="paragraph">
+<p>== Client Side Load Balancer: Ribbon</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_client_side_load_balancer_ribbon">Client Side Load Balancer: Ribbon</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>Usage of <code>LoadBalancerClient</code> directly:</p>
 </div>
@@ -1834,11 +1874,9 @@ public class Application extends FeignConfigurer {
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>== External Configuration: Archaius</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_external_configuration_archaius">External Configuration: Archaius</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://github.com/Netflix/archaius">Archaius</a> is the Netflix client side configuration library.  It is the library used by all of the Netflix OSS components for configuration.  Archaius is an extension of the <a href="http://commons.apache.org/proper/commons-configuration">Apache Commons Configuration</a> project.  It allows updates to configuration by either polling a source for changes or for a source to push changes to the client.  Archaius uses Dynamic&lt;Type&gt;Property classes as handles to properties.</p>
 </div>
@@ -1859,11 +1897,9 @@ public class Application extends FeignConfigurer {
 <div class="paragraph">
 <p>Archaius has its own set of configuration files and loading priorities.  Spring applications should generally not use Archaius directly., but the need to configure the Netflix tools natively remains.  Spring Cloud has a Spring Environment Bridge so Archaius can read properties from the Spring Environment.  This allows Spring Boot projects to use the normal configuration toolchain, while allowing them to configure the Netflix tools, for the most part, as documented.</p>
 </div>
+<div class="paragraph">
+<p>== Router and Filter: Zuul</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_router_and_filter_zuul">Router and Filter: Zuul</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>Routing in an integral part of a microservice architecture.  For example, <code>/</code> may be mapped to your web application, <code>/api/users</code> is mapped to the user service and <code>/api/shop</code> is mapped to the shop service.  <a href="https://github.com/Netflix/zuul">Zuul</a> is a JVM based router and server side load balancer by Netflix.</p>
 </div>
@@ -1907,8 +1943,9 @@ public class Application extends FeignConfigurer {
 <div class="paragraph">
 <p>Zuul&#8217;s rule engine allows rules and filters to be written in essentially any JVM language, with built in support for Java and Groovy.</p>
 </div>
-<div class="sect2">
-<h3 id="netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</h3>
+<div id="netflix-zuul-reverse-proxy" class="paragraph">
+<p>=== Embedded Zuul Reverse Proxy</p>
+</div>
 <div class="paragraph">
 <p>Spring Cloud has created an embedded Zuul proxy to ease the development of a very common use case where a UI application wants to proxy calls to one or more back end services.  To enable it, annotate a Spring Boot main class with <code>@EnableZuulProxy</code>.  This forwards local calls to <code>/proxy/*</code> to the appropriate service.  The proxy uses Ribbon to locate an instance to forward to via Eureka.  Forwarding to the service is protected by a Hystrix circuit breaker.  Rules are configured via the Spring environment.  The Config Server is an ideal place for the Zuul configuration.  Zuul Embedded Proxy configuration rules look like the following:</p>
 </div>
@@ -1920,9 +1957,9 @@ public class Application extends FeignConfigurer {
 <div class="paragraph">
 <p>This means that http calls to /proxy/users get forwarded to the users service.  This proxy configuration is useful for services that host a user interface to proxy to the backend services it requires.  By default, the proxy mapping gets stripped from the request before forwarding.</p>
 </div>
+<div id="netflix-zuul-server" class="paragraph">
+<p>=== Standalone Zuul Server</p>
 </div>
-<div class="sect2">
-<h3 id="netflix-zuul-server">Standalone Zuul Server</h3>
 <div class="paragraph">
 <p>Spring Cloud has created a standalone Zuul server.  To enable it, annotate a Spring Boot main class with <code>@EnableZuulServer</code>.  This routes all calls to the appropriate service.  The server uses Ribbon to locate an instance to forward to via Eureka.  Forwarding to the service is protected by a Hystrix circuit breaker.  Rules are configured via the Spring environment.  The Config Server is an ideal place for the Zuul configuration.  Zuul Server configuration rules look like the following:</p>
 </div>
@@ -1937,26 +1974,37 @@ public class Application extends FeignConfigurer {
 <div class="paragraph">
 <p>Since zuul, by default, intercepts all requests (<code>/*</code>), to enable actuator, you should set the <code>management.port</code>.</p>
 </div>
+<div class="paragraph">
+<p>To use the Spring Boot error facilities while using the standalone Zuul server, please set the following properties</p>
 </div>
-</div>
-</div>
-<h1 id="_spring_cloud_cluster" class="sect0">Spring Cloud Cluster</h1>
-<div class="openblock partintro">
+<div class="listingblock">
 <div class="content">
-Spring Cloud Cluster offers a set of primitives for building "cluster"
+<pre># moves the Spring Dispatch Servlet to a path below `/`
+server:
+  servletPath: /app
+# sets the error path to use the Dispatch Servlet to resolve the error view
+error:
+  path: ${server.servletPath}/error</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>= Spring Cloud Cluster</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Cluster offers a set of primitives for building "cluster"
 features into a distributed system. Example are leadership election,
-consistent storage of cluster state, global locks and one-time tokens.
+consistent storage of cluster state, global locks and one-time tokens.</p>
 </div>
+<div class="paragraph">
+<p>= Spring Platform Bus
+:toc:</p>
 </div>
-<h1 id="_spring_platform_bus" class="sect0">Spring Platform Bus</h1>
-<div class="openblock partintro">
-<div class="content">
-Spring Cloud Bus links nodes of a distributed system with a lightweight message broker. This can then be used to broadcast state changes (e.g. configuration changes) or other management instructions. A key idea is that the Bus is like a distributed Actuator for a Spring Boot application that is scaled out, but it can also be used as a communication channel between apps. The only implementation currently is with an AMQP broker as the transport, but the same basic feature set (and some more depending on the transport) is on the roadmap for other transports.
+<div class="paragraph">
+<p>Spring Cloud Bus links nodes of a distributed system with a lightweight message broker. This can then be used to broadcast state changes (e.g. configuration changes) or other management instructions. A key idea is that the Bus is like a distributed Actuator for a Spring Boot application that is scaled out, but it can also be used as a communication channel between apps. The only implementation currently is with an AMQP broker as the transport, but the same basic feature set (and some more depending on the transport) is on the roadmap for other transports.</p>
 </div>
+<div class="paragraph">
+<p>== Quick Start</p>
 </div>
-<div class="sect1">
-<h2 id="_quick_start_2">Quick Start</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud Bus works by adding Spring Boot autconfiguration if it detects itself on the classpath. All you need to do to enable the bus is to add <code>spring-cloud-starter-bus-amqp</code> to your dependency management and Spring Cloud takes care of the rest. Make sure RabbitMQ is available and configured to provide a <code>ConnectionFactory</code>: running on localhost you shouldn&#8217;t have to do anything, but if you are running remotely use Spring Cloud Connectors, or Spring Boot conventions to define the broker credentials, e.g.</p>
 </div>
@@ -1974,18 +2022,16 @@ Spring Cloud Bus links nodes of a distributed system with a lightweight message 
 <div class="paragraph">
 <p>The bus currently supports sending messages to all nodes listening or all nodes for a particular service (as defined by Eureka).  More selector criteria will be added in the future (ie. only service X nodes in data center Y, etc&#8230;&#8203;). The http endpoints are under the <code>/bus/*</code> actuator namespace.  There are currently two implemented.  The first, <code>/bus/env</code>, sends key/values pairs to update each nodes Spring Environment.  The second, <code>/bus/refresh</code>, will reload each application&#8217;s configuration, just as if they had all been pinged on their <code>/refresh</code> endpoint.</p>
 </div>
+<div class="paragraph">
+<p>= Spring Boot Cloud CLI</p>
 </div>
+<div class="paragraph">
+<p>Spring Boot command line features for
+<a href="https://github.com/spring-cloud">Spring Cloud</a>.</p>
 </div>
-<h1 id="_spring_boot_cloud_cli" class="sect0">Spring Boot Cloud CLI</h1>
-<div class="openblock partintro">
-<div class="content">
-Spring Boot command line features for
-<a href="https://github.com/spring-cloud">Spring Cloud</a>.
+<div class="paragraph">
+<p>== Installation</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_installation">Installation</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>To install, make
 sure you have
@@ -2032,12 +2078,13 @@ $ gvm use springboot 1.1.8.RELEASE</code></pre>
 $ spring install org.springframework.cloud:spring-cloud-cli:1.0.0.BUILD-SNAPSHOT</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>= Spring Cloud Security
+:github-base: <a href="https://github.com/spring-cloud" class="bare">https://github.com/spring-cloud</a>
+:security-base: <a href="https://github.com/spring-cloud/spring-cloud-security" class="bare">https://github.com/spring-cloud/spring-cloud-security</a></p>
 </div>
-</div>
-<h1 id="_spring_cloud_security" class="sect0">Spring Cloud Security</h1>
-<div class="openblock partintro">
-<div class="content">
-Spring Cloud Security offers a set of primitives for building secure
+<div class="paragraph">
+<p>Spring Cloud Security offers a set of primitives for building secure
 applications and services with minimum fuss. A declarative model which
 can be heavily configured externally (or centrally) lends itself to
 the implementation of large systems of co-operating, remote components,
@@ -2045,14 +2092,14 @@ usually with a central indentity management service. It is also extremely
 easy to use in a service platform like Cloud Foundry. Building on
 Spring Boot and Spring Security OAuth2 we can quickly create systems that
 implement common patterns like single sign on, token relay and token
-exchange.
+exchange.</p>
 </div>
+<div class="paragraph">
+<p>== Quickstart</p>
 </div>
-<div class="sect1">
-<h2 id="_quickstart">Quickstart</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_oauth_single_sign_on">OAuth Single Sign On</h3>
+<div class="paragraph">
+<p>=== OAuth Single Sign On</p>
+</div>
 <div class="paragraph">
 <p>Here&#8217;s a Spring Cloud "Hello World" app with HTTP Basic
 authentication and a single user account:</p>
@@ -2155,9 +2202,9 @@ credentials of a registered client in Cloud Foundry.  It&#8217;s quite hard
 to get a Cloud Foundry client registration for testing (but please ask
 at <a href="mailto:support@run.pivotal.io">support@run.pivotal.io</a> if you want one on PWS).</p>
 </div>
+<div class="paragraph">
+<p>=== OAuth Protected Resource</p>
 </div>
-<div class="sect2">
-<h3 id="_oauth_protected_resource">OAuth Protected Resource</h3>
 <div class="paragraph">
 <p>You want to protect an API resource with an OAuth2 token? Here&#8217;s a
 simple example (paired with the client above):</p>
@@ -2190,9 +2237,9 @@ class Application {
     preferTokenInfo: false</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>=== Token Relay</p>
 </div>
-<div class="sect2">
-<h3 id="_token_relay">Token Relay</h3>
 <div class="paragraph">
 <p>If your app has a
 <a href="http://cloud.spring.io/spring-cloud.html#netflix-zuul-reverse-proxy">Spring
@@ -2229,7 +2276,7 @@ correct header.</p>
 traditional app), and that has some autoconfiguration for a
 <code>ZuulFilter</code>, which itself is activated because Zuul is on the
 classpath (via <code>@EnableZuulProxy</code>). The
-<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/proxy/OAuth2TokenRelayFilter.java">filter</a>
+{security-base}/tree/master/src/main/java/org/springframework/cloud/security/proxy/OAuth2TokenRelayFilter.java[filter]
 just extracts an access token from the currently authenticated user,
 and puts it in a request header for the downstream requests.</p>
 </div>
@@ -2237,9 +2284,11 @@ and puts it in a request header for the downstream requests.</p>
 </div>
 </div>
 </div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-11-05 10:32:12 UTC
+Last updated 2014-11-10 15:01:56 UTC
 </div>
 </div>
 </body>
