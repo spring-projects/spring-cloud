@@ -457,6 +457,70 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_service_discovery_eureka_clients">Service Discovery: Eureka Clients</a>
 <ul class="sectlevel2">
 <li><a href="#_using_the_discoveryclient">Using the DiscoveryClient</a></li>
+<li><a href="#_alternatives_to_the_discoveryclient">Alternatives to the DiscoveryClient</a></li>
+<li><a href="#_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</a></li>
+</ul>
+</li>
+<li><a href="#spring-cloud-eureka-server">Service Discovery: Eureka Server</a>
+<ul class="sectlevel2">
+<li><a href="#_high_availability_zones_and_regions">High Availability, Zones and Regions</a></li>
+<li><a href="#_standalone_mode">Standalone Mode</a></li>
+<li><a href="#_peer_awareness">Peer Awareness</a></li>
+</ul>
+</li>
+<li><a href="#_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</a></li>
+<li><a href="#_circuit_breaker_hystrix_dashboard">Circuit Breaker: Hystrix Dashboard</a>
+<ul class="sectlevel2">
+<li><a href="#_turbine">Turbine</a></li>
+</ul>
+</li>
+<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a></li>
+<li><a href="#spring-cloud-ribbon">Client Side Load Balancer: Ribbon</a></li>
+<li><a href="#_external_configuration_archaius">External Configuration: Archaius</a></li>
+<li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
+<ul class="sectlevel2">
+<li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
+<li><a href="#netflix-zuul-server">Standalone Zuul Server</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_bus">Spring Cloud Bus</a>
+<ul class="sectlevel1">
+<li><a href="#_quick_start_2">Quick Start</a></li>
+</ul>
+</li>
+<li><a href="#_spring_boot_cloud_cli">Spring Boot Cloud CLI</a>
+<ul class="sectlevel1">
+<li><a href="#_installation">Installation</a></li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_security">Spring Cloud Security</a>
+<ul class="sectlevel1">
+<li><a href="#_quickstart">Quickstart</a>
+<ul class="sectlevel2">
+<li><a href="#_oauth2_single_sign_on">OAuth2 Single Sign On</a></li>
+<li><a href="#_oauth2_protected_resource">OAuth2 Protected Resource</a></li>
+</ul>
+</li>
+<li><a href="#_more_detail">More Detail</a>
+<ul class="sectlevel2">
+<li><a href="#_single_sign_on">Single Sign On</a></li>
+<li><a href="#_resource_server">Resource Server</a></li>
+<li><a href="#_token_relay">Token Relay</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_for_cloud_foundry">Spring Cloud for Cloud Foundry</a>
+<ul class="sectlevel1">
+<li><a href="#_quickstart_2">Quickstart</a></li>
+<li><a href="#_how_does_it_work">How Does it Work?</a>
+<ul class="sectlevel2">
+<li><a href="#_oauth2_single_sign_on_2">OAuth2 Single Sign On</a></li>
+<li><a href="#_jwt_tokens">JWT Tokens</a></li>
+<li><a href="#_oauth2_resource_server">OAuth2 Resource Server</a></li>
+<li><a href="#_the_default_environment_keys">The Default Environment Keys</a></li>
 </ul>
 </li>
 </ul>
@@ -1476,9 +1540,13 @@ is initialized in a <code>SmartLifecycle</code> (with <code>phase=0</code>) so t
 you can rely on it being available is in another <code>SmartLifecycle</code> with
 higher phase.</p>
 </div>
-<div class="paragraph">
-<p>=== Alternatives to the DiscoveryClient</p>
+</td>
+</tr>
+</table>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_alternatives_to_the_discoveryclient">Alternatives to the DiscoveryClient</h3>
 <div class="paragraph">
 <p>You don&#8217;t have to use the raw Netflix <code>DiscoveryClient</code> and usually it
 is more convenient to use it behind a wrapper of some sort. Spring
@@ -1487,9 +1555,9 @@ builder) and also <a href="#spring-cloud-ribbon">Spring <code>RestTemplate</code
 the logical Eureka service identifiers (VIPs) instead of physical
 URLs.</p>
 </div>
-<div class="paragraph">
-<p>=== Why is it so Slow to Register a Service?</p>
 </div>
+<div class="sect2">
+<h3 id="_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</h3>
 <div class="paragraph">
 <p>Being an instance also involves a periodic heartbeat to the registry
 (via the client&#8217;s <code>serviceUrl</code>) with default duration 30 seconds. A
@@ -1502,9 +1570,12 @@ production it&#8217;s probably better to stick with the default because
 there are some computations internally in the server that make
 assumptions about the lease renewal period.</p>
 </div>
-<div id="spring-cloud-eureka-server" class="paragraph">
-<p>== Service Discovery: Eureka Server</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-cloud-eureka-server">Service Discovery: Eureka Server</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Example eureka server:</p>
 </div>
@@ -1529,10 +1600,13 @@ normal Eureka functionality under <code>/eureka/*</code>.</p>
 <div class="paragraph">
 <p>Eureka background reading: see <a href="https://github.com/cfregly/fluxcapacitor/wiki/NetflixOSS-FAQ#eureka-service-discovery-load-balancer">flux capacitor</a> and <a href="https://groups.google.com/forum/?fromgroups#!topic/eureka_netflix/g3p2r7gHnN0">google group discussion</a>.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
 </td>
-</tr>
-</table>
-</div>
+<td class="content">
 <div class="paragraph">
 <p>You can run the Eureka server as an executable JAR (or WAR) using the
 <a href="http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#build-tool-plugins">Spring
@@ -1573,11 +1647,46 @@ springBoot {
 }</code></pre>
 </div>
 </div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p>=== High Availability, Zones and Regions</p>
+</td>
+</tr>
+</table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The Eureka server is tied to log4j and doesn&#8217;t work with logback,
+so the dependency configuration
+has to be tweaked compared to a normal Spring Boot app. The
+<code>spring-cloud-starter-eureka-server</code> does this for you, but if you
+add logback transitively through another dependency you will need to
+exclude it manually, e.g. in Maven</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;exclusions&gt;
+        &lt;exclusion&gt;
+            &lt;artifactId&gt;spring-boot-starter-logging&lt;/artifactId&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_high_availability_zones_and_regions">High Availability, Zones and Regions</h3>
 <div class="paragraph">
 <p>The Eureka server does not have a backend store, but the service
 instances in the registry all have to send heartbeats to keep their
@@ -1591,9 +1700,9 @@ go to the registry for every single request to a service).</p>
 the service will run and work, but it will shower your logs with a lot
 of noise about not being able to register with the peer.</p>
 </div>
-<div class="paragraph">
-<p>=== Standalone Mode</p>
 </div>
+<div class="sect2">
+<h3 id="_standalone_mode">Standalone Mode</h3>
 <div class="paragraph">
 <p>The combination of the two caches (client and server) and the
 heartbeats make a standalone Eureka server fairly resilient to
@@ -1622,9 +1731,9 @@ eureka:
 <p>Notice that the <code>serviceUrl</code> is pointing to the same host as the local
 instance.</p>
 </div>
-<div class="paragraph">
-<p>=== Peer Awareness</p>
 </div>
+<div class="sect2">
+<h3 id="_peer_awareness">Peer Awareness</h3>
 <div class="paragraph">
 <p>Eureka can be made even more resilient and available by running
 multiple instances and asking them to register with each other. In
@@ -1672,9 +1781,12 @@ the registrations amongst themselves. If the peers are physically
 separated (inside a data centre or between multiple data centres) then
 the system can in principle survive split-brain type failures.</p>
 </div>
-<div class="paragraph">
-<p>== Circuit Breaker: Hystrix Clients</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Netflix has created a library called <a href="https://github.com/Netflix/Hystrix">Hystrix</a> that implements the <a href="http://martinfowler.com/bliki/CircuitBreaker.html">circuit breaker pattern</a>.  In a microservice architecture it is common to have multiple layers of service calls.</p>
 </div>
@@ -1758,9 +1870,11 @@ for details on the properties available.</p>
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>== Circuit Breaker: Hystrix Dashboard</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_circuit_breaker_hystrix_dashboard">Circuit Breaker: Hystrix Dashboard</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>One of the main benefits of Hystrix is the set of metrics it gathers about each HystrixCommand.  The Hystrix Dashboard displays the health of each circuit breaker in an efficient manner.</p>
 </div>
@@ -1773,9 +1887,8 @@ for details on the properties available.</p>
 <div class="paragraph">
 <p>To run the Hystrix Dashboard annotate your Spring Boot main class with <code>@EnableHystrixDashboard</code>.  You then visit <code>/hystrix/index.html</code> and point the dashboard to an individual instances <code>/hystrix.stream</code> endpoint in a Hystrix client application.</p>
 </div>
-<div class="paragraph">
-<p>=== Turbine</p>
-</div>
+<div class="sect2">
+<h3 id="_turbine">Turbine</h3>
 <div class="paragraph">
 <p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation.</p>
 </div>
@@ -1796,9 +1909,12 @@ for details on the properties available.</p>
 <div class="paragraph">
 <p>The clusterName can be customized by a SPEL expression in <code>turbine.clusterNameExpression</code>.  For example, <code>turbine.clusterNameExpression=aSGName</code> would get the clustername from the AWS ASG name.</p>
 </div>
-<div id="spring-cloud-feign" class="paragraph">
-<p>== Declarative REST Client: Feign</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-cloud-feign">Declarative REST Client: Feign</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://github.com/Netflix/feign">Feign</a> is a declarative web service client.  It makes writing web service clients easier.  To use Feign create an interface and annotate it.  It has pluggable annotation support including Feign annotations and JAX-RS annotations. Feign also supports pluggable encoders and decoders.  Spring Cloud adds support for Spring MVC annotations and for using the same <code>HttpMessageConverters</code> used by default in Spring Web.  Spring Cloud integrates Ribbon and Eureka to provide a load balanced http client when using Feign.</p>
 </div>
@@ -1837,9 +1953,11 @@ public class Application extends FeignConfigurer {
 }</code></pre>
 </div>
 </div>
-<div id="spring-cloud-ribbon" class="paragraph">
-<p>== Client Side Load Balancer: Ribbon</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="spring-cloud-ribbon">Client Side Load Balancer: Ribbon</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Usage of <code>LoadBalancerClient</code> directly:</p>
 </div>
@@ -1873,9 +1991,11 @@ public class Application extends FeignConfigurer {
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>== External Configuration: Archaius</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_external_configuration_archaius">External Configuration: Archaius</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p><a href="https://github.com/Netflix/archaius">Archaius</a> is the Netflix client side configuration library.  It is the library used by all of the Netflix OSS components for configuration.  Archaius is an extension of the <a href="http://commons.apache.org/proper/commons-configuration">Apache Commons Configuration</a> project.  It allows updates to configuration by either polling a source for changes or for a source to push changes to the client.  Archaius uses Dynamic&lt;Type&gt;Property classes as handles to properties.</p>
 </div>
@@ -1896,9 +2016,11 @@ public class Application extends FeignConfigurer {
 <div class="paragraph">
 <p>Archaius has its own set of configuration files and loading priorities.  Spring applications should generally not use Archaius directly., but the need to configure the Netflix tools natively remains.  Spring Cloud has a Spring Environment Bridge so Archaius can read properties from the Spring Environment.  This allows Spring Boot projects to use the normal configuration toolchain, while allowing them to configure the Netflix tools, for the most part, as documented.</p>
 </div>
-<div class="paragraph">
-<p>== Router and Filter: Zuul</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_router_and_filter_zuul">Router and Filter: Zuul</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Routing in an integral part of a microservice architecture.  For example, <code>/</code> may be mapped to your web application, <code>/api/users</code> is mapped to the user service and <code>/api/shop</code> is mapped to the shop service.  <a href="https://github.com/Netflix/zuul">Zuul</a> is a JVM based router and server side load balancer by Netflix.</p>
 </div>
@@ -1942,9 +2064,8 @@ public class Application extends FeignConfigurer {
 <div class="paragraph">
 <p>Zuul&#8217;s rule engine allows rules and filters to be written in essentially any JVM language, with built in support for Java and Groovy.</p>
 </div>
-<div id="netflix-zuul-reverse-proxy" class="paragraph">
-<p>=== Embedded Zuul Reverse Proxy</p>
-</div>
+<div class="sect2">
+<h3 id="netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</h3>
 <div class="paragraph">
 <p>Spring Cloud has created an embedded Zuul proxy to ease the development of a very common use case where a UI application wants to proxy calls to one or more back end services.  To enable it, annotate a Spring Boot main class with <code>@EnableZuulProxy</code>.  This forwards local calls to <code>/proxy/*</code> to the appropriate service.  The proxy uses Ribbon to locate an instance to forward to via Eureka.  Forwarding to the service is protected by a Hystrix circuit breaker.  Rules are configured via the Spring environment.  The Config Server is an ideal place for the Zuul configuration.  Zuul Embedded Proxy configuration rules look like the following:</p>
 </div>
@@ -1956,9 +2077,9 @@ public class Application extends FeignConfigurer {
 <div class="paragraph">
 <p>This means that http calls to /proxy/users get forwarded to the users service.  This proxy configuration is useful for services that host a user interface to proxy to the backend services it requires.  By default, the proxy mapping gets stripped from the request before forwarding.</p>
 </div>
-<div id="netflix-zuul-server" class="paragraph">
-<p>=== Standalone Zuul Server</p>
 </div>
+<div class="sect2">
+<h3 id="netflix-zuul-server">Standalone Zuul Server</h3>
 <div class="paragraph">
 <p>Spring Cloud has created a standalone Zuul server.  To enable it, annotate a Spring Boot main class with <code>@EnableZuulServer</code>.  This routes all calls to the appropriate service.  The server uses Ribbon to locate an instance to forward to via Eureka.  Forwarding to the service is protected by a Hystrix circuit breaker.  Rules are configured via the Spring environment.  The Config Server is an ideal place for the Zuul configuration.  Zuul Server configuration rules look like the following:</p>
 </div>
@@ -1986,24 +2107,18 @@ error:
   path: ${server.servletPath}/error</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>= Spring Cloud Cluster</p>
 </div>
-<div class="paragraph">
-<p>Spring Cloud Cluster offers a set of primitives for building "cluster"
-features into a distributed system. Example are leadership election,
-consistent storage of cluster state, global locks and one-time tokens.</p>
 </div>
-<div class="paragraph">
-<p>= Spring Cloud Bus
-:toc:</p>
 </div>
-<div class="paragraph">
-<p>Spring Cloud Bus links nodes of a distributed system with a lightweight message broker. This can then be used to broadcast state changes (e.g. configuration changes) or other management instructions. A key idea is that the Bus is like a distributed Actuator for a Spring Boot application that is scaled out, but it can also be used as a communication channel between apps. The only implementation currently is with an AMQP broker as the transport, but the same basic feature set (and some more depending on the transport) is on the roadmap for other transports.</p>
+<h1 id="_spring_cloud_bus" class="sect0">Spring Cloud Bus</h1>
+<div class="openblock partintro">
+<div class="content">
+Spring Cloud Bus links nodes of a distributed system with a lightweight message broker. This can then be used to broadcast state changes (e.g. configuration changes) or other management instructions. A key idea is that the Bus is like a distributed Actuator for a Spring Boot application that is scaled out, but it can also be used as a communication channel between apps. The only implementation currently is with an AMQP broker as the transport, but the same basic feature set (and some more depending on the transport) is on the roadmap for other transports.
 </div>
-<div class="paragraph">
-<p>== Quick Start</p>
 </div>
+<div class="sect1">
+<h2 id="_quick_start_2">Quick Start</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud Bus works by adding Spring Boot autconfiguration if it detects itself on the classpath. All you need to do to enable the bus is to add <code>spring-cloud-starter-bus-amqp</code> to your dependency management and Spring Cloud takes care of the rest. Make sure RabbitMQ is available and configured to provide a <code>ConnectionFactory</code>: running on localhost you shouldn&#8217;t have to do anything, but if you are running remotely use Spring Cloud Connectors, or Spring Boot conventions to define the broker credentials, e.g.</p>
 </div>
@@ -2021,16 +2136,18 @@ consistent storage of cluster state, global locks and one-time tokens.</p>
 <div class="paragraph">
 <p>The bus currently supports sending messages to all nodes listening or all nodes for a particular service (as defined by Eureka).  More selector criteria will be added in the future (ie. only service X nodes in data center Y, etc&#8230;&#8203;). The http endpoints are under the <code>/bus/*</code> actuator namespace.  There are currently two implemented.  The first, <code>/bus/env</code>, sends key/values pairs to update each nodes Spring Environment.  The second, <code>/bus/refresh</code>, will reload each application&#8217;s configuration, just as if they had all been pinged on their <code>/refresh</code> endpoint.</p>
 </div>
-<div class="paragraph">
-<p>= Spring Boot Cloud CLI</p>
 </div>
-<div class="paragraph">
-<p>Spring Boot command line features for
-<a href="https://github.com/spring-cloud">Spring Cloud</a>.</p>
 </div>
-<div class="paragraph">
-<p>== Installation</p>
+<h1 id="_spring_boot_cloud_cli" class="sect0">Spring Boot Cloud CLI</h1>
+<div class="openblock partintro">
+<div class="content">
+Spring Boot command line features for
+<a href="https://github.com/spring-cloud">Spring Cloud</a>.
 </div>
+</div>
+<div class="sect1">
+<h2 id="_installation">Installation</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To install, make
 sure you have
@@ -2061,13 +2178,12 @@ $ gvm use springboot 1.2.0.RC1</code></pre>
 $ spring install org.springframework.cloud:spring-cloud-cli:1.0.0.BUILD-SNAPSHOT</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>= Spring Cloud Security
-:github-base: <a href="https://github.com/spring-cloud" class="bare">https://github.com/spring-cloud</a>
-:security-base: <a href="https://github.com/spring-cloud/spring-cloud-security" class="bare">https://github.com/spring-cloud/spring-cloud-security</a></p>
 </div>
-<div class="paragraph">
-<p>Spring Cloud Security offers a set of primitives for building secure
+</div>
+<h1 id="_spring_cloud_security" class="sect0">Spring Cloud Security</h1>
+<div class="openblock partintro">
+<div class="content">
+Spring Cloud Security offers a set of primitives for building secure
 applications and services with minimum fuss. A declarative model which
 can be heavily configured externally (or centrally) lends itself to
 the implementation of large systems of co-operating, remote components,
@@ -2075,14 +2191,14 @@ usually with a central indentity management service. It is also extremely
 easy to use in a service platform like Cloud Foundry. Building on
 Spring Boot and Spring Security OAuth2 we can quickly create systems that
 implement common patterns like single sign on, token relay and token
-exchange.</p>
+exchange.
 </div>
-<div class="paragraph">
-<p>== Quickstart</p>
 </div>
-<div class="paragraph">
-<p>=== OAuth Single Sign On</p>
-</div>
+<div class="sect1">
+<h2 id="_quickstart">Quickstart</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_oauth2_single_sign_on">OAuth2 Single Sign On</h3>
 <div class="paragraph">
 <p>Here&#8217;s a Spring Cloud "Hello World" app with HTTP Basic
 authentication and a single user account:</p>
@@ -2156,46 +2272,15 @@ authenticated.  These credentials will only work if your app is
 running on port 8080.</p>
 </div>
 <div class="paragraph">
-<p>If you now drop the app into Cloud Foundry:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ spring jar app.jar app.groovy
-$ cf push -p app.jar</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and bind it to a service called "sso" with the following properties
-(e.g. created as a
-<a href="http://docs.pivotal.io/pivotalcf/devguide/services/user-provided.html">user-provided
-service</a>):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ cf create-user-provided-service sso -p '{clientId:"&lt;my-client&gt;",clientSecret:"&lt;my-secret&gt;",userInfoUri:"https://uaa.run.pivotal.io/userinfo",tokenUri: "https://login.run.pivotal.io/oauth/token",authorizationUri:"https://login.run.pivotal.io/oauth/authorize"}
-$ cf bind-service app sso
-$ cf push app -p app.jar</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and then visit it in a browser, then it will redirect to the Cloud
-Foundry (PWS) login server instead of challenging for Basic
-authentication credentials. The <code>clientId</code> and <code>clientSecret</code> are
-credentials of a registered client in Cloud Foundry.  It&#8217;s quite hard
-to get a Cloud Foundry client registration for testing (but please ask
-at <a href="mailto:support@run.pivotal.io">support@run.pivotal.io</a> if you want one on PWS, or your local
-platform administrator if it&#8217;s a private instance).</p>
-</div>
-<div class="paragraph">
 <p>To limit the scope that the client asks for when it obtains an access token
 you can set <code>oauth2.client.scope</code> (comma separated or an array in YAML). By
 default the scope is empty and it is up to to Authorization Server to
 decide what the defaults should be, usually depending on the settings in
 the client registration that it holds.</p>
 </div>
-<div class="paragraph">
-<p>=== OAuth Protected Resource</p>
 </div>
+<div class="sect2">
+<h3 id="_oauth2_protected_resource">OAuth2 Protected Resource</h3>
 <div class="paragraph">
 <p>You want to protect an API resource with an OAuth2 token? Here&#8217;s a
 simple example (paired with the client above):</p>
@@ -2228,9 +2313,63 @@ class Application {
     preferTokenInfo: false</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>=== Token Relay</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_more_detail">More Detail</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_single_sign_on">Single Sign On</h3>
+<div class="paragraph">
+<p>An app will activate <code>@EnableOAuth2Sso</code> if you bind provide the
+following properties in the <code>Environment</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>oauth2.client.*</code> with <code>*</code> equal to <code>clientId</code>, <code>clientSecret</code>,
+<code>tokenUri</code> and <code>authorizationUri</code> and;</p>
+</li>
+<li>
+<p><code>oauth2.resource.preferTokenInfo=false</code> and
+<code>oauth2.resource.userInfoUri</code> to use the "/me" resource
+(e.g. "https://uaa.run.pivotal.io/userinfo" on PWS), or</p>
+</li>
+<li>
+<p><code>oauth2.resource.tokenInfoUri</code> to use the token decoding endpoint
+(e.g. "https://uaa.run.pivotal.io/check_token" on PWS), or</p>
+</li>
+<li>
+<p><code>oauth2.resource.jwt.keyValue</code> or <code>oauth2.resource.jwt.keyUri</code> to
+decode a JWT token locally, where the key is a verification key. The
+verification key value is either a symmetric secret or PEM-encoded
+RSA public key. If you don&#8217;t have the key and it&#8217;s public you can
+provide a URI where it can be downloaded (as a JSON object with a
+"value" field). E.g. on PWS:
++</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl https://uaa.run.pivotal.io/token_key
+{"alg":"SHA256withRSA","value":"-----BEGIN PUBLIC KEY-----\nMIIBI...\n-----END PUBLIC KEY-----\n"}</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_resource_server">Resource Server</h3>
+<div class="paragraph">
+<p>The <code>@EnableOAuth2Resource</code> annotation will protect your API endpoints
+if you have the same environment settings as the SSO client, except
+that it doesn&#8217;t need a <code>tokenUri</code> or <code>authorizationUri</code>, and it also
+doesn&#8217;t need a <code>clientId</code> and <code>clientSecret</code> if it isn&#8217;t using the
+<code>tokenInfoUri</code> (i.e. if it has <code>jwt.*</code> or <code>userInfoUri</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_token_relay">Token Relay</h3>
 <div class="paragraph">
 <p>If your app has a
 <a href="http://cloud.spring.io/spring-cloud.html#netflix-zuul-reverse-proxy">Spring
@@ -2267,11 +2406,185 @@ correct header.</p>
 traditional app), and that has some autoconfiguration for a
 <code>ZuulFilter</code>, which itself is activated because Zuul is on the
 classpath (via <code>@EnableZuulProxy</code>). The
-{security-base}/tree/master/src/main/java/org/springframework/cloud/security/proxy/OAuth2TokenRelayFilter.java[filter]
+<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/proxy/OAuth2TokenRelayFilter.java">filter</a>
 just extracts an access token from the currently authenticated user,
 and puts it in a request header for the downstream requests.</p>
 </div>
 </div>
+</div>
+</div>
+<h1 id="_spring_cloud_for_cloud_foundry" class="sect0">Spring Cloud for Cloud Foundry</h1>
+<div class="openblock partintro">
+<div class="content">
+<div class="paragraph">
+<p>Spring Cloud for Cloudfoundry makes it easy to run
+<a href="https://github.com/spring-cloud">Spring Cloud</a> apps in
+<a href="https://github.com/cloudfoundry">Cloud Foundry</a> (the Platform as a
+Service). Cloud Foundry has the notion of a "service", which is
+middlware that you "bind" to an app, essentially providing it with an
+environment variable containing credentials (e.g. the location and
+username to use for the service).</p>
+</div>
+<div class="paragraph">
+<p>Add this project as a dependency to any Spring Cloud UI app or REST
+service and deploy to Cloudfoundry.  If you use Spring Cloud Security
+OAuth2 features this will make them bindable to Cloud Foundry services
+instead of enironment properties in <code>oauth2.*</code>.  For a UI app you can
+declare <code>@EnableOAuth2Sso</code> and bind to a service called "sso", and for
+a service you can add <code>@EnableOAuth2Resource</code> and bind to a service
+called "resource" (see below for how to change the names).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quickstart_2">Quickstart</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here&#8217;s a Spring Cloud app with OAuth2 SSO:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Controller
+@EnableOAuth2Sso
+class Application {
+
+  @RequestMapping('/')
+  String home() {
+    'Hello World'
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you run it without any service bindings:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ spring jar app.jar app.groovy
+$ cf push -p app.jar</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>it will be secure with (Spring Boot default) Basic authentication,
+i.e. the password will be in the logs (or set it with
+<code>security.user.password</code> as normal). To turn on OAuth2 SSO all you
+need to do is bind the app to a service with the right
+credentials. For example, a
+<a href="http://docs.pivotal.io/pivotalcf/devguide/services/user-provided.html">user-provided
+service</a> can be created like this on PWS:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cf create-user-provided-service sso -p '{clientId:"&lt;my-client&gt;",clientSecret:"&lt;my-secret&gt;",userInfoUri:"https://uaa.run.pivotal.io/userinfo",tokenUri: "https://login.run.pivotal.io/oauth/token",authorizationUri:"https://login.run.pivotal.io/oauth/authorize"}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then bind and restart the app:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cf bind app sso
+$ cf restart app</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and visit it in a browser. It will redirect to the Cloud Foundry (PWS)
+login server instead of challenging for Basic authentication. The
+<code>clientId</code> and <code>clientSecret</code> are credentials of a registered client
+in Cloud Foundry.  To get a Cloud Foundry client registration for
+testing please ask at <a href="mailto:support@run.pivotal.io">support@run.pivotal.io</a> (if you want it on PWS),
+or your local platform administrator (if it&#8217;s a private instance).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_does_it_work">How Does it Work?</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_oauth2_single_sign_on_2">OAuth2 Single Sign On</h3>
+<div class="paragraph">
+<p>Spring Cloud Security provides the <code>@EnableOAuth2Sso</code> annotation and
+binds the app to environment properties in <code>oauth2.*</code>. Spring Cloud
+for Cloud Foundry just sets up default environment properties so that
+it all just works if you bind to a Cloud Foundry service instance
+called "sso". The service credentials are mapped to the SSO
+properties, i.e. <code>clientId</code>, <code>clientSecret</code>, <code>tokenUri</code>,
+<code>authorizationUri</code>, <code>userInfoUri</code>, <code>tokenInfoUri1, `jwt.\*</code> (refer to
+the Spring Cloud Security documentation for details of which
+combinations will work together). The main thing is that in Cloud
+Foundry you only need one service to cover all the necessary
+credentials.</p>
+</div>
+<div class="paragraph">
+<p>To use a different sercice instance name (i.e. not "sso") just set
+<code>oauth2.sso.serviceId</code> to your custom name.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_jwt_tokens">JWT Tokens</h3>
+<div class="paragraph">
+<p>Spring Cloud Security already has support for decoding JWT tokens if
+you just provide the verification key (as an environment property). In
+Cloud Foundry you can pick that property up from a servcice binding
+(<code>jwt.keyValue</code> or <code>jwt.keyUri</code>).</p>
+</div>
+<div class="paragraph">
+<p>For example the <code>jwt.keyUri</code> in PWS is
+"https://uaa.run.pivotal.io/token_key":</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl https://uaa.run.pivotal.io/token_key
+{"alg":"SHA256withRSA","value":"-----BEGIN PUBLIC KEY-----\nMIIBI...\n-----END PUBLIC KEY-----\n"}d</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_oauth2_resource_server">OAuth2 Resource Server</h3>
+<div class="paragraph">
+<p>Similarly, the <code>@EnableOAuth2Resource</code> annotation will protect your
+API endpoints if you bind to a service instance called "resource".
+The "sso" service above will work for a resource server as well (so
+just bind to that if it&#8217;s there). If the OAuth2 tokens are JWTs (as in
+Cloud Foundry), it is common to use a separate service for resources
+to avoid a network round trip decoding the token on every access. A
+user-provided-service for an OAuth2 resource can be created like this
+on PWS:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cf create-user-provided-service resource -p '{jwt.keyUri:"https://uaa.run.pivotal.io/token_key"}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use JWT you need to add the verification key as either
+<code>jwt.keyValue</code> or <code>jwt.keyUri</code> (these could be added to the "sso"
+service or the "resource" service if you have one).</p>
+</div>
+<div class="paragraph">
+<p>To use a different sercice instance name (i.e. not "resource" or
+"sso") just set <code>oauth2.resource.serviceId</code> to your custom name.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_default_environment_keys">The Default Environment Keys</h3>
+<div class="paragraph">
+<p>The precise mapppings are as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>oauth2.sso.*</code> to <code>vcap.services.${oauth2.sso.serviceId:sso}.credentials.*</code></p>
+</li>
+<li>
+<p><code>oauth2.client.*</code> to <code>vcap.services.${oauth2.sso.serviceId:sso}.credentials.tokenUri:${vcap.services.${oauth2.resource.serviceId:resource}.credentials.*</code></p>
+</li>
+<li>
+<p><code>oauth2.resource.*</code> to <code>vcap.services.${oauth2.resource.serviceId:resource}.credentials.tokenUri:${vcap.services.${oauth2.sso.serviceId:sso}.credentials.*</code></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -2279,7 +2592,7 @@ and puts it in a request header for the downstream requests.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-11-21 11:57:04 UTC
+Last updated 2014-11-22 17:03:24 UTC
 </div>
 </div>
 </body>
