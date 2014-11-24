@@ -520,7 +520,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_oauth2_single_sign_on_2">OAuth2 Single Sign On</a></li>
 <li><a href="#_jwt_tokens">JWT Tokens</a></li>
 <li><a href="#_oauth2_resource_server">OAuth2 Resource Server</a></li>
-<li><a href="#_the_default_environment_keys">The Default Environment Keys</a></li>
+<li><a href="#_default_environment_keys">Default Environment Keys</a></li>
 </ul>
 </li>
 </ul>
@@ -2329,7 +2329,7 @@ following properties in the <code>Environment</code>:</p>
 <ul>
 <li>
 <p><code>oauth2.client.*</code> with <code>*</code> equal to <code>clientId</code>, <code>clientSecret</code>,
-<code>tokenUri</code> and <code>authorizationUri</code> and;</p>
+<code>tokenUri</code>, <code>authorizationUri</code> and one of:</p>
 </li>
 <li>
 <p><code>oauth2.resource.preferTokenInfo=false</code> and
@@ -2355,6 +2355,64 @@ provide a URI where it can be downloaded (as a JSON object with a
 <div class="content">
 <pre>$ curl https://uaa.run.pivotal.io/token_key
 {"alg":"SHA256withRSA","value":"-----BEGIN PUBLIC KEY-----\nMIIBI...\n-----END PUBLIC KEY-----\n"}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can set the preferred scope (as a comma-separated list or YAML
+array) in <code>oauth2.client.scope</code>. It defaults to empty, in which case
+most Authorization Servers will ask the user for approval for the
+maximum allowed scope for the client.</p>
+</div>
+<div class="paragraph">
+<p>There is also a setting for <code>oauth2.client.authenticationScheme</code> which
+defaults to "header" (but you might need to set it to "form" if, like
+Github for instance, your OAuth2 provider doesn&#8217;t like header
+authentication).</p>
+</div>
+<div class="sect3">
+<h4 id="_access_decision_rules">Access Decision Rules</h4>
+<div class="paragraph">
+<p>By default the whole application will be secured with OAuth2 with the
+same access rule ("authenticated"). This includes the Actuator
+endpoints, which you might prefer to be secured differently, so Spring
+Cloud Security provides a configurer callback that lets you change the
+matching and access rules for OAuth2 authentication. Any bean of type
+<code>OAuth2SsoConfigurer</code> (there is a convenient empty base class) will
+get 2 callbacks, one to set the request matchers for the OAuth2
+filter, and one with the full <code>HttpSecurity</code> builder (so you can set
+up all sorts of behaviour, but the main application is to control
+access rules).</p>
+</div>
+<div class="paragraph">
+<p>The default login path, i.e. the one that triggers the redirect to the
+OAuth2 Authorization Server, is "/login". It will always be added to
+the matching patterns for the OAuth2 SSO, even if you have
+<code>OAuth2SsoConfigurer</code> beans as well. The default logout path is
+"/logout" and it gets similar treatment, as does the "home" page
+(which is the logout success page, defaults to "/"). Those paths can
+be overriden by setting <code>oauth2.sso.\*' (`loginPath</code>, <code>logoutPath</code> and
+<code>home.path</code>).</p>
+</div>
+<div class="paragraph">
+<p>For example if you want the resources under "/ui/**" to be protected with OAuth2:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableOAuth2Sso
+@EnableAutoConfiguration
+protected static class TestConfiguration extends OAuth2SsoConfigurerAdapter {
+    @Override
+    public void match(RequestMatchers matchers) {
+        matchers.antMatchers("/ui/**");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the rest of the application will default to the normal
+Spring Boot access control (Basic authentication, or whatever custom
+filters you put in place).</p>
 </div>
 </div>
 </div>
@@ -2510,12 +2568,12 @@ binds the app to environment properties in <code>oauth2.*</code>. Spring Cloud
 for Cloud Foundry just sets up default environment properties so that
 it all just works if you bind to a Cloud Foundry service instance
 called "sso". The service credentials are mapped to the SSO
-properties, i.e. <code>clientId</code>, <code>clientSecret</code>, <code>tokenUri</code>,
-<code>authorizationUri</code>, <code>userInfoUri</code>, <code>tokenInfoUri1, `jwt.\*</code> (refer to
-the Spring Cloud Security documentation for details of which
-combinations will work together). The main thing is that in Cloud
-Foundry you only need one service to cover all the necessary
-credentials.</p>
+properties, i.e. (from <code>oauth2.client.*</code>) <code>clientId</code>, <code>clientSecret</code>,
+<code>tokenUri</code>, <code>authorizationUri</code>, (and from <code>oauth2.resource.*</code>)
+<code>userInfoUri</code>, <code>tokenInfoUri</code>, <code>keyValue</code>, <code>keyUri</code>. Refer to the
+Spring Cloud Security documentation for details of which combinations
+will work together. The main thing is that in Cloud Foundry you only
+need one service to cover all the necessary credentials.</p>
 </div>
 <div class="paragraph">
 <p>To use a different sercice instance name (i.e. not "sso") just set
@@ -2528,10 +2586,10 @@ credentials.</p>
 <p>Spring Cloud Security already has support for decoding JWT tokens if
 you just provide the verification key (as an environment property). In
 Cloud Foundry you can pick that property up from a servcice binding
-(<code>jwt.keyValue</code> or <code>jwt.keyUri</code>).</p>
+(<code>keyValue</code> or <code>keyUri</code>).</p>
 </div>
 <div class="paragraph">
-<p>For example the <code>jwt.keyUri</code> in PWS is
+<p>For example the <code>keyUri</code> in PWS is
 "https://uaa.run.pivotal.io/token_key":</p>
 </div>
 <div class="listingblock">
@@ -2555,12 +2613,12 @@ on PWS:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ cf create-user-provided-service resource -p '{jwt.keyUri:"https://uaa.run.pivotal.io/token_key"}</pre>
+<pre>$ cf create-user-provided-service resource -p '{keyUri:"https://uaa.run.pivotal.io/token_key"}</pre>
 </div>
 </div>
 <div class="paragraph">
 <p>To use JWT you need to add the verification key as either
-<code>jwt.keyValue</code> or <code>jwt.keyUri</code> (these could be added to the "sso"
+<code>keyValue</code> or <code>keyUri</code> (these could be added to the "sso"
 service or the "resource" service if you have one).</p>
 </div>
 <div class="paragraph">
@@ -2569,7 +2627,7 @@ service or the "resource" service if you have one).</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_default_environment_keys">The Default Environment Keys</h3>
+<h3 id="_default_environment_keys">Default Environment Keys</h3>
 <div class="paragraph">
 <p>The precise mapppings are as follows:</p>
 </div>
@@ -2582,7 +2640,7 @@ service or the "resource" service if you have one).</p>
 <p><code>oauth2.client.*</code> to <code>vcap.services.${oauth2.sso.serviceId:sso}.credentials.tokenUri:${vcap.services.${oauth2.resource.serviceId:resource}.credentials.*</code></p>
 </li>
 <li>
-<p><code>oauth2.resource.*</code> to <code>vcap.services.${oauth2.resource.serviceId:resource}.credentials.tokenUri:${vcap.services.${oauth2.sso.serviceId:sso}.credentials.*</code></p>
+<p><code>oauth2.resource.(jwt).*</code> to <code>vcap.services.${oauth2.resource.serviceId:resource}.credentials.tokenUri:${vcap.services.${oauth2.sso.serviceId:sso}.credentials.*</code></p>
 </li>
 </ul>
 </div>
@@ -2592,7 +2650,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-11-22 17:03:24 UTC
+Last updated 2014-11-24 16:14:37 UTC
 </div>
 </div>
 </body>
