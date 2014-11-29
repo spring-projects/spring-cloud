@@ -480,7 +480,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
 <ul class="sectlevel2">
 <li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
-<li><a href="#netflix-zuul-server">Standalone Zuul Server</a></li>
 </ul>
 </li>
 </ul>
@@ -650,7 +649,7 @@ Boot application that depends on spring-cloud-config-client (e.g. see
 the test cases for the config-client, or the sample app). The most
 convenient way to add the dependency is via a Spring Boot starter
 <code>org.springframework.cloud:spring-cloud-starter</code>. There is also a
-parent pom and BOM (<code>spring-cloud-starters</code>) for Maven users and a
+parent pom and BOM (<code>spring-cloud-starter-parent</code>) for Maven users and a
 Spring IO version management properties file for Gradle and Spring CLI
 users. Example Maven configuration:</p>
 </div>
@@ -668,7 +667,7 @@ users. Example Maven configuration:</p>
     &lt;dependencies&gt;
         &lt;dependency&gt;
             &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-cloud-starters&lt;/artifactId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-parent&lt;/artifactId&gt;
             &lt;version&gt;1.0.0.BUILD-SNAPSHOT&lt;/version&gt;
             &lt;type&gt;pom&lt;/type&gt;
             &lt;scope&gt;import&lt;/scope&gt;
@@ -2067,48 +2066,24 @@ public class Application extends FeignConfigurer {
 <div class="sect2">
 <h3 id="netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</h3>
 <div class="paragraph">
-<p>Spring Cloud has created an embedded Zuul proxy to ease the development of a very common use case where a UI application wants to proxy calls to one or more back end services.  To enable it, annotate a Spring Boot main class with <code>@EnableZuulProxy</code>.  This forwards local calls to <code>/proxy/*</code> to the appropriate service.  The proxy uses Ribbon to locate an instance to forward to via Eureka.  Forwarding to the service is protected by a Hystrix circuit breaker.  Rules are configured via the Spring environment.  The Config Server is an ideal place for the Zuul configuration.  Zuul Embedded Proxy configuration rules look like the following:</p>
+<p>Spring Cloud has created an embedded Zuul proxy to ease the development of a very common use case where a UI application wants to proxy calls to one or more back end services.  To enable it, annotate a Spring Boot main class with <code>@EnableZuulProxy</code>.  This forwards local calls to the appropriate service.  By convention, a service with the <code>spring.application.name</code> of <code>users</code>, will receive requests from the proxy located at <code>/users</code>.  The proxy uses Ribbon to locate an instance to forward to via Eureka.  To skip having a service automatically added from eureka, set <code>zuul.ignored-services = service1</code>. Forwarding to the service is protected by a Hystrix circuit breaker.  Additional rules can be configured via the Spring environment.  The Config Server is an ideal place for the Zuul configuration.  Zuul Embedded Proxy configuration rules look like the following:</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>zuul.proxy.route.users: /users</pre>
+<pre>zuul.route.users: /myusers/**</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This means that http calls to /proxy/users get forwarded to the users service.  This proxy configuration is useful for services that host a user interface to proxy to the backend services it requires.  To change the mapping, set <code>zuul.proxy.mapping</code> to a different value, such as <code>/api</code>.  By default, the proxy mapping gets stripped from the request before forwarding.  To keep the proxy mapping on the forwarded call, set <code>zuul.proxy.stripMapping = false</code>.</p>
+<p>This means that http calls to /myusers get forwarded to the users service.  This proxy configuration is useful for services that host a user interface to proxy to the backend services it requires.  To add a prefix to the mapping, set <code>zuul.proxy.mapping</code> to a value, such as <code>/api</code>.  To strip the proxy mapping from the request before forwarding set <code>zuul.proxy.strip-mapping = true</code>.</p>
 </div>
 <div class="paragraph">
-<p>To have the <code>X-Forwarded-Host</code> header added to the forwarded requests, set <code>zuul.proxy.addProxyHeaders = true</code>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="netflix-zuul-server">Standalone Zuul Server</h3>
-<div class="paragraph">
-<p>Spring Cloud has created a standalone Zuul server.  To enable it, annotate a Spring Boot main class with <code>@EnableZuulServer</code>.  This routes all calls to the appropriate service.  The server uses Ribbon to locate an instance to forward to via Eureka.  Forwarding to the service is protected by a Hystrix circuit breaker.  Rules are configured via the Spring environment.  The Config Server is an ideal place for the Zuul configuration.  Zuul Server configuration rules look like the following:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>zuul.server.route.users: /users</pre>
-</div>
+<p>The Zuul proxy supports Ant-style patterns.</p>
 </div>
 <div class="paragraph">
-<p>This means that http calls to /users get forwarded to the users service.</p>
+<p>The <code>X-Forwarded-Host</code> header added to the forwarded requests by default.  To turn it off set <code>zuul.proxy.add-proxy-headers = false</code>.</p>
 </div>
 <div class="paragraph">
-<p>Since zuul, by default, intercepts all requests (<code>/*</code>), to enable actuator, you should set the <code>management.port</code>.</p>
-</div>
-<div class="paragraph">
-<p>To use the Spring Boot error facilities while using the standalone Zuul server, please set the following properties</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre># moves the Spring Dispatch Servlet to a path below `/`
-server:
-  servletPath: /app
-# sets the error path to use the Dispatch Servlet to resolve the error view
-error:
-  path: ${server.servletPath}/error</pre>
-</div>
+<p>An application with the <code>@EnableZuulProxy</code> could act as a standalone server if you set a default route, for example <code>zuul.route.home: /</code> would route <code>/</code> to the home service.</p>
 </div>
 </div>
 </div>
@@ -2653,7 +2628,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-11-25 09:49:46 UTC
+Last updated 2014-11-29 12:09:16 UTC
 </div>
 </div>
 </body>
