@@ -1116,6 +1116,25 @@ target cache. There is also a <code>refresh(String)</code> method to refresh an
 individual bean by name. This functionality is exposed in the
 <code>/refresh</code> endpoint (over HTTP or JMX).</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<code>@RefreshScope</code> works (technically) on an <code>@Configuration</code>
+class, but it might lead to surprising behaviour: e.g. it does <strong>not</strong>
+mean that all the <code>@Beans</code> defined in that class are themselves
+<code>@RefreshScope</code>. Specifically, anything that depends on those beans
+cannot rely on them being updated when a refresh is initiated, unless
+it is itself in <code>@RefreshScope</code> (in which it will be rebuilt on a
+refresh and its dependencies re-injected, at which point they will be
+re-initialized from the refreshed <code>@Configuration</code>).
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_encryption_and_decryption_2">Encryption and Decryption</h3>
@@ -2463,6 +2482,35 @@ that it doesn&#8217;t need a <code>tokenUri</code> or <code>authorizationUri</co
 doesn&#8217;t need a <code>clientId</code> and <code>clientSecret</code> if it isn&#8217;t using the
 <code>tokenInfoUri</code> (i.e. if it has <code>jwt.*</code> or <code>userInfoUri</code>).</p>
 </div>
+<div class="paragraph">
+<p>By default <strong>all</strong> your endpoints are protected (i.e. "/<strong>") but you can
+pick and choose by adding a <code>ResourceServerConfigurerAdapter</code> (standard
+Spring OAuth feature), e.g. to protect only the "/api/</strong>" resources</p>
+</div>
+<div class="listingblock">
+<div class="title">Application.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@RestController
+@EnableOAuth2Resource
+class Application extends ResourceServerConfigurerAdapter {
+
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+    http.requestMatchers()
+      .antMatchers("/api/**")
+   .and()
+     .authorizeRequests()
+       .anyRequest().authenticated();
+  }
+
+  @RequestMapping('/api')
+  String home() {
+    'Hello World'
+  }
+
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_token_relay">Token Relay</h3>
@@ -2481,7 +2529,8 @@ it is proxying. Thus the SSO app above can be enhanced simply like this:</p>
 @EnableZuulProxy
 class Application {
 
-  @RequestMapping('/'
+  @RequestMapping('/')
+  @ResponseBody
   String home() {
     'Hello World'
   }
@@ -2688,7 +2737,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-12-03 10:54:08 UTC
+Last updated 2014-12-04 10:06:36 UTC
 </div>
 </div>
 </body>
