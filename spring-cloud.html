@@ -437,6 +437,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#config-first-bootstrap">Config First Bootstrap</a></li>
 <li><a href="#eureka-first-bootstrap">Eureka First Bootstrap</a></li>
+<li><a href="#config-client-fail-fast">Config Client Fail Fast</a></li>
 <li><a href="#_environment_changes">Environment Changes</a></li>
 <li><a href="#_refresh_scope">Refresh Scope</a></li>
 <li><a href="#_encryption_and_decryption_2">Encryption and Decryption</a></li>
@@ -456,6 +457,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_service_discovery_eureka_clients">Service Discovery: Eureka Clients</a>
 <ul class="sectlevel2">
+<li><a href="#_registering_with_eureka">Registering with Eureka</a></li>
+<li><a href="#_making_the_eureka_instance_id_unique">Making the Eureka Instance ID Unique</a></li>
 <li><a href="#_using_the_discoveryclient">Using the DiscoveryClient</a></li>
 <li><a href="#_alternatives_to_the_discoveryclient">Alternatives to the DiscoveryClient</a></li>
 <li><a href="#_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</a></li>
@@ -480,7 +483,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
 <ul class="sectlevel2">
 <li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
-<li><a href="#netflix-zuul-server">Standalone Zuul Server</a></li>
 </ul>
 </li>
 </ul>
@@ -650,7 +652,7 @@ Boot application that depends on spring-cloud-config-client (e.g. see
 the test cases for the config-client, or the sample app). The most
 convenient way to add the dependency is via a Spring Boot starter
 <code>org.springframework.cloud:spring-cloud-starter</code>. There is also a
-parent pom and BOM (<code>spring-cloud-starters</code>) for Maven users and a
+parent pom and BOM (<code>spring-cloud-starter-parent</code>) for Maven users and a
 Spring IO version management properties file for Gradle and Spring CLI
 users. Example Maven configuration:</p>
 </div>
@@ -668,7 +670,7 @@ users. Example Maven configuration:</p>
     &lt;dependencies&gt;
         &lt;dependency&gt;
             &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-cloud-starters&lt;/artifactId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-parent&lt;/artifactId&gt;
             &lt;version&gt;1.0.0.BUILD-SNAPSHOT&lt;/version&gt;
             &lt;type&gt;pom&lt;/type&gt;
             &lt;scope&gt;import&lt;/scope&gt;
@@ -1046,6 +1048,16 @@ can change its co-ordinates, as long as Eureka is a fixed point.</p>
 </div>
 </div>
 <div class="sect2">
+<h3 id="config-client-fail-fast">Config Client Fail Fast</h3>
+<div class="paragraph">
+<p>In some cases, it may be desirable to fail startup of a service if
+it cannot connect to the Config Server.  If this is the desired
+behavior, set the bootstrap configuration property
+<code>spring.cloud.config.failFast=true</code> and the client will halt with
+an Exception.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_environment_changes">Environment Changes</h3>
 <div class="paragraph">
 <p>The application will listen for an <code>EnvironmentChangedEvent</code> and react
@@ -1116,6 +1128,25 @@ method call you just need to invalidate its cache entry.</p>
 target cache. There is also a <code>refresh(String)</code> method to refresh an
 individual bean by name. This functionality is exposed in the
 <code>/refresh</code> endpoint (over HTTP or JMX).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<code>@RefreshScope</code> works (technically) on an <code>@Configuration</code>
+class, but it might lead to surprising behaviour: e.g. it does <strong>not</strong>
+mean that all the <code>@Beans</code> defined in that class are themselves
+<code>@RefreshScope</code>. Specifically, anything that depends on those beans
+cannot rely on them being updated when a refresh is initiated, unless
+it is itself in <code>@RefreshScope</code> (in which it will be rebuilt on a
+refresh and its dependencies re-injected, at which point they will be
+re-initialized from the refreshed <code>@Configuration</code>).
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1448,8 +1479,14 @@ Intelligent Routing (Zuul) and Client Side Load Balancing (Ribbon).
 <div class="paragraph">
 <p>Service Discovery is one of the key tenets of a microservice based architecture. Trying to hand configure each client or some form of convention can be very difficult to do and can be very brittle.  Eureka is the Netflix Service Discovery Server and Client.  The server can be configured and deployed to be highly available, with each server replicating state about the registered services to the others.</p>
 </div>
+<div class="sect2">
+<h3 id="_registering_with_eureka">Registering with Eureka</h3>
 <div class="paragraph">
-<p>When clients register with Eureka, they provide eureka with meta-data about themselves such as host and port, health indicator URL, home page etc.  Eureka receives heartbeat messages from each instance belonging to a service.  If the heartbeat fails over a configurable timetable, the instance is normally removed from Eureka.</p>
+<p>When a client registers with Eureka, it provide meta-data about itself
+such as host and port, health indicator URL, home page etc.  Eureka
+receives heartbeat messages from each instance belonging to a service.
+If the heartbeat fails over a configurable timetable, the instance is
+normally removed from the registry.</p>
 </div>
 <div class="paragraph">
 <p>Example eureka client:</p>
@@ -1508,6 +1545,22 @@ ID, or VIP).</p>
 </div>
 <div class="paragraph">
 <p>See <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaInstanceConfigBean.java">EurekaInstanceConfigBean</a> and <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaClientConfigBean.java">EurekaClientConfigBean</a> for more details of the configurable options.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_making_the_eureka_instance_id_unique">Making the Eureka Instance ID Unique</h3>
+<div class="paragraph">
+<p>By default a eureka instance is registered with an ID that is equal to its host name (i.e. only one service per host). Using Spring Cloud you can override this by providing a unique identifier in <code>eureka.instance.metadataMap.instanceId</code>. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>eureka:
+  instance:
+    metadataMap:
+      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}</pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_using_the_discoveryclient">Using the DiscoveryClient</h3>
@@ -1927,7 +1980,7 @@ for details on the properties available.</p>
 @ComponentScan
 @EnableAutoConfiguration
 @EnableEurekaClient
-public class Application extends FeignConfigurer {
+public class Application extends FeignConfiguration {
     @Bean
     public StoreClient storeClient() {
         //loadBalance plugs Feign into ribbon.  feign() works without load balancing.
@@ -2067,45 +2120,106 @@ public class Application extends FeignConfigurer {
 <div class="sect2">
 <h3 id="netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</h3>
 <div class="paragraph">
-<p>Spring Cloud has created an embedded Zuul proxy to ease the development of a very common use case where a UI application wants to proxy calls to one or more back end services.  To enable it, annotate a Spring Boot main class with <code>@EnableZuulProxy</code>.  This forwards local calls to <code>/proxy/*</code> to the appropriate service.  The proxy uses Ribbon to locate an instance to forward to via Eureka.  Forwarding to the service is protected by a Hystrix circuit breaker.  Rules are configured via the Spring environment.  The Config Server is an ideal place for the Zuul configuration.  Zuul Embedded Proxy configuration rules look like the following:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>zuul.proxy.route.users: /users</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This means that http calls to /proxy/users get forwarded to the users service.  This proxy configuration is useful for services that host a user interface to proxy to the backend services it requires.  By default, the proxy mapping gets stripped from the request before forwarding.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="netflix-zuul-server">Standalone Zuul Server</h3>
-<div class="paragraph">
-<p>Spring Cloud has created a standalone Zuul server.  To enable it, annotate a Spring Boot main class with <code>@EnableZuulServer</code>.  This routes all calls to the appropriate service.  The server uses Ribbon to locate an instance to forward to via Eureka.  Forwarding to the service is protected by a Hystrix circuit breaker.  Rules are configured via the Spring environment.  The Config Server is an ideal place for the Zuul configuration.  Zuul Server configuration rules look like the following:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>zuul.server.route.users: /users</pre>
-</div>
+<p>Spring Cloud has created an embedded Zuul proxy to ease the
+development of a very common use case where a UI application wants to
+proxy calls to one or more back end services.  This feature is useful
+for a user interface to proxy to the backend services it requires,
+avoiding the need to manage CORS and authentication concerns
+independently for all the backends.</p>
 </div>
 <div class="paragraph">
-<p>This means that http calls to /users get forwarded to the users service.</p>
+<p>To enable it, annotate a Spring Boot main class with
+<code>@EnableZuulProxy</code>, and this forwards local calls to the appropriate
+service.  By convention, a service with the Eureka ID "users", will
+receive requests from the proxy located at <code>/users</code> (with the prefix
+stripped). The proxy uses Ribbon to locate an instance to forward to
+via Eureka, and all requests are executed in a hystrix command, so
+failures will show up in Hystrix metrics, and once the circuit is open
+the proxy will not try to contact the service.</p>
 </div>
 <div class="paragraph">
-<p>Since zuul, by default, intercepts all requests (<code>/*</code>), to enable actuator, you should set the <code>management.port</code>.</p>
-</div>
-<div class="paragraph">
-<p>To use the Spring Boot error facilities while using the standalone Zuul server, please set the following properties</p>
+<p>To skip having a service automatically added, set
+<code>zuul.ignored-services</code> to a list of service ids. To augment or change
+the proxy routes, you can add external configuration like the
+following:</p>
 </div>
 <div class="listingblock">
+<div class="title">application.yml</div>
 <div class="content">
-<pre># moves the Spring Dispatch Servlet to a path below `/`
-server:
-  servletPath: /app
-# sets the error path to use the Dispatch Servlet to resolve the error view
-error:
-  path: ${server.servletPath}/error</pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    users: /myusers/**</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>This means that http calls to "/myusers" get forwarded to the "users"
+service (for example "/myusers/101" is forwarded to "/101").</p>
+</div>
+<div class="paragraph">
+<p>To get more fine-grained control over a route you can specify the path
+and the serviceId independently:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    users:
+      path: /myusers/**
+      serviceId: users_service</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This means that http calls to "/myusers" get forwarded to the
+"users_service" service.  The route has to have a "path" which can be
+specified as an ant-style pattern, so "/myusers/<strong>" only matches one
+level, but "/myusers/</strong>*" matches hierarchically.</p>
+</div>
+<div class="paragraph">
+<p>The location of the backend can be specified as either a "serviceId"
+(for a Eureka service) or a "url" (for a physical location), e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    users:
+      path: /myusers/**
+      url: http://example.com/users_service</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To add a prefix to all mappings, set <code>zuul.prefix</code> to a value, such as
+<code>/api</code>. The proxy prefix is stripped from the request before the
+request is forwarded by default (switch this behaviour off with
+<code>zuul.stripPrefix=false</code>). You can also switch off the stripping of
+the service-specific prefix from individual routes, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    users:
+      path: /myusers/**
+      stripPrefix: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example requests to "/myusers/101" will be forwarded to "/myusers/101" on the "users" service.</p>
+</div>
+<div class="paragraph">
+<p>The <code>X-Forwarded-Host</code> header added to the forwarded requests by
+default.  To turn it off set <code>zuul.addProxyHeaders = false</code>.  The
+prefix path is stripped by default, and the request to the backend
+picks up a header "X-Forwarded-Prefix" ("/myusers" in the examples
+above).</p>
+</div>
+<div class="paragraph">
+<p>An application with the <code>@EnableZuulProxy</code> could act as a standalone
+server if you set a default route ("/"), for example <code>zuul.route.home:
+/</code> would route all traffic (i.e. "/**") to the "home" service.</p>
 </div>
 </div>
 </div>
@@ -2425,6 +2539,35 @@ that it doesn&#8217;t need a <code>tokenUri</code> or <code>authorizationUri</co
 doesn&#8217;t need a <code>clientId</code> and <code>clientSecret</code> if it isn&#8217;t using the
 <code>tokenInfoUri</code> (i.e. if it has <code>jwt.*</code> or <code>userInfoUri</code>).</p>
 </div>
+<div class="paragraph">
+<p>By default <strong>all</strong> your endpoints are protected (i.e. "/<strong>") but you can
+pick and choose by adding a <code>ResourceServerConfigurerAdapter</code> (standard
+Spring OAuth feature), e.g. to protect only the "/api/</strong>" resources</p>
+</div>
+<div class="listingblock">
+<div class="title">Application.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@RestController
+@EnableOAuth2Resource
+class Application extends ResourceServerConfigurerAdapter {
+
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+    http.requestMatchers()
+      .antMatchers("/api/**")
+   .and()
+     .authorizeRequests()
+       .anyRequest().authenticated();
+  }
+
+  @RequestMapping('/api')
+  String home() {
+    'Hello World'
+  }
+
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_token_relay">Token Relay</h3>
@@ -2443,7 +2586,8 @@ it is proxying. Thus the SSO app above can be enhanced simply like this:</p>
 @EnableZuulProxy
 class Application {
 
-  @RequestMapping('/'
+  @RequestMapping('/')
+  @ResponseBody
   String home() {
     'Hello World'
   }
@@ -2650,7 +2794,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-12-11 00:19:07 UTC
+Last updated 2014-12-11 00:21:01 UTC
 </div>
 </div>
 </body>
