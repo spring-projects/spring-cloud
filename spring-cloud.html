@@ -483,6 +483,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
 <ul class="sectlevel2">
 <li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
+<li><a href="#_plain_embedded_zuul">Plain Embedded Zuul</a></li>
 </ul>
 </li>
 </ul>
@@ -2222,6 +2223,30 @@ server if you set a default route ("/"), for example <code>zuul.route.home:
 /</code> would route all traffic (i.e. "/**") to the "home" service.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_plain_embedded_zuul">Plain Embedded Zuul</h3>
+<div class="paragraph">
+<p>You can also run a Zuul server without the proxying, or switch on parts of the proxying platform selectively, if you
+use <code>@EnableZuulServer</code> (instead of <code>@EnableZuulProxy</code>). Any beans that you add to the application of type <code>ZuulFilter</code>
+will be installed automatically.</p>
+</div>
+<div class="paragraph">
+<p>In this case the routes into the Zuul server are
+still specified by configuring "zuul.routes.*", but there is no service discovery and no proxying, so the
+"serviceId" and "url" settings are ignored. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    api: /api/**</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>maps all paths in "/api/**" to the Zuul filter chain.</p>
+</div>
+</div>
 </div>
 </div>
 <h1 id="_spring_cloud_bus" class="sect0">Spring Cloud Bus</h1>
@@ -2605,12 +2630,39 @@ correct header.</p>
 <div class="paragraph">
 <p>How does it work? The <code>@EnableOAuth2Sso</code> annotation pulls in
 <code>spring-cloud-starter-security</code> (which you could do manually in a
-traditional app), and that has some autoconfiguration for a
-<code>ZuulFilter</code>, which itself is activated because Zuul is on the
+traditional app), and that in turn triggers some autoconfiguration for
+a <code>ZuulFilter</code>, which itself is activated because Zuul is on the
 classpath (via <code>@EnableZuulProxy</code>). The
-<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/proxy/OAuth2TokenRelayFilter.java">filter</a>
+<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/OAuth2TokenRelayFilter.java">filter</a>
 just extracts an access token from the currently authenticated user,
 and puts it in a request header for the downstream requests.</p>
+</div>
+<div class="paragraph">
+<p>You can control the authorization behaviour downstream of an
+<code>@EnableZuulProxy</code> through the <code>proxy.auth.*</code> settings. Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">proxy:
+  auth:
+    routes:
+      customers: oauth2
+      stores: passthru
+      recommendations: none</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example the "customers" service gets an OAuth2 token relay,
+the "stores" service gets a passthrough (the authorization header is
+just passed downstream), and the "recommendations" service has its
+authorization header removed. The default behaviour is to do a token
+relay if there is a token available, and passthru otherwise.</p>
+</div>
+<div class="paragraph">
+<p>See
+<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/ProxyAuthenticationProperties">
+ProxyAuthenticationProperties</a> for full details.</p>
 </div>
 </div>
 </div>
@@ -2794,7 +2846,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-12-15 07:36:53 UTC
+Last updated 2014-12-16 09:23:25 UTC
 </div>
 </div>
 </body>
