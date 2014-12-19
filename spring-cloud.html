@@ -797,10 +797,11 @@ Git, but just loads the config files from the local classpath (or
 anywhere else you want to point to with
 "spring.cloud.config.server.locations"). To use the native profile
 just launch the Config Server with "spring.profiles.active=native". In
-the native profile the repository only has the "current" set of
-configuration files, so the "label" specification in the HTTP
-resources is ignored (i.e. it&#8217;s like always pulling from "master" in
-the Git implementation).</p>
+the native profile the repository the "label" specification in the
+HTTP resources is added to the search path, so properties files are
+loaded from each search location <strong>and</strong> a subdirectory with the same
+name as the label (the labelled properties take precedence in the
+Spring Environment).</p>
 </div>
 </div>
 <div class="sect2">
@@ -1981,12 +1982,8 @@ for details on the properties available.</p>
 @ComponentScan
 @EnableAutoConfiguration
 @EnableEurekaClient
-public class Application extends FeignConfiguration {
-    @Bean
-    public StoreClient storeClient() {
-        //loadBalance plugs Feign into ribbon.  feign() works without load balancing.
-        return loadBalance(StoreClient.class, "http://stores");
-    }
+@FeignClientScan
+public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -1998,7 +1995,8 @@ public class Application extends FeignConfiguration {
 <div class="listingblock">
 <div class="title">StoreClient.java</div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface StoreClient {
+<pre class="highlight"><code class="language-java" data-lang="java">@FeignClient("stores")
+public interface StoreClient {
     @RequestMapping(method = RequestMethod.GET, value = "/stores")
     List&lt;Store&gt; getStores();
 
@@ -2417,6 +2415,21 @@ default the scope is empty and it is up to to Authorization Server to
 decide what the defaults should be, usually depending on the settings in
 the client registration that it holds.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The examples above are all Groovy scripts. If you want to write the
+same code in Java (or Groovy) you need to add Spring Security OAuth2
+to the classpath (e.g. see the
+<a href="https://github.com/spring-cloud-samples/sso">sample here</a>).
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_oauth2_protected_resource">OAuth2 Protected Resource</h3>
@@ -2432,7 +2445,7 @@ simple example (paired with the client above):</p>
 @EnableOAuth2Resource
 class Application {
 
-  @RequestMapping('/'
+  @RequestMapping('/')
   def home() {
     [message: 'Hello World']
   }
@@ -2748,8 +2761,8 @@ $ cf restart app</pre>
 login server instead of challenging for Basic authentication. The
 <code>clientId</code> and <code>clientSecret</code> are credentials of a registered client
 in Cloud Foundry.  To get a Cloud Foundry client registration for
-testing please ask at <a href="mailto:support@run.pivotal.io">support@run.pivotal.io</a> (if you want it on PWS),
-or your local platform administrator (if it&#8217;s a private instance).</p>
+testing please ask your local platform administrator if it&#8217;s a private
+instance).</p>
 </div>
 </div>
 </div>
@@ -2846,7 +2859,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-12-17 11:36:16 UTC
+Last updated 2014-12-19 13:00:34 UTC
 </div>
 </div>
 </body>
