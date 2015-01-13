@@ -523,6 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_token_relay">Token Relay</a></li>
 </ul>
 </li>
+<li><a href="#_configuring_downstream_authentication">Configuring Downstream Authentication</a></li>
 </ul>
 </li>
 <li><a href="#_spring_cloud_for_cloud_foundry">Spring Cloud for Cloud Foundry</a>
@@ -2655,33 +2656,55 @@ following properties in the <code>Environment</code>:</p>
 <ul>
 <li>
 <p><code>oauth2.client.*</code> with <code>*</code> equal to <code>clientId</code>, <code>clientSecret</code>,
-<code>tokenUri</code>, <code>authorizationUri</code> and one of:</p>
-</li>
+<code>accessTokenUri</code>, <code>userAuthorizationUri</code> and one of:</p>
+<div class="ulist">
+<ul>
 <li>
-<p><code>oauth2.resource.preferTokenInfo=false</code> and
-<code>oauth2.resource.userInfoUri</code> to use the "/me" resource
+<p><code>oauth2.resource.userInfoUri</code> to use the "/me" resource
 (e.g. "https://uaa.run.pivotal.io/userinfo" on PWS), or</p>
 </li>
 <li>
 <p><code>oauth2.resource.tokenInfoUri</code> to use the token decoding endpoint
-(e.g. "https://uaa.run.pivotal.io/check_token" on PWS), or</p>
+(e.g. "https://uaa.run.pivotal.io/check_token" on PWS).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you specify both the <code>userInfoUri</code> and the <code>tokenInfoUri</code> then
+you can set a flag to say that one is preferred over the other
+(<code>preferTokenInfo=true</code> is the default). Or</p>
+</div>
 </li>
 <li>
-<p><code>oauth2.resource.jwt.keyValue</code> or <code>oauth2.resource.jwt.keyUri</code> to
+<p><code>oauth2.resource.jwt.keyValue</code> to
 decode a JWT token locally, where the key is a verification key. The
 verification key value is either a symmetric secret or PEM-encoded
 RSA public key. If you don&#8217;t have the key and it&#8217;s public you can
 provide a URI where it can be downloaded (as a JSON object with a
-"value" field). E.g. on PWS:
-+</p>
-</li>
-</ul>
-</div>
+"value" field) with <code>oauth2.resource.jwt.keyUri</code>. E.g. on PWS:</p>
 <div class="listingblock">
 <div class="content">
 <pre>$ curl https://uaa.run.pivotal.io/token_key
 {"alg":"SHA256withRSA","value":"-----BEGIN PUBLIC KEY-----\nMIIBI...\n-----END PUBLIC KEY-----\n"}</pre>
 </div>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+If you use the <code>oauth2.resource.jwt.keyUri</code> the authorization
+server needs to be running when your application starts up. It will
+log a warning if it can&#8217;t find the key, and tell you what to do to fix
+it.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>You can set the preferred scope (as a comma-separated list or YAML
@@ -2690,10 +2713,38 @@ most Authorization Servers will ask the user for approval for the
 maximum allowed scope for the client.</p>
 </div>
 <div class="paragraph">
-<p>There is also a setting for <code>oauth2.client.authenticationScheme</code> which
+<p>There is also a setting for <code>oauth2.client.clientAuthenticationScheme</code> which
 defaults to "header" (but you might need to set it to "form" if, like
 Github for instance, your OAuth2 provider doesn&#8217;t like header
-authentication).</p>
+authentication). The <code>oauth2.client.*</code> properties are bound to an instance
+of <code>AuthorizationCodeResourceDetails</code> so all its properties can be specified.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To set an RSA key value in YAML use the "pipe" continuation
+marker to split it over multiple lines ("|") and remember to indent
+the key value (it&#8217;s a standard YAML language feature). Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">oauth2:
+  resource:
+    jwt:
+      keyValue: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC...
+        -----END PUBLIC KEY-----</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_access_decision_rules">Access Decision Rules</h4>
@@ -2716,7 +2767,7 @@ the matching patterns for the OAuth2 SSO, even if you have
 <code>OAuth2SsoConfigurer</code> beans as well. The default logout path is
 "/logout" and it gets similar treatment, as does the "home" page
 (which is the logout success page, defaults to "/"). Those paths can
-be overriden by setting <code>oauth2.sso.\*' (`loginPath</code>, <code>logoutPath</code> and
+be overriden by setting <code>oauth2.sso.*' (`loginPath</code>, <code>logoutPath</code> and
 <code>home.path</code>).</p>
 </div>
 <div class="paragraph">
@@ -2752,9 +2803,9 @@ doesn&#8217;t need a <code>clientId</code> and <code>clientSecret</code> if it i
 <code>tokenInfoUri</code> (i.e. if it has <code>jwt.*</code> or <code>userInfoUri</code>).</p>
 </div>
 <div class="paragraph">
-<p>By default <strong>all</strong> your endpoints are protected (i.e. "/<strong>") but you can
+<p>By default <strong>all</strong> your endpoints are protected (i.e. "/**") but you can
 pick and choose by adding a <code>ResourceServerConfigurerAdapter</code> (standard
-Spring OAuth feature), e.g. to protect only the "/api/</strong>" resources</p>
+Spring OAuth feature), e.g. to protect only the "/api/**" resources</p>
 </div>
 <div class="listingblock">
 <div class="title">Application.java</div>
@@ -2772,9 +2823,9 @@ class Application extends ResourceServerConfigurerAdapter {
        .anyRequest().authenticated();
   }
 
-  @RequestMapping('/api')
-  String home() {
-    'Hello World'
+  @RequestMapping("/api")
+  public String home() {
+    return "Hello World";
   }
 
 }</code></pre>
@@ -2798,12 +2849,6 @@ it is proxying. Thus the SSO app above can be enhanced simply like this:</p>
 @EnableZuulProxy
 class Application {
 
-  @RequestMapping('/')
-  @ResponseBody
-  String home() {
-    'Hello World'
-  }
-
 }</code></pre>
 </div>
 </div>
@@ -2824,6 +2869,12 @@ classpath (via <code>@EnableZuulProxy</code>). The
 just extracts an access token from the currently authenticated user,
 and puts it in a request header for the downstream requests.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_downstream_authentication">Configuring Downstream Authentication</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You can control the authorization behaviour downstream of an
 <code>@EnableZuulProxy</code> through the <code>proxy.auth.*</code> settings. Example:</p>
@@ -2850,7 +2901,6 @@ relay if there is a token available, and passthru otherwise.</p>
 <p>See
 <a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/ProxyAuthenticationProperties">
 ProxyAuthenticationProperties</a> for full details.</p>
-</div>
 </div>
 </div>
 </div>
@@ -3033,7 +3083,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-01-06 17:37:50 UTC
+Last updated 2015-01-13 09:36:44 UTC
 </div>
 </div>
 </body>
