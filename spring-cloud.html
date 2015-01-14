@@ -2585,7 +2585,7 @@ running on port 8080.</p>
 </div>
 <div class="paragraph">
 <p>To limit the scope that the client asks for when it obtains an access token
-you can set <code>oauth2.client.scope</code> (comma separated or an array in YAML). By
+you can set <code>spring.oauth2.client.scope</code> (comma separated or an array in YAML). By
 default the scope is empty and it is up to to Authorization Server to
 decide what the defaults should be, usually depending on the settings in
 the client registration that it holds.</p>
@@ -2655,16 +2655,16 @@ following properties in the <code>Environment</code>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>oauth2.client.*</code> with <code>*</code> equal to <code>clientId</code>, <code>clientSecret</code>,
+<p><code>spring.oauth2.client.*</code> with <code>*</code> equal to <code>clientId</code>, <code>clientSecret</code>,
 <code>accessTokenUri</code>, <code>userAuthorizationUri</code> and one of:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>oauth2.resource.userInfoUri</code> to use the "/me" resource
+<p><code>spring.oauth2.resource.userInfoUri</code> to use the "/me" resource
 (e.g. "https://uaa.run.pivotal.io/userinfo" on PWS), or</p>
 </li>
 <li>
-<p><code>oauth2.resource.tokenInfoUri</code> to use the token decoding endpoint
+<p><code>spring.oauth2.resource.tokenInfoUri</code> to use the token decoding endpoint
 (e.g. "https://uaa.run.pivotal.io/check_token" on PWS).</p>
 </li>
 </ul>
@@ -2676,12 +2676,12 @@ you can set a flag to say that one is preferred over the other
 </div>
 </li>
 <li>
-<p><code>oauth2.resource.jwt.keyValue</code> to
+<p><code>spring.oauth2.resource.jwt.keyValue</code> to
 decode a JWT token locally, where the key is a verification key. The
 verification key value is either a symmetric secret or PEM-encoded
 RSA public key. If you don&#8217;t have the key and it&#8217;s public you can
 provide a URI where it can be downloaded (as a JSON object with a
-"value" field) with <code>oauth2.resource.jwt.keyUri</code>. E.g. on PWS:</p>
+"value" field) with <code>spring.oauth2.resource.jwt.keyUri</code>. E.g. on PWS:</p>
 <div class="listingblock">
 <div class="content">
 <pre>$ curl https://uaa.run.pivotal.io/token_key
@@ -2698,7 +2698,7 @@ provide a URI where it can be downloaded (as a JSON object with a
 <div class="title">Warning</div>
 </td>
 <td class="content">
-If you use the <code>oauth2.resource.jwt.keyUri</code> the authorization
+If you use the <code>spring.oauth2.resource.jwt.keyUri</code> the authorization
 server needs to be running when your application starts up. It will
 log a warning if it can&#8217;t find the key, and tell you what to do to fix
 it.
@@ -2708,15 +2708,15 @@ it.
 </div>
 <div class="paragraph">
 <p>You can set the preferred scope (as a comma-separated list or YAML
-array) in <code>oauth2.client.scope</code>. It defaults to empty, in which case
+array) in <code>spring.oauth2.client.scope</code>. It defaults to empty, in which case
 most Authorization Servers will ask the user for approval for the
 maximum allowed scope for the client.</p>
 </div>
 <div class="paragraph">
-<p>There is also a setting for <code>oauth2.client.clientAuthenticationScheme</code> which
+<p>There is also a setting for <code>spring.oauth2.client.clientAuthenticationScheme</code> which
 defaults to "header" (but you might need to set it to "form" if, like
 Github for instance, your OAuth2 provider doesn&#8217;t like header
-authentication). The <code>oauth2.client.*</code> properties are bound to an instance
+authentication). The <code>spring.oauth2.client.*</code> properties are bound to an instance
 of <code>AuthorizationCodeResourceDetails</code> so all its properties can be specified.</p>
 </div>
 <div class="admonitionblock tip">
@@ -2767,7 +2767,7 @@ the matching patterns for the OAuth2 SSO, even if you have
 <code>OAuth2SsoConfigurer</code> beans as well. The default logout path is
 "/logout" and it gets similar treatment, as does the "home" page
 (which is the logout success page, defaults to "/"). Those paths can
-be overriden by setting <code>oauth2.sso.*' (`loginPath</code>, <code>logoutPath</code> and
+be overriden by setting <code>spring.oauth2.sso.*' (`loginPath</code>, <code>logoutPath</code> and
 <code>home.path</code>).</p>
 </div>
 <div class="paragraph">
@@ -3083,7 +3083,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-01-13 09:36:44 UTC
+Last updated 2015-01-14 14:48:03 UTC
 </div>
 </div>
 </body>
