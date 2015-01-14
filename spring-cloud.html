@@ -2792,6 +2792,40 @@ Spring Boot access control (Basic authentication, or whatever custom
 filters you put in place).</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_integrating_with_the_actuator_endpoints">Integrating with the Actuator Endpoints</h4>
+<div class="paragraph">
+<p>The Spring Boot Actuator endpoints ("/env", "/metrics", etc.) if
+present will, by default, be protected by the standard Spring Boot
+basic authentication. The SSO authentication filter is added in a
+position directly behind the filter that intercepts requests to the
+Actuator endpoints by default (i.e.
+<code>ManagementProperties.BASIC_AUTH_ORDER + 1</code> which is
+<code>Ordered.LOWEST_PRECEDENCE-9</code> or <code>2147483636</code>). If you want to change
+the order you can set <code>spring.oauth2.sso.filterOrder</code>. If you do that
+and the value is less than the default, then you will need to consider
+setting the access rules for the Actuator, since they will become
+accessible to all authenticated users who sign on with the external
+provider. One way to do that would be to set
+<code>management.contextPath=/admin</code> (for instance) and use an
+<code>OAuth2SsoConfigurer</code> to set the access rules, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">	@Configuration
+	@EnableOAuth2Sso
+	@EnableAutoConfiguration
+	protected static class TestConfiguration extends OAuth2SsoConfigurerAdapter {
+		@Override
+		public void configure(HttpSecurity http) {
+	         http.authorizeRequests()
+                 .antMatchers("/admin/**").role("ADMIN")
+                 .anyRequest().authenticated();
+		}
+	}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_resource_server">Resource Server</h3>
@@ -2997,11 +3031,11 @@ instance).</p>
 <h3 id="_oauth2_single_sign_on_2">OAuth2 Single Sign On</h3>
 <div class="paragraph">
 <p>Spring Cloud Security provides the <code>@EnableOAuth2Sso</code> annotation and
-binds the app to environment properties in <code>oauth2.*</code>. Spring Cloud
+binds the app to environment properties in <code>spring.oauth2.*</code>. Spring Cloud
 for Cloud Foundry just sets up default environment properties so that
 it all just works if you bind to a Cloud Foundry service instance
 called "sso". The service credentials are mapped to the SSO
-properties, i.e. (from <code>oauth2.client.*</code>) <code>clientId</code>, <code>clientSecret</code>,
+properties, i.e. (from <code>spring.oauth2.client.*</code>) <code>clientId</code>, <code>clientSecret</code>,
 <code>tokenUri</code>, <code>authorizationUri</code>, (and from <code>oauth2.resource.*</code>)
 <code>userInfoUri</code>, <code>tokenInfoUri</code>, <code>keyValue</code>, <code>keyUri</code>. Refer to the
 Spring Cloud Security documentation for details of which combinations
@@ -3009,8 +3043,8 @@ will work together. The main thing is that in Cloud Foundry you only
 need one service to cover all the necessary credentials.</p>
 </div>
 <div class="paragraph">
-<p>To use a different sercice instance name (i.e. not "sso") just set
-<code>oauth2.sso.serviceId</code> to your custom name.</p>
+<p>To use a different service instance name (i.e. not "sso") just set
+<code>spring.oauth2.sso.serviceId</code> to your custom name.</p>
 </div>
 </div>
 <div class="sect2">
@@ -3018,7 +3052,7 @@ need one service to cover all the necessary credentials.</p>
 <div class="paragraph">
 <p>Spring Cloud Security already has support for decoding JWT tokens if
 you just provide the verification key (as an environment property). In
-Cloud Foundry you can pick that property up from a servcice binding
+Cloud Foundry you can pick that property up from a service binding
 (<code>keyValue</code> or <code>keyUri</code>).</p>
 </div>
 <div class="paragraph">
@@ -3056,7 +3090,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div class="paragraph">
 <p>To use a different sercice instance name (i.e. not "resource" or
-"sso") just set <code>oauth2.resource.serviceId</code> to your custom name.</p>
+"sso") just set <code>spring.oauth2.resource.serviceId</code> to your custom name.</p>
 </div>
 </div>
 <div class="sect2">
@@ -3067,13 +3101,13 @@ service or the "resource" service if you have one).</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>oauth2.sso.*</code> to <code>vcap.services.${oauth2.sso.serviceId:sso}.credentials.*</code></p>
+<p><code>spring.oauth2.sso.*</code> to <code>vcap.services.${spring.oauth2.sso.serviceId:sso}.credentials.*</code></p>
 </li>
 <li>
-<p><code>oauth2.client.*</code> to <code>vcap.services.${oauth2.sso.serviceId:sso}.credentials.tokenUri:${vcap.services.${oauth2.resource.serviceId:resource}.credentials.*</code></p>
+<p><code>spring.oauth2.client.*</code> to <code>vcap.services.${spring.oauth2.sso.serviceId:sso}.credentials.tokenUri:${vcap.services.${spring.oauth2.resource.serviceId:resource}.credentials.*</code></p>
 </li>
 <li>
-<p><code>oauth2.resource.(jwt).*</code> to <code>vcap.services.${oauth2.resource.serviceId:resource}.credentials.tokenUri:${vcap.services.${oauth2.sso.serviceId:sso}.credentials.*</code></p>
+<p><code>spring.oauth2.resource.(jwt).*</code> to <code>vcap.services.${spring.oauth2.resource.serviceId:resource}.credentials.tokenUri:${vcap.services.${spring.oauth2.sso.serviceId:sso}.credentials.*</code></p>
 </li>
 </ul>
 </div>
@@ -3083,7 +3117,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-01-14 14:48:03 UTC
+Last updated 2015-01-14 16:13:27 UTC
 </div>
 </div>
 </body>
