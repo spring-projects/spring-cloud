@@ -477,8 +477,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_turbine">Turbine</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a></li>
-<li><a href="#spring-cloud-ribbon">Client Side Load Balancer: Ribbon</a></li>
+<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a>
+<ul class="sectlevel2">
+<li><a href="#spring-cloud-feign-without-eureka">Example: How to Use Feign Without Eureka</a></li>
+</ul>
+</li>
+<li><a href="#spring-cloud-ribbon">Client Side Load Balancer: Ribbon</a>
+<ul class="sectlevel2">
+<li><a href="#_customizing_the_ribbon_client">Customizing the Ribbon Client</a></li>
+<li><a href="#_using_the_ribbon_api_directly">Using the Ribbon API Directly</a></li>
+<li><a href="#_spring_resttemplate_as_a_ribbon_client">Spring RestTemplate as a Ribbon Client</a></li>
+</ul>
+</li>
 <li><a href="#_external_configuration_archaius">External Configuration: Archaius</a></li>
 <li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
 <ul class="sectlevel2">
@@ -513,6 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_token_relay">Token Relay</a></li>
 </ul>
 </li>
+<li><a href="#_configuring_downstream_authentication">Configuring Downstream Authentication</a></li>
 </ul>
 </li>
 <li><a href="#_spring_cloud_for_cloud_foundry">Spring Cloud for Cloud Foundry</a>
@@ -625,7 +636,10 @@ repository. Then try it out as a client:</p>
 repository (at "spring.cloud.config.server.git.uri") and use it to
 initialize a mini <code>SpringApplication</code>. The mini-application&#8217;s
 <code>Environment</code> is used to enumerate property sources and publish them
-via a JSON endpoint. The service has resources in the form:</p>
+via a JSON endpoint.</p>
+</div>
+<div class="paragraph">
+<p>The HTTP service has resources in the form:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -641,7 +655,10 @@ via a JSON endpoint. The service has resources in the form:</p>
 <code>SpringApplication</code> (i.e. what is normally "application" in a regular
 Spring Boot app), "profile" is an active profile (or comma-separated
 list of properties), and "label" is an optional git label (defaults to
-"master".) The YAML and properties forms are coalesced into a single
+"master".)</p>
+</div>
+<div class="paragraph">
+<p>The YAML and properties forms are coalesced into a single
 map, even if the origin of the values (reflected in the
 "propertySources" of the "standard" form) has multiple sources.</p>
 </div>
@@ -672,7 +689,7 @@ users. Example Maven configuration:</p>
         &lt;dependency&gt;
             &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
             &lt;artifactId&gt;spring-cloud-starter-parent&lt;/artifactId&gt;
-            &lt;version&gt;1.0.0.RC1&lt;/version&gt;
+            &lt;version&gt;1.0.0.BUILD-SNAPSHOT&lt;/version&gt;
             &lt;type&gt;pom&lt;/type&gt;
             &lt;scope&gt;import&lt;/scope&gt;
         &lt;/dependency&gt;
@@ -778,10 +795,66 @@ Server? The strategy that governs this behaviour is the
 <code>EnvironmentRepository</code>, serving <code>Environment</code> objects. This
 <code>Environment</code> is a shallow copy of the domain from the Spring
 <code>Environment</code> (including <code>propertySources</code> as the main feature). The
-default implementation of <code>EnvironmentRepository</code> uses a Git backend,
-which is very convenient for managing upgrades and physical
+<code>Environment</code> resources are parametrized by three variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{application}</code> maps to "spring.application.name" on the client side;</p>
+</li>
+<li>
+<p><code>{profile}</code> maps to "spring.active.profiles" on the client (comma separated list); and</p>
+</li>
+<li>
+<p><code>{label}</code> which is a server side feature labelling a "versioned" set of config files.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Repository implementations generally behave just like a Spring Boot
+application loading configuration files from a "spring.config.name"
+equal to the <code>{application}</code> parameter, and "spring.profiles.active"
+equal to the <code>{profiles}</code> parameter. Precedence rules for profiles are
+also the same as in a regular Boot application: active profiles take
+precedence over defaults, and if there are multiple profiles the last
+one wins (like adding entries to a <code>Map</code>).</p>
+</div>
+<div class="paragraph">
+<p>Example: a client application has this bootstrap configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  application:
+    name: foo
+  profiles:
+    active: dev,mysql</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(as usual with a Spring Boot application, these properties could also
+be set as environment variables or command line arguments).</p>
+</div>
+<div class="paragraph">
+<p>If the repository is file-based, the server will create an
+<code>Environment</code> from <code>application.yml</code> (shared between all clients), and
+<code>foo.yml</code> (with <code>foo.yml</code> taking precedence). If the YAML files have
+documents inside them that point to Spring profiles, those are applied
+with higher precendence (in order of the profiles listed), and if
+there are profile-specific YAML (or properties) files these are also
+applied with higher precedence than the defaults. Higher precendence
+translates to a <code>PropertySource</code> listed earlier in the
+<code>Environment</code>. (These are the same rules as apply in a standalone
+Spring Boot application.)</p>
+</div>
+<div class="sect3">
+<h4 id="_git_backend">Git Backend</h4>
+<div class="paragraph">
+<p>The default implementation of <code>EnvironmentRepository</code> uses a Git
+backend, which is very convenient for managing upgrades and physical
 environments, and also for auditing changes. To change the location of
-the repository you can set the "spring.cloud.config.server.uri"
+the repository you can set the "spring.cloud.config.server.git.uri"
 configuration property in the Config Server (e.g. in
 <code>application.yml</code>). If you set it with a <code>file:</code> prefix it should work
 from a local repository so you can get started quickly and easily
@@ -792,16 +865,27 @@ would need to have all instances of the server pointing to the same
 repository, so only a shared file system would work.</p>
 </div>
 <div class="paragraph">
+<p>This repository implementation maps the <code>{label}</code> parameter of the
+HTTP resource to a git label (commit id, branch name or tag).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_file_system_backend">File System Backend</h4>
+<div class="paragraph">
 <p>There is also a "native" profile in the Config Server that doesn&#8217;t use
-Git, but just loads the config files from the local classpath (or
-anywhere else you want to point to with
-"spring.cloud.config.server.locations"). To use the native profile
-just launch the Config Server with "spring.profiles.active=native". In
-the native profile the repository the "label" specification in the
-HTTP resources is added to the search path, so properties files are
+Git, but just loads the config files from the local classpath or file
+system (any static URL you want to point to with
+"spring.cloud.config.server.native.locations"). To use the native
+profile just launch the Config Server with
+"spring.profiles.active=native".</p>
+</div>
+<div class="paragraph">
+<p>This repository implementation maps the <code>{label}</code> parameter of the
+HTTP resource to a suffix on the search path, so properties files are
 loaded from each search location <strong>and</strong> a subdirectory with the same
 name as the label (the labelled properties take precedence in the
 Spring Environment).</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1608,7 +1692,10 @@ is more convenient to use it behind a wrapper of some sort. Spring
 Cloud has support for <a href="#spring-cloud-feign">Feign</a> (a REST client
 builder) and also <a href="#spring-cloud-ribbon">Spring <code>RestTemplate</code></a> using
 the logical Eureka service identifiers (VIPs) instead of physical
-URLs.</p>
+URLs. To configure Ribbon with a fixed list of physical servers you
+can simply set <code>&lt;client&gt;.ribbon.listOfServers</code> to a comma-separated
+list of physical addresses (or hostnames), where <code>&lt;client&gt;</code> is the ID
+of the client.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1953,6 +2040,9 @@ for details on the properties available.</p>
 <div class="paragraph">
 <p>The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>.</p>
 </div>
+<div class="paragraph">
+<p>Value returned from eureka are uppercase, thus the examples of all uppercase <code>CUSTOMERS</code></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>turbine:
@@ -2005,13 +2095,86 @@ public interface StoreClient {
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>In the <code>@FeignClient</code> annotation the String value ("stores" above) is
+the arbitrary name of the client, used to create a configuration
+prefix (see <a href="#spring-cloud-ribbon">below for details of Ribbon
+support</a>).</p>
+</div>
+<div class="sect2">
+<h3 id="spring-cloud-feign-without-eureka">Example: How to Use Feign Without Eureka</h3>
+<div class="paragraph">
+<p>Eureka is a convenient way to abstract the discovery of remote servers
+so you don&#8217;t have to hard code their URLs in clients, but if you
+prefer not to use it, Ribbon and Feign are still quite
+amenable. Suppose you have declared a Feign client as above for
+"stores", and Eureka is not in use (and not even on the
+classpath). You should find that the Ribbon client defaults to a
+configured server list, and you can supply the configuration like this</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>stores:
+  ribbon:
+    listOfClients: example.com,google.com</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="spring-cloud-ribbon">Client Side Load Balancer: Ribbon</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Usage of <code>LoadBalancerClient</code> directly:</p>
+<p>Ribbon is a client side load balancer which gives you a lot of control
+over the behaviour of HTTP and TCP clients. Feign already uses Ribbon,
+so if you are using <code>@FeignClient</code> then this section also applies.</p>
+</div>
+<div class="paragraph">
+<p>A central concept in Ribbon is that of the named client. Each load
+balancer is part of an ensemble of components that work together to
+contact a remote server on demend, and the ensemble has a name that
+you give it as an application developer (e.g. using the <code>@FeignClient</code>
+annotation). Spring Cloud creates a new ensemble as an
+<code>ApplicationContext</code> on demand for each named client using
+<code>RibbonClientConfiguration</code>. This contains (amongst other things) an
+<code>ILoadBalancer</code>, a <code>RestClient</code>, and a <code>ServerListFilter</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_customizing_the_ribbon_client">Customizing the Ribbon Client</h3>
+<div class="paragraph">
+<p>You can configure some bits of a Ribbon client using external
+properties in <code>&lt;client&gt;.ribbon.*</code>, which is no different than using
+the Netflix APIs natively, except that you can use Spring Boot
+configuration files (example
+<a href="#spring-cloud-feign-without-eureka">above</a>). The native options can
+be inspected as static fields in <code>CommonClientConfigKey</code> (part of
+ribbon-core).</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud also lets you take full control of the client by
+declaring additional configuration (on top of the
+<code>RibbonClientConfiguration</code>) using <code>@RibbonClient</code>. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@RibbonClient(name = "foo", configuration = FooConfiguration.class)
+public class TestConfiguration {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the client is composed from the components already in
+<code>RibbonClientConfiguration</code> together with any in <code>FooConfiguration</code>
+(where the latter generally will override the former).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_ribbon_api_directly">Using the Ribbon API Directly</h3>
+<div class="paragraph">
+<p>You can also use the <code>LoadBalancerClient</code> directly. Example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2027,8 +2190,12 @@ public interface StoreClient {
 }</code></pre>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_spring_resttemplate_as_a_ribbon_client">Spring RestTemplate as a Ribbon Client</h3>
 <div class="paragraph">
-<p>Indirect usage via <code>RestTemplate</code>.</p>
+<p>You can use Ribbon indirectly via an autoconfigured <code>RestTemplate</code>
+(provided Spring Cloud and Ribbon are both on the classpath):</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2041,6 +2208,14 @@ public interface StoreClient {
         return results;
     }
 }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The URI is inspected to see if it has a full host name, or a virtual
+one. If it is virtual the Ribbon client is used to create a full
+physical address. See
+<a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java">RibbonAutoConfiguration</a>
+for details of how the <code>RestTemplate</code> is set up.</p>
 </div>
 </div>
 </div>
@@ -2294,7 +2469,7 @@ sure you have
 <div class="literalblock">
 <div class="content">
 <pre>$ spring version
-Spring CLI v1.2.0.RC1</pre>
+Spring CLI v1.2.0.RELEASE</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2302,8 +2477,8 @@ Spring CLI v1.2.0.RC1</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ gvm install springboot 1.2.0.RC1
-$ gvm use springboot 1.2.0.RC1</code></pre>
+<pre class="highlight"><code>$ gvm install springboot 1.2.0.RELEASE
+$ gvm use springboot 1.2.0.RELEASE</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2312,7 +2487,7 @@ $ gvm use springboot 1.2.0.RC1</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>$ mvn install
-$ spring install org.springframework.cloud:spring-cloud-cli:1.0.0.RC1</code></pre>
+$ spring install org.springframework.cloud:spring-cloud-cli:1.0.0.BUILD-SNAPSHOT</code></pre>
 </div>
 </div>
 </div>
@@ -2410,7 +2585,7 @@ running on port 8080.</p>
 </div>
 <div class="paragraph">
 <p>To limit the scope that the client asks for when it obtains an access token
-you can set <code>oauth2.client.scope</code> (comma separated or an array in YAML). By
+you can set <code>spring.oauth2.client.scope</code> (comma separated or an array in YAML). By
 default the scope is empty and it is up to to Authorization Server to
 decide what the defaults should be, usually depending on the settings in
 the client registration that it holds.</p>
@@ -2480,46 +2655,96 @@ following properties in the <code>Environment</code>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>oauth2.client.*</code> with <code>*</code> equal to <code>clientId</code>, <code>clientSecret</code>,
-<code>tokenUri</code>, <code>authorizationUri</code> and one of:</p>
-</li>
+<p><code>spring.oauth2.client.*</code> with <code>*</code> equal to <code>clientId</code>, <code>clientSecret</code>,
+<code>accessTokenUri</code>, <code>userAuthorizationUri</code> and one of:</p>
+<div class="ulist">
+<ul>
 <li>
-<p><code>oauth2.resource.preferTokenInfo=false</code> and
-<code>oauth2.resource.userInfoUri</code> to use the "/me" resource
+<p><code>spring.oauth2.resource.userInfoUri</code> to use the "/me" resource
 (e.g. "https://uaa.run.pivotal.io/userinfo" on PWS), or</p>
 </li>
 <li>
-<p><code>oauth2.resource.tokenInfoUri</code> to use the token decoding endpoint
-(e.g. "https://uaa.run.pivotal.io/check_token" on PWS), or</p>
+<p><code>spring.oauth2.resource.tokenInfoUri</code> to use the token decoding endpoint
+(e.g. "https://uaa.run.pivotal.io/check_token" on PWS).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you specify both the <code>userInfoUri</code> and the <code>tokenInfoUri</code> then
+you can set a flag to say that one is preferred over the other
+(<code>preferTokenInfo=true</code> is the default). Or</p>
+</div>
 </li>
 <li>
-<p><code>oauth2.resource.jwt.keyValue</code> or <code>oauth2.resource.jwt.keyUri</code> to
+<p><code>spring.oauth2.resource.jwt.keyValue</code> to
 decode a JWT token locally, where the key is a verification key. The
 verification key value is either a symmetric secret or PEM-encoded
 RSA public key. If you don&#8217;t have the key and it&#8217;s public you can
 provide a URI where it can be downloaded (as a JSON object with a
-"value" field). E.g. on PWS:
-+</p>
-</li>
-</ul>
-</div>
+"value" field) with <code>spring.oauth2.resource.jwt.keyUri</code>. E.g. on PWS:</p>
 <div class="listingblock">
 <div class="content">
 <pre>$ curl https://uaa.run.pivotal.io/token_key
 {"alg":"SHA256withRSA","value":"-----BEGIN PUBLIC KEY-----\nMIIBI...\n-----END PUBLIC KEY-----\n"}</pre>
 </div>
 </div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+If you use the <code>spring.oauth2.resource.jwt.keyUri</code> the authorization
+server needs to be running when your application starts up. It will
+log a warning if it can&#8217;t find the key, and tell you what to do to fix
+it.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>You can set the preferred scope (as a comma-separated list or YAML
-array) in <code>oauth2.client.scope</code>. It defaults to empty, in which case
+array) in <code>spring.oauth2.client.scope</code>. It defaults to empty, in which case
 most Authorization Servers will ask the user for approval for the
 maximum allowed scope for the client.</p>
 </div>
 <div class="paragraph">
-<p>There is also a setting for <code>oauth2.client.authenticationScheme</code> which
+<p>There is also a setting for <code>spring.oauth2.client.clientAuthenticationScheme</code> which
 defaults to "header" (but you might need to set it to "form" if, like
 Github for instance, your OAuth2 provider doesn&#8217;t like header
-authentication).</p>
+authentication). The <code>spring.oauth2.client.*</code> properties are bound to an instance
+of <code>AuthorizationCodeResourceDetails</code> so all its properties can be specified.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To set an RSA key value in YAML use the "pipe" continuation
+marker to split it over multiple lines ("|") and remember to indent
+the key value (it&#8217;s a standard YAML language feature). Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">oauth2:
+  resource:
+    jwt:
+      keyValue: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC...
+        -----END PUBLIC KEY-----</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_access_decision_rules">Access Decision Rules</h4>
@@ -2542,7 +2767,7 @@ the matching patterns for the OAuth2 SSO, even if you have
 <code>OAuth2SsoConfigurer</code> beans as well. The default logout path is
 "/logout" and it gets similar treatment, as does the "home" page
 (which is the logout success page, defaults to "/"). Those paths can
-be overriden by setting <code>oauth2.sso.\*' (`loginPath</code>, <code>logoutPath</code> and
+be overriden by setting <code>spring.oauth2.sso.*' (`loginPath</code>, <code>logoutPath</code> and
 <code>home.path</code>).</p>
 </div>
 <div class="paragraph">
@@ -2567,6 +2792,40 @@ Spring Boot access control (Basic authentication, or whatever custom
 filters you put in place).</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_integrating_with_the_actuator_endpoints">Integrating with the Actuator Endpoints</h4>
+<div class="paragraph">
+<p>The Spring Boot Actuator endpoints ("/env", "/metrics", etc.) if
+present will, by default, be protected by the standard Spring Boot
+basic authentication. The SSO authentication filter is added in a
+position directly behind the filter that intercepts requests to the
+Actuator endpoints by default (i.e.
+<code>ManagementProperties.BASIC_AUTH_ORDER + 1</code> which is
+<code>Ordered.LOWEST_PRECEDENCE-9</code> or <code>2147483636</code>). If you want to change
+the order you can set <code>spring.oauth2.sso.filterOrder</code>. If you do that
+and the value is less than the default, then you will need to consider
+setting the access rules for the Actuator, since they will become
+accessible to all authenticated users who sign on with the external
+provider. One way to do that would be to set
+<code>management.contextPath=/admin</code> (for instance) and use an
+<code>OAuth2SsoConfigurer</code> to set the access rules, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">	@Configuration
+	@EnableOAuth2Sso
+	@EnableAutoConfiguration
+	protected static class TestConfiguration extends OAuth2SsoConfigurerAdapter {
+		@Override
+		public void configure(HttpSecurity http) {
+	         http.authorizeRequests()
+                 .antMatchers("/admin/**").role("ADMIN")
+                 .anyRequest().authenticated();
+		}
+	}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_resource_server">Resource Server</h3>
@@ -2578,9 +2837,9 @@ doesn&#8217;t need a <code>clientId</code> and <code>clientSecret</code> if it i
 <code>tokenInfoUri</code> (i.e. if it has <code>jwt.*</code> or <code>userInfoUri</code>).</p>
 </div>
 <div class="paragraph">
-<p>By default <strong>all</strong> your endpoints are protected (i.e. "/<strong>") but you can
+<p>By default <strong>all</strong> your endpoints are protected (i.e. "/**") but you can
 pick and choose by adding a <code>ResourceServerConfigurerAdapter</code> (standard
-Spring OAuth feature), e.g. to protect only the "/api/</strong>" resources</p>
+Spring OAuth feature), e.g. to protect only the "/api/**" resources</p>
 </div>
 <div class="listingblock">
 <div class="title">Application.java</div>
@@ -2598,9 +2857,9 @@ class Application extends ResourceServerConfigurerAdapter {
        .anyRequest().authenticated();
   }
 
-  @RequestMapping('/api')
-  String home() {
-    'Hello World'
+  @RequestMapping("/api")
+  public String home() {
+    return "Hello World";
   }
 
 }</code></pre>
@@ -2624,12 +2883,6 @@ it is proxying. Thus the SSO app above can be enhanced simply like this:</p>
 @EnableZuulProxy
 class Application {
 
-  @RequestMapping('/')
-  @ResponseBody
-  String home() {
-    'Hello World'
-  }
-
 }</code></pre>
 </div>
 </div>
@@ -2650,6 +2903,12 @@ classpath (via <code>@EnableZuulProxy</code>). The
 just extracts an access token from the currently authenticated user,
 and puts it in a request header for the downstream requests.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_downstream_authentication">Configuring Downstream Authentication</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You can control the authorization behaviour downstream of an
 <code>@EnableZuulProxy</code> through the <code>proxy.auth.*</code> settings. Example:</p>
@@ -2676,7 +2935,6 @@ relay if there is a token available, and passthru otherwise.</p>
 <p>See
 <a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/ProxyAuthenticationProperties">
 ProxyAuthenticationProperties</a> for full details.</p>
-</div>
 </div>
 </div>
 </div>
@@ -2773,11 +3031,11 @@ instance).</p>
 <h3 id="_oauth2_single_sign_on_2">OAuth2 Single Sign On</h3>
 <div class="paragraph">
 <p>Spring Cloud Security provides the <code>@EnableOAuth2Sso</code> annotation and
-binds the app to environment properties in <code>oauth2.*</code>. Spring Cloud
+binds the app to environment properties in <code>spring.oauth2.*</code>. Spring Cloud
 for Cloud Foundry just sets up default environment properties so that
 it all just works if you bind to a Cloud Foundry service instance
 called "sso". The service credentials are mapped to the SSO
-properties, i.e. (from <code>oauth2.client.*</code>) <code>clientId</code>, <code>clientSecret</code>,
+properties, i.e. (from <code>spring.oauth2.client.*</code>) <code>clientId</code>, <code>clientSecret</code>,
 <code>tokenUri</code>, <code>authorizationUri</code>, (and from <code>oauth2.resource.*</code>)
 <code>userInfoUri</code>, <code>tokenInfoUri</code>, <code>keyValue</code>, <code>keyUri</code>. Refer to the
 Spring Cloud Security documentation for details of which combinations
@@ -2785,8 +3043,8 @@ will work together. The main thing is that in Cloud Foundry you only
 need one service to cover all the necessary credentials.</p>
 </div>
 <div class="paragraph">
-<p>To use a different sercice instance name (i.e. not "sso") just set
-<code>oauth2.sso.serviceId</code> to your custom name.</p>
+<p>To use a different service instance name (i.e. not "sso") just set
+<code>spring.oauth2.sso.serviceId</code> to your custom name.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2794,7 +3052,7 @@ need one service to cover all the necessary credentials.</p>
 <div class="paragraph">
 <p>Spring Cloud Security already has support for decoding JWT tokens if
 you just provide the verification key (as an environment property). In
-Cloud Foundry you can pick that property up from a servcice binding
+Cloud Foundry you can pick that property up from a service binding
 (<code>keyValue</code> or <code>keyUri</code>).</p>
 </div>
 <div class="paragraph">
@@ -2832,7 +3090,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div class="paragraph">
 <p>To use a different sercice instance name (i.e. not "resource" or
-"sso") just set <code>oauth2.resource.serviceId</code> to your custom name.</p>
+"sso") just set <code>spring.oauth2.resource.serviceId</code> to your custom name.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2843,13 +3101,13 @@ service or the "resource" service if you have one).</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>oauth2.sso.*</code> to <code>vcap.services.${oauth2.sso.serviceId:sso}.credentials.*</code></p>
+<p><code>spring.oauth2.sso.*</code> to <code>vcap.services.${spring.oauth2.sso.serviceId:sso}.credentials.*</code></p>
 </li>
 <li>
-<p><code>oauth2.client.*</code> to <code>vcap.services.${oauth2.sso.serviceId:sso}.credentials.tokenUri:${vcap.services.${oauth2.resource.serviceId:resource}.credentials.*</code></p>
+<p><code>spring.oauth2.client.*</code> to <code>vcap.services.${spring.oauth2.sso.serviceId:sso}.credentials.tokenUri:${vcap.services.${spring.oauth2.resource.serviceId:resource}.credentials.*</code></p>
 </li>
 <li>
-<p><code>oauth2.resource.(jwt).*</code> to <code>vcap.services.${oauth2.resource.serviceId:resource}.credentials.tokenUri:${vcap.services.${oauth2.sso.serviceId:sso}.credentials.*</code></p>
+<p><code>spring.oauth2.resource.(jwt).*</code> to <code>vcap.services.${spring.oauth2.resource.serviceId:resource}.credentials.tokenUri:${vcap.services.${spring.oauth2.sso.serviceId:sso}.credentials.*</code></p>
 </li>
 </ul>
 </div>
@@ -2859,7 +3117,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-01-15 00:14:05 UTC
+Last updated 2015-01-15 10:36:35 UTC
 </div>
 </div>
 </body>
