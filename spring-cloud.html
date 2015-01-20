@@ -859,11 +859,15 @@ the repository you can set the "spring.cloud.config.server.git.uri"
 configuration property in the Config Server (e.g. in
 <code>application.yml</code>). If you set it with a <code>file:</code> prefix it should work
 from a local repository so you can get started quickly and easily
-without a server (it doesn&#8217;t matter if it&#8217;s not bare because the
-Config Server never makes changes to the "remote" repository). To
-scale the Config Server up and make it highly available, however, you
-would need to have all instances of the server pointing to the same
-repository, so only a shared file system would work.</p>
+without a server, but in that case the server operates directly on the
+local repository without cloning it (it doesn&#8217;t matter if it&#8217;s not
+bare because the Config Server never makes changes to the "remote"
+repository). To scale the Config Server up and make it highly
+available, you would need to have all instances of the server pointing
+to the same repository, so only a shared file system would work. Even
+in that case it is better to use the <code>ssh:</code> protocol for a shared
+filesystem repository, so that the server can clone it and use a local
+working copy as a cache.</p>
 </div>
 <div class="paragraph">
 <p>This repository implementation maps the <code>{label}</code> parameter of the
@@ -2970,7 +2974,7 @@ username to use for the service).</p>
 <p>Add this project as a dependency to any Spring Cloud UI app or REST
 service and deploy to Cloudfoundry.  If you use Spring Cloud Security
 OAuth2 features this will make them bindable to Cloud Foundry services
-instead of enironment properties in <code>oauth2.*</code>.  For a UI app you can
+instead of enironment properties in <code>spring.oauth2.*</code>.  For a UI app you can
 declare <code>@EnableOAuth2Sso</code> and bind to a service called "sso", and for
 a service you can add <code>@EnableOAuth2Resource</code> and bind to a service
 called "resource" (see below for how to change the names).</p>
@@ -3052,7 +3056,7 @@ for Cloud Foundry just sets up default environment properties so that
 it all just works if you bind to a Cloud Foundry service instance
 called "sso". The service credentials are mapped to the SSO
 properties, i.e. (from <code>spring.oauth2.client.*</code>) <code>clientId</code>, <code>clientSecret</code>,
-<code>tokenUri</code>, <code>authorizationUri</code>, (and from <code>oauth2.resource.*</code>)
+<code>tokenUri</code>, <code>authorizationUri</code>, (and from <code>spring.oauth2.resource.*</code>)
 <code>userInfoUri</code>, <code>tokenInfoUri</code>, <code>keyValue</code>, <code>keyUri</code>. Refer to the
 Spring Cloud Security documentation for details of which combinations
 will work together. The main thing is that in Cloud Foundry you only
@@ -3133,7 +3137,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-01-17 15:16:06 UTC
+Last updated 2015-01-20 10:47:40 UTC
 </div>
 </div>
 </body>
