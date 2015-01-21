@@ -2885,6 +2885,35 @@ class Application extends ResourceServerConfigurerAdapter {
 }</code></pre>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_customizing_the_jwt_token_converter">Customizing the JWT Token Converter</h4>
+<div class="paragraph">
+<p>When a resource server accepts an access token as a JWT, it has to
+convert it to an <code>Authentication</code> so that Spring Security can do its
+access decisions. Different token providers might support JWT tokens
+with different contents, so Spring OAuth2 has an abstraction for
+converting the token into security domain objects
+(<code>AccessTokenConverter</code>). You can modify the default behaviour easily
+by providing a <code>@Bean</code> of type <code>JwtAccessTokenConverterConfigurer</code>,
+e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Component
+public class JwtCustomization extends DefaultAccessTokenConverter implements
+        JwtAccessTokenConverterConfigurer {
+
+    @Override
+    public void configure(JwtAccessTokenConverter converter) {
+        converter.setAccessTokenConverter(this);
+    }
+
+    ... // implement custom AccessTokenConverter here
+
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_token_relay">Token Relay</h3>
@@ -3137,7 +3166,7 @@ service or the "resource" service if you have one).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-01-21 09:02:28 UTC
+Last updated 2015-01-21 14:50:19 UTC
 </div>
 </div>
 </body>
