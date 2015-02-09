@@ -458,6 +458,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_service_discovery_eureka_clients">Service Discovery: Eureka Clients</a>
 <ul class="sectlevel2">
 <li><a href="#_registering_with_eureka">Registering with Eureka</a></li>
+<li><a href="#_status_page_and_health_indicator">Status Page and Health Indicator</a></li>
 <li><a href="#_making_the_eureka_instance_id_unique">Making the Eureka Instance ID Unique</a></li>
 <li><a href="#_using_the_discoveryclient">Using the DiscoveryClient</a></li>
 <li><a href="#_alternatives_to_the_discoveryclient">Alternatives to the DiscoveryClient</a></li>
@@ -469,6 +470,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_high_availability_zones_and_regions">High Availability, Zones and Regions</a></li>
 <li><a href="#_standalone_mode">Standalone Mode</a></li>
 <li><a href="#_peer_awareness">Peer Awareness</a></li>
+<li><a href="#_prefer_ip_address">Prefer IP Address</a></li>
 </ul>
 </li>
 <li><a href="#_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</a></li>
@@ -478,18 +480,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_turbine_amqp">Turbine AMQP</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a>
-<ul class="sectlevel2">
-<li><a href="#spring-cloud-feign-without-eureka">Example: How to Use Feign Without Eureka</a></li>
-</ul>
-</li>
 <li><a href="#spring-cloud-ribbon">Client Side Load Balancer: Ribbon</a>
 <ul class="sectlevel2">
 <li><a href="#_customizing_the_ribbon_client">Customizing the Ribbon Client</a></li>
+<li><a href="#_using_the_ribbon_with_eureka">Using the Ribbon with Eureka</a></li>
+<li><a href="#spring-cloud-ribbon-without-eureka">Example: How to Use Ribbon Without Eureka</a></li>
 <li><a href="#_using_the_ribbon_api_directly">Using the Ribbon API Directly</a></li>
 <li><a href="#_spring_resttemplate_as_a_ribbon_client">Spring RestTemplate as a Ribbon Client</a></li>
 </ul>
 </li>
+<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a></li>
 <li><a href="#_external_configuration_archaius">External Configuration: Archaius</a></li>
 <li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
 <ul class="sectlevel2">
@@ -506,7 +506,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_spring_boot_cloud_cli">Spring Boot Cloud CLI</a>
 <ul class="sectlevel1">
-<li><a href="#_installation">Installation</a></li>
+<li><a href="#_installation">Installation</a>
+<ul class="sectlevel2">
+<li><a href="#_encryption_and_decryption_3">Encryption and Decryption</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_spring_cloud_security">Spring Cloud Security</a>
@@ -525,19 +529,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_configuring_downstream_authentication">Configuring Downstream Authentication</a></li>
-</ul>
-</li>
-<li><a href="#_spring_cloud_for_cloud_foundry">Spring Cloud for Cloud Foundry</a>
-<ul class="sectlevel1">
-<li><a href="#_quickstart_2">Quickstart</a></li>
-<li><a href="#_how_does_it_work">How Does it Work?</a>
-<ul class="sectlevel2">
-<li><a href="#_oauth2_single_sign_on_2">OAuth2 Single Sign On</a></li>
-<li><a href="#_jwt_tokens">JWT Tokens</a></li>
-<li><a href="#_oauth2_resource_server">OAuth2 Resource Server</a></li>
-<li><a href="#_default_environment_keys">Default Environment Keys</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -1004,6 +995,9 @@ the key value with "@" and provide the file path, e.g.</p>
 <pre>$ spring encrypt mysecret --key @${HOME}/.ssh/id_rsa.pub
 AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The key argument is mandatory (despite having a <code>--</code> prefix).</p>
 </div>
 </div>
 <div class="sect2">
@@ -1604,7 +1598,10 @@ public class Application {
 </div>
 </div>
 <div class="paragraph">
-<p>(i.e. utterly normal Spring Boot app). Configuration is required to locate the Eureka server. Example:</p>
+<p>(i.e. utterly normal Spring Boot app). In this example we use
+<code>@EnableEurekaClient</code> explicitly, but with only Eureka available you
+could also use <code>@EnableDiscoveryClient</code>. Configuration is required to
+locate the Eureka server. Example:</p>
 </div>
 <div class="listingblock">
 <div class="title">application.yml</div>
@@ -1636,6 +1633,32 @@ ID, or VIP).</p>
 </div>
 <div class="paragraph">
 <p>See <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaInstanceConfigBean.java">EurekaInstanceConfigBean</a> and <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaClientConfigBean.java">EurekaClientConfigBean</a> for more details of the configurable options.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_status_page_and_health_indicator">Status Page and Health Indicator</h3>
+<div class="paragraph">
+<p>The status page and health indicators for a Eureka instance default to
+"/info" and "/health" respectively, which are the default locations of
+useful endpoints in a Spring Boot Actuator application. You need to
+change these, even for an Actuator application if you use a
+non-default context path or servlet path
+(e.g. <code>server.servletPath=/foo</code>) or management endpoint path
+(e.g. <code>management.contextPath=/admin</code>). Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>eureka:
+  instance:
+    statusPageUrlPath: ${management.contextPath}/info
+    healthCheckUrlPath: ${management.contextPath}/health</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These links show up in the metadata that is consumers by clients, and
+used in some scenarios to decide whether to send requests to your
+application, so it&#8217;s helpful if they are accurate.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1837,7 +1860,7 @@ exclude it manually, e.g. in Maven</p>
 <div class="paragraph">
 <p>The Eureka server does not have a backend store, but the service
 instances in the registry all have to send heartbeats to keep their
-resistrations up to date (so this can be done in memory). Clients also
+registrations up to date (so this can be done in memory). Clients also
 have an in-memory cache of eureka registrations (so they don&#8217;t have to
 go to the registry for every single request to a service).</p>
 </div>
@@ -1846,6 +1869,10 @@ go to the registry for every single request to a service).</p>
 (at least one) service URL to locate a peer. If you don&#8217;t provide it
 the service will run and work, but it will shower your logs with a lot
 of noise about not being able to register with the peer.</p>
+</div>
+<div class="paragraph">
+<p>See also <a href="#spring-cloud-ribbon">below for details of Ribbon
+support</a> on the client side for Zones and Regions.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1927,6 +1954,15 @@ connected to each other by at least one edge, they will synchronize
 the registrations amongst themselves. If the peers are physically
 separated (inside a data centre or between multiple data centres) then
 the system can in principle survive split-brain type failures.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prefer_ip_address">Prefer IP Address</h3>
+<div class="paragraph">
+<p>In some cases, it is preferable for Eureka to advertise the IP Adresses
+of services rather than the hostname.  Set <code>eureka.instance.preferIpAddress</code>
+to <code>true</code> and when the application registers with eureka, it will use its
+IP Address rather than its hostname.</p>
 </div>
 </div>
 </div>
@@ -2040,13 +2076,7 @@ for details on the properties available.</p>
 <p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation.</p>
 </div>
 <div class="paragraph">
-<p>Configuration key <code>turbine.appConfig</code> is a list of eureka serviceId&#8217;s that turbine will use to lookup instances.  And <code>turbine.aggregator.clusterConfig</code> is used to group instances together (from the eureka <code>InstanceInfo</code>).  The clusterName is a SPEL expression evaluated against the InstanceInfo.  The default <code>clusterNameExpression</code> is <code>appName</code>.  The turbine stream is then used in the Hystrix dashboard using a url that looks like: <a href="http://my.turbine.sever:8080/turbine.stream?cluster=CUSTOMERS" class="bare">http://my.turbine.sever:8080/turbine.stream?cluster=CUSTOMERS</a></p>
-</div>
-<div class="paragraph">
-<p>The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>.</p>
-</div>
-<div class="paragraph">
-<p>Value returned from eureka are uppercase, thus the examples of all uppercase <code>CUSTOMERS</code></p>
+<p>Configuration key <code>turbine.appConfig</code> is a list of eureka serviceId&#8217;s that turbine will use to lookup instances.  The turbine stream is then used in the Hystrix dashboard using a url that looks like: <code><a href="http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt" class="bare">http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt</a>;</code> (the cluster parameter can be omitted if the name is "default"). The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>. Value returned from eureka are uppercase, thus we expect this example to work if there is an app registered with Eureka called "customers":</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2057,7 +2087,14 @@ for details on the properties available.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>clusterName</code> can be customized by a SPEL expression in <code>turbine.clusterNameExpression</code>.  For example, <code>turbine.clusterNameExpression=aSGName</code> would get the cluster name from the AWS ASG name.</p>
+<p>The <code>clusterName</code> can be customized by a SPEL expression in <code>turbine.clusterNameExpression</code>.  For example, <code>turbine.clusterNameExpression=aSGName</code> would get the cluster name from the AWS ASG name. To use the "default" cluster for all apps you need a string literal expression (with single quotes):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>turbine:
+  appConfig: customers,stores
+  clusterNameExpression: 'default'</pre>
+</div>
 </div>
 <div class="paragraph">
 <p>Spring Cloud provides a <code>spring-cloud-starter-turbine</code> that has all the dependencies you need to get a Turbine server running. Just create a Spring Boot application and annotate it with <code>@EnableTurbine</code>.</p>
@@ -2073,72 +2110,6 @@ for details on the properties available.</p>
 </div>
 <div class="paragraph">
 <p>Spring Cloud provides a <code>spring-cloud-starter-turbine-amqp</code> that has all the dependencies you need to get a Turbine AMQP server running. You need Java 8 to run the app because it is Netty-based.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="spring-cloud-feign">Declarative REST Client: Feign</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><a href="https://github.com/Netflix/feign">Feign</a> is a declarative web service client.  It makes writing web service clients easier.  To use Feign create an interface and annotate it.  It has pluggable annotation support including Feign annotations and JAX-RS annotations. Feign also supports pluggable encoders and decoders.  Spring Cloud adds support for Spring MVC annotations and for using the same <code>HttpMessageConverters</code> used by default in Spring Web.  Spring Cloud integrates Ribbon and Eureka to provide a load balanced http client when using Feign.</p>
-</div>
-<div class="paragraph">
-<p>Example spring boot app</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-@ComponentScan
-@EnableAutoConfiguration
-@EnableEurekaClient
-@FeignClientScan
-public class Application {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">StoreClient.java</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@FeignClient("stores")
-public interface StoreClient {
-    @RequestMapping(method = RequestMethod.GET, value = "/stores")
-    List&lt;Store&gt; getStores();
-
-    @RequestMapping(method = RequestMethod.POST, value = "/stores/{storeId}", consumes = "application/json")
-    Store update(@PathParameter("storeId") Long storeId, Store store);
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the <code>@FeignClient</code> annotation the String value ("stores" above) is
-the arbitrary name of the client, used to create a configuration
-prefix (see <a href="#spring-cloud-ribbon">below for details of Ribbon
-support</a>).</p>
-</div>
-<div class="sect2">
-<h3 id="spring-cloud-feign-without-eureka">Example: How to Use Feign Without Eureka</h3>
-<div class="paragraph">
-<p>Eureka is a convenient way to abstract the discovery of remote servers
-so you don&#8217;t have to hard code their URLs in clients, but if you
-prefer not to use it, Ribbon and Feign are still quite
-amenable. Suppose you have declared a Feign client as above for
-"stores", and Eureka is not in use (and not even on the
-classpath). You should find that the Ribbon client defaults to a
-configured server list, and you can supply the configuration like this</p>
-</div>
-<div class="listingblock">
-<div class="title">application.yml</div>
-<div class="content">
-<pre>stores:
-  ribbon:
-    listOfClients: example.com,google.com</pre>
-</div>
 </div>
 </div>
 </div>
@@ -2167,8 +2138,7 @@ annotation). Spring Cloud creates a new ensemble as an
 <p>You can configure some bits of a Ribbon client using external
 properties in <code>&lt;client&gt;.ribbon.*</code>, which is no different than using
 the Netflix APIs natively, except that you can use Spring Boot
-configuration files (example
-<a href="#spring-cloud-feign-without-eureka">above</a>). The native options can
+configuration files. The native options can
 be inspected as static fields in <code>CommonClientConfigKey</code> (part of
 ribbon-core).</p>
 </div>
@@ -2189,6 +2159,92 @@ public class TestConfiguration {
 <p>In this case the client is composed from the components already in
 <code>RibbonClientConfiguration</code> together with any in <code>FooConfiguration</code>
 (where the latter generally will override the former).</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Netflix provides the following beans by default for ribbon
+(<code>BeanType</code> beanName: <code>ClassName</code>):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>IClientConfig</code> ribbonClientConfig: <code>DefaultClientConfigImpl</code></p>
+</li>
+<li>
+<p><code>IRule</code> ribbonRule: <code>ZoneAvoidanceRule</code></p>
+</li>
+<li>
+<p><code>IPing</code> ribbonPing: <code>NoOpPing</code></p>
+</li>
+<li>
+<p><code>ServerList&lt;Server&gt; ribbonServerList: `ConfigurationBasedServerList</code></p>
+</li>
+<li>
+<p><code>ServerListFilter&lt;Server&gt;</code> ribbonServerListFilter: <code>ZonePreferenceServerListFilter</code></p>
+</li>
+<li>
+<p><code>ILoadBalancer</code> ribbonLoadBalancer: <code>ZoneAwareLoadBalancer</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Creating a bean of one of those type and placing it in a <code>@RibbonClient</code>
+configuration (such as <code>FooConfiguration</code> above) allows you to override each
+one of the beans described.  Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+public class FooConfiguration {
+    @Bean
+    public IPing ribbonPing(IClientConfig config) {
+        return new PingUrl();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This replaces the <code>NoOpPing</code> with <code>PingUrl</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_ribbon_with_eureka">Using the Ribbon with Eureka</h3>
+<div class="paragraph">
+<p>When Eureka is used in conjunction with Ribbon the <code>ribbonServerList</code>
+is overridden with an extension of <code>DiscoveryEnabledNIWSServerList</code>
+which populates the list of servers from Eureka.  It also replaces the
+<code>IPing</code> interface with <code>NIWSDiscoveryPing</code> which delegates to Eureka
+to determine if a server is up. The <code>ServerList</code> that is installed by
+default is a <code>DomainExtractingServerList</code> and the purpose of this is
+to make physical metadata available to the load balancer without using
+AWS AMI metadata (which is what Netflix relies on). By default the
+server list will be constructed with "zone" information as provided in
+the instance metadata (so on the client set
+<code>eureka.instance.metadataMap.zone</code>), and if that is missing it can use
+the domain name from the server hostname as a proxy for zone (if the
+flag <code>approximateZoneFromDomain</code> is set). Once the zone information is
+available it can be used in a <code>ServerListFilter</code> (by default it will
+be used to locate a server in the same zone as the client because the
+default is a <code>ZonePreferenceServerListFilter</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="spring-cloud-ribbon-without-eureka">Example: How to Use Ribbon Without Eureka</h3>
+<div class="paragraph">
+<p>Eureka is a convenient way to abstract the discovery of remote servers
+so you don&#8217;t have to hard code their URLs in clients, but if you
+prefer not to use it, Ribbon and Feign are still quite
+amenable. Suppose you have declared a <code>@RibbonClient</code> for "stores",
+and Eureka is not in use (and not even on the classpath). The Ribbon
+client defaults to a configured server list, and you can supply the
+configuration like this</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>stores:
+  ribbon:
+    listOfServers: example.com,google.com</pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2237,6 +2293,61 @@ physical address. See
 <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java">RibbonAutoConfiguration</a>
 for details of how the <code>RestTemplate</code> is set up.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-cloud-feign">Declarative REST Client: Feign</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/Netflix/feign">Feign</a> is a declarative web service client.  It makes writing web service clients easier.  To use Feign create an interface and annotate it.  It has pluggable annotation support including Feign annotations and JAX-RS annotations. Feign also supports pluggable encoders and decoders.  Spring Cloud adds support for Spring MVC annotations and for using the same <code>HttpMessageConverters</code> used by default in Spring Web.  Spring Cloud integrates Ribbon and Eureka to provide a load balanced http client when using Feign.</p>
+</div>
+<div class="paragraph">
+<p>Example spring boot app</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+@EnableEurekaClient
+@EnableFeignClients
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">StoreClient.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@FeignClient("stores")
+public interface StoreClient {
+    @RequestMapping(method = RequestMethod.GET, value = "/stores")
+    List&lt;Store&gt; getStores();
+
+    @RequestMapping(method = RequestMethod.POST, value = "/stores/{storeId}", consumes = "application/json")
+    Store update(@PathParameter("storeId") Long storeId, Store store);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the <code>@FeignClient</code> annotation the String value ("stores" above) is
+an arbitrary client name, which is used to create a Ribbon load
+balancer (see <a href="#spring-cloud-ribbon">below for details of Ribbon
+support</a>). You can also specify a URL using the <code>url</code> attribute
+(absolute value or just a hostname).</p>
+</div>
+<div class="paragraph">
+<p>The Ribbon client above will want to discover the physical addresses
+for the "stores" service. If your application is a Eureka client then
+it will resolve the service in the Eureka service registry. If you
+don&#8217;t want to use Eureka, you can simply configure a list of servers
+in your external configuration (see
+<a href="#spring-cloud-ribbon-without-eureka">above for example</a>).</p>
 </div>
 </div>
 </div>
@@ -2333,7 +2444,24 @@ the proxy will not try to contact the service.</p>
 </div>
 <div class="paragraph">
 <p>To skip having a service automatically added, set
-<code>zuul.ignored-services</code> to a list of service ids. To augment or change
+<code>zuul.ignored-services</code> to a list of service id patterns. If a service
+matches a pattern that is ignored, but also included in the explicitly
+configured routes map, then it will be unignored. Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  ignoredServices: *
+  routes:
+    users: /myusers/**</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example, all services are ignored <strong>except</strong> "users".</p>
+</div>
+<div class="paragraph">
+<p>To augment or change
 the proxy routes, you can add external configuration like the
 following:</p>
 </div>
@@ -2402,6 +2530,13 @@ the service-specific prefix from individual routes, e.g.</p>
 </div>
 <div class="paragraph">
 <p>In this example requests to "/myusers/101" will be forwarded to "/myusers/101" on the "users" service.</p>
+</div>
+<div class="paragraph">
+<p>The <code>zuul.routes</code> entries actually bind to an object of type <code>ProxyRouteLocator</code>. If you
+look at the properties of that object you will see that it also has a "retryable" flag.
+Set that flag to "true" to have the Ribbon client automatically retry failed requests
+(and if you need to you can modify the parameters of the retry operations using
+the Ribbon client configuration).</p>
 </div>
 <div class="paragraph">
 <p>The <code>X-Forwarded-Host</code> header added to the forwarded requests by
@@ -2484,12 +2619,12 @@ Spring Boot command line features for
 <p>To install, make
 sure you have
 <a href="https://github.com/spring-projects/spring-boot">Spring Boot CLI</a>
-(1.2.0.RC1 or better):</p>
+(1.2.0 or better):</p>
 </div>
 <div class="literalblock">
 <div class="content">
 <pre>$ spring version
-Spring CLI v1.2.0.RELEASE</pre>
+Spring CLI v1.2.1.RELEASE</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2497,8 +2632,8 @@ Spring CLI v1.2.0.RELEASE</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ gvm install springboot 1.2.0.RELEASE
-$ gvm use springboot 1.2.0.RELEASE</code></pre>
+<pre class="highlight"><code>$ gvm install springboot 1.2.1.RELEASE
+$ gvm use springboot 1.2.1.RELEASE</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2508,6 +2643,25 @@ $ gvm use springboot 1.2.0.RELEASE</code></pre>
 <div class="content">
 <pre class="highlight"><code>$ mvn install
 $ spring install org.springframework.cloud:spring-cloud-cli:1.0.0.BUILD-SNAPSHOT</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_encryption_and_decryption_3">Encryption and Decryption</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<strong>Prerequisites:</strong> to use the encryption and decryption features
+you need the full-strength JCE installed in your JVM (it&#8217;s not there by default).
+You can download the "Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files"
+from Oracle, and follow instructions for installation (essentially replace the 2 policy files
+in the JRE lib/security directory with the ones that you downloaded).
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -2987,186 +3141,10 @@ ProxyAuthenticationProperties</a> for full details.</p>
 </div>
 </div>
 </div>
-<h1 id="_spring_cloud_for_cloud_foundry" class="sect0">Spring Cloud for Cloud Foundry</h1>
-<div class="openblock partintro">
-<div class="content">
-<div class="paragraph">
-<p>Spring Cloud for Cloudfoundry makes it easy to run
-<a href="https://github.com/spring-cloud">Spring Cloud</a> apps in
-<a href="https://github.com/cloudfoundry">Cloud Foundry</a> (the Platform as a
-Service). Cloud Foundry has the notion of a "service", which is
-middlware that you "bind" to an app, essentially providing it with an
-environment variable containing credentials (e.g. the location and
-username to use for the service).</p>
-</div>
-<div class="paragraph">
-<p>Add this project as a dependency to any Spring Cloud UI app or REST
-service and deploy to Cloudfoundry.  If you use Spring Cloud Security
-OAuth2 features this will make them bindable to Cloud Foundry services
-instead of enironment properties in <code>spring.oauth2.*</code>.  For a UI app you can
-declare <code>@EnableOAuth2Sso</code> and bind to a service called "sso", and for
-a service you can add <code>@EnableOAuth2Resource</code> and bind to a service
-called "resource" (see below for how to change the names).</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_quickstart_2">Quickstart</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Here&#8217;s a Spring Cloud app with OAuth2 SSO:</p>
-</div>
-<div class="listingblock">
-<div class="title">app.groovy</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Controller
-@EnableOAuth2Sso
-class Application {
-
-  @RequestMapping('/')
-  String home() {
-    'Hello World'
-  }
-
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If you run it without any service bindings:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ spring jar app.jar app.groovy
-$ cf push -p app.jar</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>it will be secure with (Spring Boot default) Basic authentication,
-i.e. the password will be in the logs (or set it with
-<code>security.user.password</code> as normal). To turn on OAuth2 SSO all you
-need to do is bind the app to a service with the right
-credentials. For example, a
-<a href="http://docs.pivotal.io/pivotalcf/devguide/services/user-provided.html">user-provided
-service</a> can be created like this on PWS:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ cf create-user-provided-service sso -p '{clientId:"&lt;my-client&gt;",clientSecret:"&lt;my-secret&gt;",userInfoUri:"https://uaa.run.pivotal.io/userinfo",tokenUri: "https://login.run.pivotal.io/oauth/token",authorizationUri:"https://login.run.pivotal.io/oauth/authorize"}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then bind and restart the app:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ cf bind app sso
-$ cf restart app</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and visit it in a browser. It will redirect to the Cloud Foundry (PWS)
-login server instead of challenging for Basic authentication. The
-<code>clientId</code> and <code>clientSecret</code> are credentials of a registered client
-in Cloud Foundry.  To get a Cloud Foundry client registration for
-testing please ask your local platform administrator if it&#8217;s a private
-instance).</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_does_it_work">How Does it Work?</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_oauth2_single_sign_on_2">OAuth2 Single Sign On</h3>
-<div class="paragraph">
-<p>Spring Cloud Security provides the <code>@EnableOAuth2Sso</code> annotation and
-binds the app to environment properties in <code>spring.oauth2.*</code>. Spring Cloud
-for Cloud Foundry just sets up default environment properties so that
-it all just works if you bind to a Cloud Foundry service instance
-called "sso". The service credentials are mapped to the SSO
-properties, i.e. (from <code>spring.oauth2.client.*</code>) <code>clientId</code>, <code>clientSecret</code>,
-<code>tokenUri</code>, <code>authorizationUri</code>, (and from <code>spring.oauth2.resource.*</code>)
-<code>userInfoUri</code>, <code>tokenInfoUri</code>, <code>keyValue</code>, <code>keyUri</code>. Refer to the
-Spring Cloud Security documentation for details of which combinations
-will work together. The main thing is that in Cloud Foundry you only
-need one service to cover all the necessary credentials.</p>
-</div>
-<div class="paragraph">
-<p>To use a different service instance name (i.e. not "sso") just set
-<code>spring.oauth2.sso.serviceId</code> to your custom name.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_jwt_tokens">JWT Tokens</h3>
-<div class="paragraph">
-<p>Spring Cloud Security already has support for decoding JWT tokens if
-you just provide the verification key (as an environment property). In
-Cloud Foundry you can pick that property up from a service binding
-(<code>keyValue</code> or <code>keyUri</code>).</p>
-</div>
-<div class="paragraph">
-<p>For example the <code>keyUri</code> in PWS is
-"https://uaa.run.pivotal.io/token_key":</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ curl https://uaa.run.pivotal.io/token_key
-{"alg":"SHA256withRSA","value":"-----BEGIN PUBLIC KEY-----\nMIIBI...\n-----END PUBLIC KEY-----\n"}d</pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_oauth2_resource_server">OAuth2 Resource Server</h3>
-<div class="paragraph">
-<p>Similarly, the <code>@EnableOAuth2Resource</code> annotation will protect your
-API endpoints if you bind to a service instance called "resource".
-The "sso" service above will work for a resource server as well (so
-just bind to that if it&#8217;s there). If the OAuth2 tokens are JWTs (as in
-Cloud Foundry), it is common to use a separate service for resources
-to avoid a network round trip decoding the token on every access. A
-user-provided-service for an OAuth2 resource can be created like this
-on PWS:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ cf create-user-provided-service resource -p '{keyUri:"https://uaa.run.pivotal.io/token_key"}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To use JWT you need to add the verification key as either
-<code>keyValue</code> or <code>keyUri</code> (these could be added to the "sso"
-service or the "resource" service if you have one).</p>
-</div>
-<div class="paragraph">
-<p>To use a different sercice instance name (i.e. not "resource" or
-"sso") just set <code>spring.oauth2.resource.serviceId</code> to your custom name.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_default_environment_keys">Default Environment Keys</h3>
-<div class="paragraph">
-<p>The precise mapppings are as follows:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>spring.oauth2.sso.*</code> to <code>vcap.services.${spring.oauth2.sso.serviceId:sso}.credentials.*</code></p>
-</li>
-<li>
-<p><code>spring.oauth2.client.*</code> to <code>vcap.services.${spring.oauth2.sso.serviceId:sso}.credentials.tokenUri:${vcap.services.${spring.oauth2.resource.serviceId:resource}.credentials.*</code></p>
-</li>
-<li>
-<p><code>spring.oauth2.resource.(jwt).*</code> to <code>vcap.services.${spring.oauth2.resource.serviceId:resource}.credentials.tokenUri:${vcap.services.${spring.oauth2.sso.serviceId:sso}.credentials.*</code></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-01-27 09:14:45 UTC
+Last updated 2015-02-09 17:17:00 UTC
 </div>
 </div>
 </body>
