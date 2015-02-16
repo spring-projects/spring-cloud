@@ -495,6 +495,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
 <li><a href="#_plain_embedded_zuul">Plain Embedded Zuul</a></li>
+<li><a href="#_polyglot_support_with_sidecar">Polyglot support with Sidecar</a></li>
 </ul>
 </li>
 </ul>
@@ -935,6 +936,14 @@ e.g.</p>
           username: trolley
           password: strongpassword</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>If you don&#8217;t use HTTPS and user credentials, SSH should also work out
+of the box when you store keys in the default directories (<code>~/.ssh</code>)
+and the uri is points to an SSH location,
+e.g. "<a href="mailto:git@github.com">git@github.com</a>:configuration/cloud-configuration". The
+repository is accessed using JGit, so any documentation you find on
+that should be applicable.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2150,7 +2159,7 @@ for details on the properties available.</p>
 <div class="sect2">
 <h3 id="_turbine">Turbine</h3>
 <div class="paragraph">
-<p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation.</p>
+<p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation.  All of the documented configuration properties from <a href="https://github.com/Netflix/Turbine/wiki/Configuration-(1.x)">the Turbine 1 wiki</a> apply.  The only difference is that the <code>turbine.instanceUrlSuffix</code> does not need the port prepended as this is handled automatically unless <code>turbine.instanceInsertPort=false</code>.</p>
 </div>
 <div class="paragraph">
 <p>Configuration key <code>turbine.appConfig</code> is a list of eureka serviceId&#8217;s that turbine will use to lookup instances.  The turbine stream is then used in the Hystrix dashboard using a url that looks like: <code><a href="http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt" class="bare">http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt</a>;</code> (the cluster parameter can be omitted if the name is "default"). The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>. Value returned from eureka are uppercase, thus we expect this example to work if there is an app registered with Eureka called "customers":</p>
@@ -2184,6 +2193,9 @@ for details on the properties available.</p>
 </div>
 <div class="paragraph">
 <p>On the server side Just create a Spring Boot application and annotate it with <code>@EnableTurbineAmqp</code> and by default it will come up on port 8989 (point your Hystrix dashboard to that port, any path). You can customize the port using either <code>server.port</code> or <code>turbine.amqp.port</code>. If you have <code>spring-boot-starter-web</code> and <code>spring-boot-starter-actuator</code> on the classpath as well, then you can open up the Actuator endpoints on a separate port (with Tomcat by default) by providing a <code>management.port</code> which is different.</p>
+</div>
+<div class="paragraph">
+<p>You can then point the Hystrix Dashboard to the Turbine AMQP Server instead of individual Hystrix streams.  If Turbine AMQP is running on port 8989 on myhost, then put <code><a href="http://myhost:8989" class="bare">http://myhost:8989</a></code> in the stream input field in the Hystrix Dashboard. Circuits will be prefixed by their respective serviceId, followed by a dot, then the circuit name.</p>
 </div>
 <div class="paragraph">
 <p>Spring Cloud provides a <code>spring-cloud-starter-turbine-amqp</code> that has all the dependencies you need to get a Turbine AMQP server running. You need Java 8 to run the app because it is Netty-based.</p>
@@ -2650,6 +2662,113 @@ still specified by configuring "zuul.routes.*", but there is no service discover
 </div>
 <div class="paragraph">
 <p>maps all paths in "/api/**" to the Zuul filter chain.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_polyglot_support_with_sidecar">Polyglot support with Sidecar</h3>
+<div class="paragraph">
+<p>Do you have non-jvm languages you want to take advantage of Eureka, Ribbon and
+Config Server?  The Spring Cloud Netflix Sidecar was inspired by
+<a href="https://github.com/Netflix/Prana">Netflix Prana</a>.  It includes a simple http api
+to get all of the instances (ie host and port) for a given service.  You can
+also proxy service calls through an embedded Zuul proxy which gets its route
+entries from Eureka.  The Spring Cloud Config Server can be accessed directly
+via host lookup or through the Zuul Proxy.  The non-jvm app should implement
+a health check so the Sidecar can report to eureka if the app is up or down.</p>
+</div>
+<div class="paragraph">
+<p>To enable the Sidecar, create a Spring Boot application with <code>@EnableSidecar</code>.
+This annotation includes <code>@EnableCircuitBreaker</code>, <code>@EnableDiscoveryClient</code>,
+and <code>@EnableZuulProxy</code>.  Run the resulting application on the same host as the
+non-jvm application.</p>
+</div>
+<div class="paragraph">
+<p>To configure the side car add <code>sidecar.port</code> and <code>sidecar.health-uri</code> to <code>application.yml</code>.
+The <code>sidecar.port</code> property is the port the non-jvm app is listening on.  This
+is so the Sidecar can properly register the app with Eureka.  The <code>sidecar.health-uri</code>
+is a uri accessible on the non-jvm app that mimicks a Spring Boot health
+indicator.  It should return a json document like the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">health-uri-document</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "status":"UP"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example application.yml for a Sidecar application:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">server:
+  port: 5678
+spring:
+  application:
+    name: sidecar
+
+sidecar:
+  port: 8000
+  health-uri: http://localhost:8000/health.json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The api for the <code>DiscoveryClient.getInstances()</code> method is <code>/hosts/{serviceId}</code>.
+Here is an example response for <code>/hosts/customers</code> that returns two instances on
+different hosts.  This api is accessible to the non-jvm app (if the sidecar is
+on port 5678) at <code><a href="http://localhost:5678/hosts/{serviceId}" class="bare">http://localhost:5678/hosts/{serviceId}</a></code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">/hosts/customers</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">[
+    {
+        "host": "myhost",
+        "port": 9000,
+        "uri": "http://myhost:9000",
+        "serviceId": "CUSTOMERS",
+        "secure": false
+    },
+    {
+        "host": "myhost2",
+        "port": 9000,
+        "uri": "http://myhost2:9000",
+        "serviceId": "CUSTOMERS",
+        "secure": false
+    }
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Zuul proxy automatically adds routes for each service known in eureka to
+<code>/&lt;serviceId&gt;</code>, so the customers service is available at <code>/customers</code>.  The
+Non-jvm app can access the customer service via <code><a href="http://localhost:5678/customers" class="bare">http://localhost:5678/customers</a></code>
+(assuming the sidecar is listening on port 5678).</p>
+</div>
+<div class="paragraph">
+<p>If the Config Server is registered with Eureka, non-jvm application can access
+it via the Zuul proxy.  If the serviceId of the ConfigServer is <code>configserver</code>
+and the Sidecar is on port 5678, then it can be accessed at
+<a href="http://localhost:5678/configserver" class="bare">http://localhost:5678/configserver</a></p>
+</div>
+<div class="paragraph">
+<p>Non-jvm app can take advantage of the Config Server&#8217;s ability to return YAML
+documents.  For example, a call to <a href="http://sidecar.local.spring.io:5678/configserver/default-master.yml" class="bare">http://sidecar.local.spring.io:5678/configserver/default-master.yml</a>
+might result in a YAML document like the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  password: password
+info:
+  description: Spring Cloud Samples
+  url: https://github.com/spring-cloud-samples</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -3221,7 +3340,7 @@ ProxyAuthenticationProperties</a> for full details.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-02-13 14:53:26 UTC
+Last updated 2015-02-16 09:31:51 UTC
 </div>
 </div>
 </body>
