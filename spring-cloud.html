@@ -533,7 +533,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_token_relay">Token Relay</a></li>
 </ul>
 </li>
-<li><a href="#_configuring_downstream_authentication">Configuring Downstream Authentication</a></li>
+<li><a href="#_configuring_authentication_downstream_of_a_zuul_proxy">Configuring Authentication Downstream of a Zuul Proxy</a></li>
 </ul>
 </li>
 </ul>
@@ -3311,6 +3311,14 @@ public class JwtCustomization extends DefaultAccessTokenConverter implements
 <div class="sect2">
 <h3 id="_token_relay">Token Relay</h3>
 <div class="paragraph">
+<p>A Token Relay is where an OAuth2 consumer acts as a Client and
+forwards the incoming token to outgoing resource requests. The
+consumer can be a pure Client (like an SSO application) or a Resource
+Server.</p>
+</div>
+<div class="sect3">
+<h4 id="_client_token_relay">Client Token Relay</h4>
+<div class="paragraph">
 <p>If your app has a
 <a href="http://cloud.spring.io/spring-cloud.html#netflix-zuul-reverse-proxy">Spring
 Cloud Zuul</a> embedded reverse proxy (using <code>@EnableZuulProxy</code>) then you
@@ -3346,10 +3354,40 @@ just extracts an access token from the currently authenticated user,
 and puts it in a request header for the downstream requests.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_resource_server_token_relay">Resource Server Token Relay</h4>
+<div class="paragraph">
+<p>If your app has <code>@EnableOAuth2Resource</code> and also is a Client (i.e. it
+has a <code>spring.oauth2.client.clientId</code>, even if it doesn&#8217;t use it),
+then the <code>OAuth2RestOperations</code> that is provided for <code>@Autowired</code>
+users by Spring Cloud (it is declared as <code>@Primary</code>) will also forward
+tokens. If you don&#8217;t want to forward tokens (and that is a valid
+choice, since you might want to act as yourself, rather than the
+client that sent you the token), then you only need to create your own
+<code>OAuth2RestOperations</code> instead of autowiring the default one. Here&#8217;s
+a basic example showing the use of the autowired rest template ("foo.com"
+is a Resource Server accepting the same tokens as the surrounding app):</p>
+</div>
+<div class="listingblock">
+<div class="title">MyController.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+private OAuth2RestOperations restTemplate;
+
+@RequestMapping("/relay")
+public String relay() {
+    ResponseEntity&lt;String&gt; response =
+      restTemplate.getForEntity("https://foo.com/bar", String.class);
+    return "Success! (" + response.getBody() + ")";
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_configuring_downstream_authentication">Configuring Downstream Authentication</h2>
+<h2 id="_configuring_authentication_downstream_of_a_zuul_proxy">Configuring Authentication Downstream of a Zuul Proxy</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>You can control the authorization behaviour downstream of an
@@ -3383,7 +3421,7 @@ ProxyAuthenticationProperties</a> for full details.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-02-23 15:46:22 UTC
+Last updated 2015-02-25 17:39:58 UTC
 </div>
 </div>
 </body>
