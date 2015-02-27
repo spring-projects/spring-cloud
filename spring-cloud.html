@@ -484,6 +484,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_turbine_amqp">Turbine AMQP</a></li>
 </ul>
 </li>
+<li><a href="#_customizing_the_amqp_connectionfactory">Customizing the AMQP ConnectionFactory</a></li>
 <li><a href="#spring-cloud-ribbon">Client Side Load Balancer: Ribbon</a>
 <ul class="sectlevel2">
 <li><a href="#_customizing_the_ribbon_client">Customizing the Ribbon Client</a></li>
@@ -507,6 +508,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_spring_cloud_bus">Spring Cloud Bus</a>
 <ul class="sectlevel1">
 <li><a href="#_quick_start_2">Quick Start</a></li>
+<li><a href="#_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</a></li>
 </ul>
 </li>
 <li><a href="#_spring_boot_cloud_cli">Spring Boot Cloud CLI</a>
@@ -529,6 +531,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_more_detail">More Detail</a>
 <ul class="sectlevel2">
 <li><a href="#_single_sign_on">Single Sign On</a></li>
+<li><a href="#_customizing_the_resttemplate">Customizing the RestTemplate</a></li>
 <li><a href="#_resource_server">Resource Server</a></li>
 <li><a href="#_token_relay">Token Relay</a></li>
 </ul>
@@ -2247,6 +2250,26 @@ for details on the properties available.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="_customizing_the_amqp_connectionfactory">Customizing the AMQP ConnectionFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are using AMQP there needs to be a <code>ConnectionFactory</code> (from
+Spring Rabbit) in the application context. If there is a single
+<code>ConnectionFactory</code> it will be used, or if there is a one qualified as
+<code>@HystrixConnectionFactory</code> (on the client) and
+<code>@TurbineConnectionFactory</code> (on the server) it will be preferred over
+others, otherwise the <code>@Primary</code> one will be used. If there are
+multiple unqualified connection factories there will be an error.</p>
+</div>
+<div class="paragraph">
+<p>Note that Spring Boot (as of 1.2.2) creates a <code>ConnectionFactory</code> that
+is <em>not</em> <code>@Primary</code>, so if you want to use one connection factory for
+the bus and another for business messages, you need to create both,
+and annotate them <code>@*ConnectionFactory</code> and <code>@Primary</code> respectively.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="spring-cloud-ribbon">Client Side Load Balancer: Ribbon</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -2844,6 +2867,25 @@ Spring Cloud Bus links nodes of a distributed system with a lightweight message 
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are using AMQP there needs to be a <code>ConnectionFactory</code> (from
+Spring Rabbit) in the application context. If there is a single
+<code>ConnectionFactory</code> it will be used, or if there is a one qualified as
+<code>@BusConnectionFactory</code> it will be preferred over others, otherwise
+the <code>@Primary</code> one will be used. If there are multiple unqualified
+connection factories there will be an error.</p>
+</div>
+<div class="paragraph">
+<p>Note that Spring Boot (as of 1.2.2) creates a <code>ConnectionFactory</code> that
+is <em>not</em> <code>@Primary</code>, so if you want to use one connection factory for
+the bus and another for business messages, you need to create both,
+and annotate them <code>@BusConnectionFactory</code> and <code>@Primary</code> respectively.</p>
+</div>
+</div>
+</div>
 <h1 id="_spring_boot_cloud_cli" class="sect0">Spring Boot Cloud CLI</h1>
 <div class="openblock partintro">
 <div class="content">
@@ -3131,6 +3173,29 @@ defaults to "header" (but you might need to set it to "form" if, like
 Github for instance, your OAuth2 provider doesn&#8217;t like header
 authentication). The <code>spring.oauth2.client.*</code> properties are bound to an instance
 of <code>AuthorizationCodeResourceDetails</code> so all its properties can be specified.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_customizing_the_resttemplate">Customizing the RestTemplate</h3>
+<div class="paragraph">
+<p>The SSO (and Resource Server) features use an <code>OAuth2RestTemplate</code>
+internally to fetch user details for authentication. This is provided
+as a qualified <code>@Bean</code> with id "userInfoRestTemplate", but you
+shouldn&#8217;t need to know that to just use it. The default should be fine
+for most providers, but occasionally you might need to add additional
+interceptors, or change the request authenticator (which is how the
+token gets attached to outgoing requests). To add a customization just
+create a bean of type <code>UserInfoRestTemplateCustomizer</code> - it has a
+single method that will be called after the bean is created but before
+it is initialized. The rest template that is being customized here is
+<em>only</em> used internally to carry out authentication (in the SSO or
+Resource Server use cases).</p>
+</div>
+<div class="paragraph">
+<p>A second {@link OAuth2RestTemplate} is available for autowiring if you
+want to use it for back channel calls, and if there is a
+token-authenticated user (in a web application) it will have the token
+injected for you.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -3421,7 +3486,7 @@ ProxyAuthenticationProperties</a> for full details.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-02-25 17:39:58 UTC
+Last updated 2015-02-27 13:45:24 UTC
 </div>
 </div>
 </body>
