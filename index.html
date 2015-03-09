@@ -50,8 +50,6 @@ configure or extend to create a custom solution.
 You can create a Config Server with a single annotation:
 
 ```groovy
-@Configuration
-@EnableAutoConfiguration
 @EnableConfigServer
 class ConfigServer {
 }
@@ -72,8 +70,6 @@ server. The Spring Boot CLI (with the Cloud extensions) will do this
 automatically for all applications.
 
 ```groovy
-@Configuration
-@EnableAutoConfiguration
 @Controller
 class ConfigClient {
 }
