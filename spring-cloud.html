@@ -522,6 +522,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_spring_cloud_bus">Spring Cloud Bus</a>
 <ul class="sectlevel1">
 <li><a href="#_quick_start_2">Quick Start</a></li>
+<li><a href="#_addressing_an_instance">Addressing an Instance</a></li>
 <li><a href="#_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</a></li>
 </ul>
 </li>
@@ -1324,17 +1325,17 @@ repositories:</p>
 <pre>spring:
   cloud:
     config:
-    server:
-      git:
-        uri: https://github.com/spring-cloud-samples/config-repo
-        repos:
-          simple: https://github.com/pattern1/config-repo
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
+          repos:
+            simple: https://github.com/pattern1/config-repo
             special:
               pattern: pattern*,*pattern1*
-            uri: https://github.com/pattern2/config-repo
-          local:
+              uri: https://github.com/pattern2/config-repo
+            local:
               pattern: local*
-            uri: file:/home/configsvc/config-repo</pre>
+              uri: file:/home/configsvc/config-repo</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1346,6 +1347,27 @@ pattern format is a comma-separated list of application names with
 wildcards.</p>
 </div>
 <div class="paragraph">
+<p>Every repository can also optionally store config files in
+sub-directories, and patterns to search for those directories can be
+specified as <code>searchPaths</code>. For example at the top level:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
+          searchPaths: foo,bar*</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example the server searches for config files in the top level
+and in the "foo/" sub-directory and also any sub-directory whose name
+begins with "bar".</p>
+</div>
+<div class="paragraph">
 <p>To use HTTP basic authentication on the remote repository add the
 "username" and "password" properties separately (not in the URL),
 e.g.</p>
@@ -1355,9 +1377,9 @@ e.g.</p>
 <pre>spring:
   cloud:
     config:
-    server:
-      git:
-        uri: https://github.com/spring-cloud-samples/config-repo
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
           username: trolley
           password: strongpassword</pre>
 </div>
@@ -1365,7 +1387,7 @@ e.g.</p>
 <div class="paragraph">
 <p>If you don&#8217;t use HTTPS and user credentials, SSH should also work out
 of the box when you store keys in the default directories (<code>~/.ssh</code>)
-and the uri is points to an SSH location,
+and the uri points to an SSH location,
 e.g. "<a href="mailto:git@github.com">git@github.com</a>:configuration/cloud-configuration". The
 repository is accessed using JGit, so any documentation you find on
 that should be applicable.</p>
@@ -1939,7 +1961,9 @@ random value will not be needed.</p>
 <h3 id="_using_the_discoveryclient">Using the DiscoveryClient</h3>
 <div class="paragraph">
 <p>Once you have an app that is <code>@EnableEurekaClient</code> you can use it to
-discover service instances from the <a href="#spring-cloud-eureka-server">Eureka Server</a>. One way to do that is to use the native <code>DiscoveryClient</code>, e.g.</p>
+discover service instances from the <a href="#spring-cloud-eureka-server">Eureka Server</a>. One way to do that is to use the native
+<code>com.netflix.discovery.DiscoveryClient</code> (as opposed to the Spring
+Cloud <code>DiscoveryClient</code>), e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2252,9 +2276,8 @@ IP Address rather than its hostname.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@Configuration
-@EnableAutoConfiguration
-@EnableHystrix
+<pre>@SpringBootApplication
+@EnableCircuitBreaker
 public class Application {
 
     public static void main(String[] args) {
@@ -2467,6 +2490,24 @@ public class TestConfiguration {
 <p>In this case the client is composed from the components already in
 <code>RibbonClientConfiguration</code> together with any in <code>FooConfiguration</code>
 (where the latter generally will override the former).</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+The <code>FooConfiguration</code> has to be <code>@Configuration</code> but take
+care that it is not in a <code>@ComponentScan</code> for the main application
+context, otherwise it will be shared by all the <code>@RibbonClients</code>. If
+you use <code>@ComponentScan</code> (or <code>@SpringBootApplication</code>) you need to
+take steps to avoid it being included (for instance put it in a
+separate, non-overlapping package, or specify the packages to scan
+explicitly in the <code>@ComponentScan</code>).
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Spring Cloud Netflix provides the following beans by default for ribbon
@@ -3031,6 +3072,14 @@ info:
 </div>
 <div class="paragraph">
 <p>The bus currently supports sending messages to all nodes listening or all nodes for a particular service (as defined by Eureka).  More selector criteria will be added in the future (ie. only service X nodes in data center Y, etc&#8230;&#8203;). The http endpoints are under the <code>/bus/*</code> actuator namespace.  There are currently two implemented.  The first, <code>/bus/env</code>, sends key/values pairs to update each nodes Spring Environment.  The second, <code>/bus/refresh</code>, will reload each application&#8217;s configuration, just as if they had all been pinged on their <code>/refresh</code> endpoint.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_addressing_an_instance">Addressing an Instance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The HTTP endpoints accept a "destination" parameter, e.g. "/bus/refresh?destination=customers:9000", where the destination is an <code>ApplicationContext</code> ID. If the ID is owned by an instance on the Bus then it will process the message and all other instances will ignore it. Spring Boot sets the ID for you in the <code>ContextIdApplicationContextInitializer</code> to a combination of the <code>spring.application.name</code>, active profiles and <code>server.port</code> by default.</p>
 </div>
 </div>
 </div>
@@ -3737,7 +3786,7 @@ ProxyAuthenticationProperties] for full details.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-03-26 15:45:20 UTC
+Last updated 2015-03-31 15:17:26 UTC
 </div>
 </div>
 </body>
