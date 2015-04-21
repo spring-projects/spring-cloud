@@ -769,7 +769,26 @@ a comma-separated list of Spring <code>@Configuration</code> classes which will
 be used to create the context. Any beans that you want to be available
 to the main application context for autowiring can be created here,
 and also there is a special contract for <code>@Beans</code> of type
-<code>ApplicationContextInitializer</code>.</p>
+<code>ApplicationContextInitializer</code>. Classes can be marked with an <code>@Order</code>
+if you want to control the startup sequence (the default order is
+"last").</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Be careful when adding custom <code>BootstrapConfiguration</code> that the
+classes you add are not <code>@ComponentScanned</code> by mistake into your
+"main" application context, where they might not be needed.
+Use a separate package name for boot configuration classes that is
+not already covered by your <code>@ComponentScan</code> or <code>@SpringBootApplication</code>
+annotated configuration classes.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The bootstrap process ends by injecting initializers into the main
@@ -3832,7 +3851,7 @@ ProxyAuthenticationProperties] for full details.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-04-21 06:28:46 UTC
+Last updated 2015-04-21 08:27:24 UTC
 </div>
 </div>
 </body>
