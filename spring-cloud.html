@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="generator" content="Asciidoctor 1.5.0">
 <title>Spring Cloud</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
 /* Remove the comments around the @import statement below when using this as a custom stylesheet */
-/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400";*/
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400";*/
 article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
 audio,canvas,video{display:inline-block}
 audio:not([controls]){display:none;height:0}
@@ -274,8 +274,8 @@ dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
 ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
 ul.unstyled,ol.unnumbered,ul.checklist,ul.none{list-style-type:none}
 ul.unstyled,ol.unnumbered,ul.checklist{margin-left:.625em}
-ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1em;font-size:.85em}
-ul.checklist li>p:first-child>input[type="checkbox"]:first-child{width:1em;position:relative;top:1px}
+ul.checklist li>p:first-child>.fa-check-square-o:first-child,ul.checklist li>p:first-child>input[type="checkbox"]:first-child{margin-right:.25em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{position:relative;top:1px}
 ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
 ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
 ul.inline>li>*{display:block}
@@ -380,7 +380,7 @@ p{margin-bottom:1.25rem}
 *{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
 a{color:inherit!important;text-decoration:underline!important}
 a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
-a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after,a[href^="mailto:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
 abbr[title]:after{content:" (" attr(title) ")"}
 pre,blockquote,tr,img{page-break-inside:avoid}
 thead{display:table-header-group}
@@ -449,6 +449,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_spring_cloud_config_server">Spring Cloud Config Server</a>
 <ul class="sectlevel2">
 <li><a href="#_environment_repository">Environment Repository</a></li>
+<li><a href="#_health_indicator">Health Indicator</a></li>
 <li><a href="#_security">Security</a></li>
 <li><a href="#_encryption_and_decryption_2">Encryption and Decryption</a></li>
 <li><a href="#_key_management">Key Management</a></li>
@@ -489,6 +490,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</a>
 <ul class="sectlevel2">
+<li><a href="#_propagating_the_security_context_or_using_spring_scopes">Propagating the Security Context or using Spring Scopes</a></li>
+<li><a href="#_health_indicator_2">Health Indicator</a></li>
 <li><a href="#_hystrix_metrics_stream">Hystrix Metrics Stream</a></li>
 </ul>
 </li>
@@ -504,6 +507,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_customizing_the_ribbon_client">Customizing the Ribbon Client</a></li>
 <li><a href="#_using_ribbon_with_eureka">Using Ribbon with Eureka</a></li>
 <li><a href="#spring-cloud-ribbon-without-eureka">Example: How to Use Ribbon Without Eureka</a></li>
+<li><a href="#_example_disable_eureka_use_in_ribbon">Example: Disable Eureka use in Ribbon</a></li>
 <li><a href="#_using_the_ribbon_api_directly">Using the Ribbon API Directly</a></li>
 </ul>
 </li>
@@ -514,6 +518,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
 <li><a href="#_uploading_files_through_zuul">Uploading Files through Zuul</a></li>
 <li><a href="#_plain_embedded_zuul">Plain Embedded Zuul</a></li>
+<li><a href="#_disable_zuul_filters">Disable Zuul Filters</a></li>
 <li><a href="#_polyglot_support_with_sidecar">Polyglot support with Sidecar</a></li>
 </ul>
 </li>
@@ -524,6 +529,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_quick_start_2">Quick Start</a></li>
 <li><a href="#_addressing_an_instance">Addressing an Instance</a></li>
 <li><a href="#_addressing_all_instances_of_a_service">Addressing all instances of a service</a></li>
+<li><a href="#_application_context_id_must_be_unique">Application Context ID must be unique</a></li>
 <li><a href="#_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</a></li>
 </ul>
 </li>
@@ -1463,6 +1469,37 @@ Spring Environment).</p>
 </div>
 </div>
 <div class="sect2">
+<h3 id="_health_indicator">Health Indicator</h3>
+<div class="paragraph">
+<p>Config Server comes with a Health Indicator that checks if the configured
+<code>EnvironmentRepository</code> is working.  By default it asks the <code>EnvironmentRepository</code>
+for an application named <code>app</code>, the <code>default</code> profile and the default
+label provided by the <code>EnvironmentRepository</code> implementation.</p>
+</div>
+<div class="paragraph">
+<p>You can configure the Health Indicator to check more appliations
+along with custom profiles and custom labels, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+      server:
+        health:
+          repositories:
+            myservice:
+              label: mylabel
+            myservice-dev:
+              name: myservice
+              profiles: development</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can disable the Health Indicator by setting <code>spring.cloud.config.server.health.enabled=false</code>.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_security">Security</h3>
 <div class="paragraph">
 <p>You are free to secure your Config Server in any way that makes sense
@@ -1520,7 +1557,7 @@ instance:</p>
 <pre>spring:
   datasource:
     username: dbuser
-    password: {cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ</pre>
+    password: '{cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ'</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1900,7 +1937,7 @@ fine if you ensure that your application has a
 ID, or VIP).</p>
 </div>
 <div class="paragraph">
-<p>See <a href="http://github.com/spring-cloud/spring-cloud-netflix/tree/master/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaInstanceConfigBean.java">EurekaInstanceConfigBean</a> and <a href="http://github.com/spring-cloud/spring-cloud-netflix/tree/master/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaClientConfigBean.java">EurekaClientConfigBean</a> for more details of the configurable options.</p>
+<p>See <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaInstanceConfigBean.java">EurekaInstanceConfigBean</a> and <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaClientConfigBean.java">EurekaClientConfigBean</a> for more details of the configurable options.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2354,6 +2391,30 @@ attribute with a list of <code>@HystrixProperty</code> annotations.  See
 for more details.  See the <a href="https://github.com/Netflix/Hystrix/wiki/Configuration">Hystrix wiki</a>
 for details on the properties available.</p>
 </div>
+<div class="sect2">
+<h3 id="_propagating_the_security_context_or_using_spring_scopes">Propagating the Security Context or using Spring Scopes</h3>
+<div class="paragraph">
+<p>If you want some thread local context to propagate into a <code>@HystrixCommand</code> the default declaration will not work because it executes the command in a thread pool (in case of timeouts). You can switch Hystrix to use the same thread as the caller using some configuration, or directly in the annotation, by asking it to use a different "Isolation Strategy". For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@HystrixCommand(fallbackMethod = "stubMyService",
+    commandProperties = {
+      @HystrixProperty(name="execution.isolation.strategy", value="SEMAPHORE")
+    }
+)
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The same thing applies if you are using <code>@SessionScope</code> or <code>@RequestScope</code>. You will know when you need to do this because of a runtime exception that says it can&#8217;t find the scoped context.</p>
+</div>
+<div class="paragraph">
+<p>In particular you might be interested</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_health_indicator_2">Health Indicator</h3>
 <div class="paragraph">
 <p>The state of the connected circuit breakers are also exposed in the
 <code>/health</code> endpoint of the calling application.</p>
@@ -2369,6 +2430,7 @@ for details on the properties available.</p>
     },
     "status": "UP"
 }</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2495,7 +2557,7 @@ so if you are using <code>@FeignClient</code> then this section also applies.</p
 <div class="paragraph">
 <p>A central concept in Ribbon is that of the named client. Each load
 balancer is part of an ensemble of components that work together to
-contact a remote server on demend, and the ensemble has a name that
+contact a remote server on demand, and the ensemble has a name that
 you give it as an application developer (e.g. using the <code>@FeignClient</code>
 annotation). Spring Cloud creates a new ensemble as an
 <code>ApplicationContext</code> on demand for each named client using
@@ -2632,6 +2694,21 @@ configuration like this</p>
 <pre>stores:
   ribbon:
     listOfServers: example.com,google.com</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_disable_eureka_use_in_ribbon">Example: Disable Eureka use in Ribbon</h3>
+<div class="paragraph">
+<p>Setting the property <code>ribbon.eureka.enabled = false</code> will explicitly
+disable the use of Eureka in Ribbon.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>ribbon:
+  eureka:
+   enabled: false</pre>
 </div>
 </div>
 </div>
@@ -2874,18 +2951,24 @@ level, but "/myusers/**" matches hierarchically.</p>
 </div>
 <div class="paragraph">
 <p>These simple url-routes doesn&#8217;t get executed as HystrixCommand nor can you loadbalance multiple url with Ribbon.
-To achieve this specify a service-route and configure a Ribbon client for the serviceId, e.g.</p>
+To achieve this specify a service-route and configure a Ribbon client for the
+serviceId (this currently requires disabling Eureka support in Ribbon:
+see <a href="#spring-cloud-ribbon-without-eureka">above for more information</a>), e.g.</p>
 </div>
 <div class="listingblock">
 <div class="title">application.yml</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">zuul:
   routes:
     users:
       path: /myusers/**
       serviceId: users
 
- users:
+ribbon:
+  eureka:
+    enabled: false
+
+users:
   ribbon:
     listOfServers: example.com,google.com</code></pre>
 </div>
@@ -2988,6 +3071,18 @@ still specified by configuring "zuul.routes.*", but there is no service discover
 </div>
 <div class="paragraph">
 <p>maps all paths in "/api/**" to the Zuul filter chain.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_disable_zuul_filters">Disable Zuul Filters</h3>
+<div class="paragraph">
+<p>Zuul for Spring Cloud comes with a number of <code>ZuulFilter</code> beans enabled by default
+in both proxy and server mode.  See <a href="https://github.com/spring-cloud/spring-cloud-netflix/tree/master/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/zuul/filters">the zuul filters package</a> for the
+possible filters that are enabled.  If you want to disable one, simply set
+<code>zuul.&lt;SimpleClassName&gt;.&lt;filterType&gt;.disable=true</code>. By convention, the package after
+<code>filters</code> is the Zuul filter type. For example to disable
+<code>org.springframework.cloud.netflix.zuul.filters.post.SendResponseFilter</code> set
+<code>zuul.SendResponseFilter.post.disable=true</code>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -3149,6 +3244,14 @@ info:
 </div>
 </div>
 <div class="sect1">
+<h2 id="_application_context_id_must_be_unique">Application Context ID must be unique</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The bus tries to eliminate processing an event twice, once from the original <code>ApplicationEvent</code> and once from the queue.  To do this, it checks the sending application context id againts the current application context id.  If multiple instances of a service have the same application context id, events will not be processed.  Running on a local machine, each service will be on a different port and that will be part of the application context id.  Cloud Foundry supplies an index to differentiate.  To ensure that the application context id is the unique, set <code>spring.application.index</code> to something unique for each instance of a service.  For example, in lattice, set <code>spring.application.index=${INSTANCE_INDEX}</code> in application.properties (or bootstrap.properties if using configserver).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -3193,7 +3296,7 @@ sure you have
 <div class="literalblock">
 <div class="content">
 <pre>$ spring version
-Spring CLI v1.2.2.RELEASE</pre>
+Spring CLI v1.2.3.RELEASE</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3201,8 +3304,8 @@ Spring CLI v1.2.2.RELEASE</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ gvm install springboot 1.2.2.RELEASE
-$ gvm use springboot 1.2.2.RELEASE</code></pre>
+<pre class="highlight"><code>$ gvm install springboot 1.2.3.RELEASE
+$ gvm use springboot 1.2.3.RELEASE</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3211,7 +3314,7 @@ $ gvm use springboot 1.2.2.RELEASE</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>$ mvn install
-$ spring install org.springframework.cloud:spring-cloud-cli:1.0.1.RELEASE</code></pre>
+$ spring install org.springframework.cloud:spring-cloud-cli:1.0.2.RELEASE</code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -3779,7 +3882,7 @@ correct header.</p>
 traditional app), and that in turn triggers some autoconfiguration for
 a <code>ZuulFilter</code>, which itself is activated because Zuul is on the
 classpath (via <code>@EnableZuulProxy</code>). The
-<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/OAuth2TokenRelayFilter.java">filter</a>
+{github}/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/OAuth2TokenRelayFilter.java[filter]
 just extracts an access token from the currently authenticated user,
 and puts it in a request header for the downstream requests.</p>
 </div>
@@ -3843,15 +3946,15 @@ relay if there is a token available, and passthru otherwise.</p>
 </div>
 <div class="paragraph">
 <p>See
-<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/ProxyAuthenticationProperties">
-ProxyAuthenticationProperties</a> for full details.</p>
+{github}/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/ProxyAuthenticationProperties[
+ProxyAuthenticationProperties] for full details.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-03-19 16:42:45 GMT
+Last updated 2015-05-13 12:17:09 UTC
 </div>
 </div>
 </body>
