@@ -454,6 +454,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_encryption_and_decryption_2">Encryption and Decryption</a></li>
 <li><a href="#_key_management">Key Management</a></li>
 <li><a href="#_creating_a_key_store_for_testing">Creating a Key Store for Testing</a></li>
+<li><a href="#_using_multiple_keys_and_key_rotation">Using Multiple Keys and Key Rotation</a></li>
 <li><a href="#_embedding_the_config_server">Embedding the Config Server</a></li>
 </ul>
 </li>
@@ -551,6 +552,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_more_detail">More Detail</a>
 <ul class="sectlevel2">
 <li><a href="#_single_sign_on">Single Sign On</a></li>
+<li><a href="#_token_type_in_user_info">Token Type in User Info</a></li>
 <li><a href="#_customizing_the_resttemplate">Customizing the RestTemplate</a></li>
 <li><a href="#_resource_server">Resource Server</a></li>
 <li><a href="#_token_relay">Token Relay</a></li>
@@ -627,6 +629,25 @@ and extensibility mechanism to cover others.</p>
 </div>
 <div class="paragraph">
 <p>Many of those features are covered by <a href="http://projects.spring.io/spring-boot">Spring Boot</a>, which we build on in Spring Cloud. Some more are delivered by Spring Cloud as two libraries: Spring Cloud Context and Spring Cloud Commons. Spring Cloud Context provides utilities and special services for the <code>ApplicationContext</code> of a Spring Cloud application (bootstrap context, encryption, refresh scope and environment endpoints). Spring Cloud Commons is a set of abstractions and common classes used in different Spring Cloud implementations (eg. Spring Cloud Netflix vs. Spring Cloud Consul).</p>
+</div>
+<div class="paragraph">
+<p>If you are getting an exception due to "Illegal key size" and you are using Sun&#8217;s JDK, you need to install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files. See the following links for more information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Java 6 JCE Link <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html</a></p>
+</li>
+<li>
+<p>Java 7 JCE Link <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html</a></p>
+</li>
+<li>
+<p>Java 8 JCE Link <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Extract files into JDK/jre/lib/security folder (whichever version of JRE/JDK x64/x86 you are using).</p>
 </div>
 <div class="paragraph">
 <p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
@@ -960,8 +981,10 @@ application context gets the <code>Environment</code>. To use the encryption
 features in a client you need to include Spring Security RSA in your
 classpath (Maven co-ordinates
 "org.springframework.security:spring-security-rsa") and you also need
-the full strength JCE extensions in your JVM (google it and download
-from Oracle).</p>
+the full strength JCE extensions in your JVM.</p>
+</div>
+<div class="paragraph">
+<p>include::jce.adoc</p>
 </div>
 </div>
 <div class="sect2">
@@ -1139,7 +1162,7 @@ from a git repository (which must be provided):</p>
 Boot application that depends on spring-cloud-config-client (e.g. see
 the test cases for the config-client, or the sample app). The most
 convenient way to add the dependency is via a Spring Boot starter
-<code>org.springframework.cloud:spring-cloud-starter</code>. There is also a
+<code>org.springframework.cloud:spring-cloud-starter-config</code>. There is also a
 parent pom and BOM (<code>spring-cloud-starter-parent</code>) for Maven users and a
 Spring IO version management properties file for Gradle and Spring CLI
 users. Example Maven configuration:</p>
@@ -1150,7 +1173,7 @@ users. Example Maven configuration:</p>
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;parent&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
-    &lt;version&gt;1.1.7.RELEASE&lt;/version&gt;
+    &lt;version&gt;1.2.3.RELEASE&lt;/version&gt;
     &lt;relativePath /&gt; &lt;!-- lookup parent from repository --&gt;
 &lt;/parent&gt;
 
@@ -1159,7 +1182,7 @@ users. Example Maven configuration:</p>
         &lt;dependency&gt;
             &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
             &lt;artifactId&gt;spring-cloud-starter-parent&lt;/artifactId&gt;
-            &lt;version&gt;1.0.0.BUILD-SNAPSHOT&lt;/version&gt;
+            &lt;version&gt;1.0.1.RELEASE&lt;/version&gt;
             &lt;type&gt;pom&lt;/type&gt;
             &lt;scope&gt;import&lt;/scope&gt;
         &lt;/dependency&gt;
@@ -1169,7 +1192,7 @@ users. Example Maven configuration:</p>
 &lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-cloud-starter&lt;/artifactId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;
     &lt;/dependency&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
@@ -1394,6 +1417,38 @@ and in the "foo/" sub-directory and also any sub-directory whose name
 begins with "bar".</p>
 </div>
 <div class="paragraph">
+<p>By default the server clones remote repositories when configuration
+is first requested. The server can be configured to clone the repositories
+at startup. For example at the top level:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://git/common/config-repo.git
+          repos:
+            team-a:
+                pattern: team-a-*
+                cloneOnStart: true
+                uri: http://git/team-a/config-repo.git
+            team-b:
+                pattern: team-b-*
+                cloneOnStart: false
+                uri: http://git/team-b/config-repo.git
+            team-c:
+                pattern: team-c-*
+                uri: http://git/team-a/config-repo.git</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example the server clones team-a&#8217;s config-repo on startup before it
+accepts any requests. All other repositories will not be cloned until
+configuration from the repository is requested.</p>
+</div>
+<div class="paragraph">
 <p>To use HTTP basic authentication on the remote repository add the
 "username" and "password" properties separately (not in the URL),
 e.g.</p>
@@ -1477,7 +1532,7 @@ for an application named <code>app</code>, the <code>default</code> profile and 
 label provided by the <code>EnvironmentRepository</code> implementation.</p>
 </div>
 <div class="paragraph">
-<p>You can configure the Health Indicator to check more appliations
+<p>You can configure the Health Indicator to check more applications
 along with custom profiles and custom labels, e.g.</p>
 </div>
 <div class="listingblock">
@@ -1536,15 +1591,13 @@ in the JRE lib/security directory with the ones that you downloaded).
 </table>
 </div>
 <div class="paragraph">
-<p>The server exposes <code>/encrypt</code> and <code>/decrypt</code> endpoints (on the
-assumption that these will be secured and only accessed by authorized
-agents). If the remote property sources contain encryted content
+<p>If the remote property sources contain encryted content
 (values starting with <code>{cipher}</code>) they will be decrypted before
 sending to clients over HTTP. The main advantage of this set up is
 that the property values don&#8217;t have to be in plain text when they are
 "at rest" (e.g. in a git repository). If a value cannot be decrypted
 it is replaced with an empty string, largely to prevent cipher text
-being used as a password in Spring Boot autconfigured HTTP basic.</p>
+being used as a password and accidentally leaking.</p>
 </div>
 <div class="paragraph">
 <p>If you are setting up a remote config repository for config client
@@ -1565,7 +1618,9 @@ instance:</p>
 secret password is protected.</p>
 </div>
 <div class="paragraph">
-<p>If you are editing a remote config file you can use the Config Server
+<p>The server also exposes <code>/encrypt</code> and <code>/decrypt</code> endpoints (on the
+assumption that these will be secured and only accessed by authorized
+agents). If you are editing a remote config file you can use the Config Server
 to encrypt values by POSTing to the <code>/encrypt</code> endpoint, e.g.</p>
 </div>
 <div class="listingblock">
@@ -1587,7 +1642,25 @@ mysecret</pre>
 <div class="paragraph">
 <p>Take the encypted value and add the <code>{cipher}</code> prefix before you put
 it in the YAML or properties file, and before you commit and push it
-to a remote, potentially insecure store.</p>
+to a remote, potentially insecure store. The <code>/encypt</code> and <code>/decrypt</code>
+endpoints also both accept paths of the form <code>/*/{name}/{profiles}</code>
+which can be used to control cryptography per application (name)
+and profile when clients call into the main Environment resource.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+to control the cryptography in this granular way you must also
+provide a <code>@Bean</code> of type <code>TextEncryptorLocator</code> that creates a
+different encryptor per name and profiles. The one that is provided
+by default does not do this.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The <code>spring</code> command line client (with Spring Cloud CLI extensions
@@ -1626,9 +1699,7 @@ it is just a single property value to configure.</p>
 <div class="paragraph">
 <p>To configure a symmetric key you just need to set <code>encrypt.key</code> to a
 secret String (or use an enviroment variable <code>ENCRYPT_KEY</code> to keep it
-out of plain text configuration files). You can also POST a key value
-to the <code>/key</code> endpoint (but that won&#8217;t change any existing encrypted
-values in remote repositories).</p>
+out of plain text configuration files).</p>
 </div>
 <div class="paragraph">
 <p>To configure an asymmetric key you can either set the key as a
@@ -1687,6 +1758,57 @@ your <code>application.yml</code> for the Config Server:</p>
     alias: mytestkey
     secret: changeme</pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_multiple_keys_and_key_rotation">Using Multiple Keys and Key Rotation</h3>
+<div class="paragraph">
+<p>In addition to the <code>{cipher}</code> prefix in encrypted property values, the
+Config Server looks for <code>{name:value}</code> prefixes (zero or many) before
+the start of the (Base64 encoded) cipher text. The keys are passed to
+a <code>TextEncryptorLocator</code> which can do whatever logic it needs to
+locate a <code>TextEncryptor</code> for the cipher. If you have configured a
+keystore (<code>encrypt.keystore.location</code>) the default locator will look
+for keys in the store with aliases as supplied by the "key" prefix,
+i.e. with a cipher text like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>foo:
+  bar: `{cipher}{key:testkey}...`</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>the locator will look for a key named "testkey". A secret can also be
+supplied via a <code>{secret:&#8230;&#8203;}</code> value in the prefix, but if it is not
+the default is to use the keystore password (which is what you get
+when you build a keytore and don&#8217;t specify a secret). If you <strong>do</strong>
+supply a secret it is recommended that you also encrypt the secrets
+using a custom <code>SecretLocator</code>.</p>
+</div>
+<div class="paragraph">
+<p>Key rotation is hardly ever necessary on cryptographic grounds if the
+keys are only being used to encrypt a few bytes of configuration data
+(i.e. they are not being used elsewhere), but occasionally you might
+need to change the keys if there is a security breach for instance. In
+that case all the clients would need to change their source config
+files (e.g. in git) and use a new <code>{key:&#8230;&#8203;}</code> prefix in all the
+ciphers, checking beforehand of course that the key alias is available
+in the Config Server keystore.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+the <code>{name:value}</code> prefixes can also be added to plaintext posted
+to the <code>/encrypt</code> endpoint, if you want to let the Config Server
+handle all encryption as well as decryption.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1769,8 +1891,7 @@ an Exception.</p>
 <div class="sect2">
 <h3 id="_locating_remote_configuration_resources">Locating Remote Configuration Resources</h3>
 <div class="paragraph">
-<p>The Config Service serves property sources from <code>/{name}/{env}/{label}</code>, where the default bindings in the
-client app are</p>
+<p>The Config Service serves property sources from <code>/{name}/{env}/{label}</code>, where the default bindings in the client app are</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1790,7 +1911,11 @@ client app are</p>
 (where <code>*</code> is "name", "env" or "label"). The "label" is useful for
 rolling back to previous versions of configuration; with the default
 Config Server implementation it can be a git label, branch name or
-commit id.</p>
+commit id. Label can also be provided as a comma-separated list, in
+which case the items in the list are tried on-by-one until one succeeds.
+This can be useful when working on a feature branch, for instance,
+when you might want to align the config label with your branch, but
+make it optional (e.g. <code>spring.cloud.config.label=myfeature,develop</code>).</p>
 </div>
 </div>
 <div class="sect2">
@@ -1872,7 +1997,7 @@ Intelligent Routing (Zuul) and Client Side Load Balancing (Ribbon).
 <div class="sect2">
 <h3 id="_registering_with_eureka">Registering with Eureka</h3>
 <div class="paragraph">
-<p>When a client registers with Eureka, it provide meta-data about itself
+<p>When a client registers with Eureka, it provides meta-data about itself
 such as host and port, health indicator URL, home page etc.  Eureka
 receives heartbeat messages from each instance belonging to a service.
 If the heartbeat fails over a configurable timetable, the instance is
@@ -3644,6 +3769,16 @@ of <code>AuthorizationCodeResourceDetails</code> so all its properties can be sp
 </div>
 </div>
 <div class="sect2">
+<h3 id="_token_type_in_user_info">Token Type in User Info</h3>
+<div class="paragraph">
+<p>Google (and certain other 3rd party identity providers) is more strict
+about the token type name that is sent in the headers to the user info
+endpoint. The default is "Bearer" which suits most providers and
+matches the spec, but if you need to change it you can set
+<code>spring.oauth2.resource.tokenType</code>.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_customizing_the_resttemplate">Customizing the RestTemplate</h3>
 <div class="paragraph">
 <p>The SSO (and Resource Server) features use an <code>OAuth2RestTemplate</code>
@@ -3954,7 +4089,7 @@ ProxyAuthenticationProperties] for full details.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-05-13 14:09:58 UTC
+Last updated 2015-06-19 15:18:07 UTC
 </div>
 </div>
 </body>
