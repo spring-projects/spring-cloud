@@ -416,6 +416,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_features">Features</a></li>
+<li><a href="#_cloud_native_applications">Cloud Native Applications</a>
+<ul class="sectlevel1">
+<li><a href="#_spring_cloud_context_application_context_services">Spring Cloud Context: Application Context Services</a>
+<ul class="sectlevel2">
+<li><a href="#_the_bootstrap_application_context">The Bootstrap Application Context</a></li>
+<li><a href="#_application_context_hierarchies">Application Context Hierarchies</a></li>
+<li><a href="#customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</a></li>
+<li><a href="#_customizing_the_bootstrap_configuration">Customizing the Bootstrap Configuration</a></li>
+<li><a href="#customizing-bootstrap-property-sources">Customizing the Bootstrap Property Sources</a></li>
+<li><a href="#_environment_changes">Environment Changes</a></li>
+<li><a href="#_refresh_scope">Refresh Scope</a></li>
+<li><a href="#_encryption_and_decryption">Encryption and Decryption</a></li>
+<li><a href="#_endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_commons_common_abstractions">Spring Cloud Commons: Common Abstractions</a>
+<ul class="sectlevel2">
+<li><a href="#_spring_resttemplate_as_a_load_balancer_client">Spring RestTemplate as a Load Balancer Client</a></li>
+<li><a href="#_multiple_resttemplate_objects">Multiple RestTemplate objects</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#_spring_cloud_config">Spring Cloud Config</a>
 <ul class="sectlevel1">
 <li><a href="#_quick_start">Quick Start</a>
@@ -427,7 +450,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_environment_repository">Environment Repository</a></li>
 <li><a href="#_security">Security</a></li>
-<li><a href="#_encryption_and_decryption">Encryption and Decryption</a></li>
+<li><a href="#_encryption_and_decryption_2">Encryption and Decryption</a></li>
 <li><a href="#_key_management">Key Management</a></li>
 <li><a href="#_creating_a_key_store_for_testing">Creating a Key Store for Testing</a></li>
 <li><a href="#_embedding_the_config_server">Embedding the Config Server</a></li>
@@ -438,16 +461,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#config-first-bootstrap">Config First Bootstrap</a></li>
 <li><a href="#eureka-first-bootstrap">Eureka First Bootstrap</a></li>
 <li><a href="#config-client-fail-fast">Config Client Fail Fast</a></li>
-<li><a href="#_environment_changes">Environment Changes</a></li>
-<li><a href="#_refresh_scope">Refresh Scope</a></li>
-<li><a href="#_encryption_and_decryption_2">Encryption and Decryption</a></li>
-<li><a href="#_endpoints">Endpoints</a></li>
 <li><a href="#_locating_remote_configuration_resources">Locating Remote Configuration Resources</a></li>
-<li><a href="#_the_bootstrap_application_context">The Bootstrap Application Context</a></li>
-<li><a href="#_application_context_hierarchies">Application Context Hierarchies</a></li>
-<li><a href="#customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</a></li>
-<li><a href="#_customizing_the_bootstrap_configuration">Customizing the Bootstrap Configuration</a></li>
-<li><a href="#customizing-bootstrap-property-sources">Customizing the Bootstrap Property Sources</a></li>
 <li><a href="#_security_2">Security</a></li>
 </ul>
 </li>
@@ -461,7 +475,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_status_page_and_health_indicator">Status Page and Health Indicator</a></li>
 <li><a href="#_eureka_metadata_for_instances_and_clients">Eureka Metadata for Instances and Clients</a></li>
 <li><a href="#_using_the_discoveryclient">Using the DiscoveryClient</a></li>
-<li><a href="#_alternatives_to_the_discoveryclient">Alternatives to the DiscoveryClient</a></li>
+<li><a href="#_alternatives_to_the_native_netflix_discoveryclient">Alternatives to the native Netflix DiscoveryClient</a></li>
 <li><a href="#_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</a></li>
 </ul>
 </li>
@@ -491,7 +505,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_using_ribbon_with_eureka">Using Ribbon with Eureka</a></li>
 <li><a href="#spring-cloud-ribbon-without-eureka">Example: How to Use Ribbon Without Eureka</a></li>
 <li><a href="#_using_the_ribbon_api_directly">Using the Ribbon API Directly</a></li>
-<li><a href="#_spring_resttemplate_as_a_ribbon_client">Spring RestTemplate as a Ribbon Client</a></li>
 </ul>
 </li>
 <li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a></li>
@@ -499,6 +512,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
 <ul class="sectlevel2">
 <li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
+<li><a href="#_uploading_files_through_zuul">Uploading Files through Zuul</a></li>
 <li><a href="#_plain_embedded_zuul">Plain Embedded Zuul</a></li>
 <li><a href="#_polyglot_support_with_sidecar">Polyglot support with Sidecar</a></li>
 </ul>
@@ -508,16 +522,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_spring_cloud_bus">Spring Cloud Bus</a>
 <ul class="sectlevel1">
 <li><a href="#_quick_start_2">Quick Start</a></li>
+<li><a href="#_addressing_an_instance">Addressing an Instance</a></li>
+<li><a href="#_addressing_all_instances_of_a_service">Addressing all instances of a service</a></li>
 <li><a href="#_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</a></li>
 </ul>
 </li>
 <li><a href="#_spring_boot_cloud_cli">Spring Boot Cloud CLI</a>
 <ul class="sectlevel1">
-<li><a href="#_installation">Installation</a>
-<ul class="sectlevel2">
+<li><a href="#_installation">Installation</a></li>
+<li><a href="#_writing_groovy_scripts_and_running_applications">Writing Groovy Scripts and Running Applications</a></li>
 <li><a href="#_encryption_and_decryption_3">Encryption and Decryption</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li><a href="#_spring_cloud_security">Spring Cloud Security</a>
@@ -599,10 +613,446 @@ and extensibility mechanism to cover others.</p>
 </div>
 </div>
 </div>
+<h1 id="_cloud_native_applications" class="sect0">Cloud Native Applications</h1>
+<div class="openblock partintro">
+<div class="content">
+<div class="paragraph">
+<p><a href="http://pivotal.io/platform-as-a-service/migrating-to-cloud-native-application-architectures-ebook">Cloud Native</a> is a style of application development that encourages easy adoption of best practices in the areas of continuous delivery and value-driven development. A related discipline is that of building <a href="http://12factor.net/">12-factor Apps</a> in which development practices are aligned with delivery and operations goals, for instance by using declarative programming and management and monitoring. Spring Cloud facilitates these styles of development in a number of specific ways and the starting point is a set of features that all components in a distributed system either need or need easy access to when required.</p>
+</div>
+<div class="paragraph">
+<p>Many of those features are covered by <a href="http://projects.spring.io/spring-boot">Spring Boot</a>, which we build on in Spring Cloud. Some more are delivered by Spring Cloud as two libraries: Spring Cloud Context and Spring Cloud Commons. Spring Cloud Context provides utilities and special services for the <code>ApplicationContext</code> of a Spring Cloud application (bootstrap context, encryption, refresh scope and environment endpoints). Spring Cloud Commons is a set of abstractions and common classes used in different Spring Cloud implementations (eg. Spring Cloud Netflix vs. Spring Cloud Consul).</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_cloud_context_application_context_services">Spring Cloud Context: Application Context Services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Boot has an opinionated view of how to build an application
+with Spring: for instance it has conventional locations for common
+configuration file, and endpoints for common management and monitoring
+tasks. Spring Cloud builds on top of that and adds a few features that
+probably all components in a system would use or occasionally need.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_bootstrap_application_context">The Bootstrap Application Context</h3>
+<div class="paragraph">
+<p>A Spring Cloud application operates by creating a "bootstrap"
+context, which is a parent context for the main application. Out of
+the box it is responsible for loading configuration properties from
+the external sources, and also decrypting properties in the local
+external configuration files. The two contexts share an <code>Environment</code>
+which is the source of external properties for any Spring
+application. Bootstrap properties are added with high precedence, so
+they cannot be overridden by local configuration.</p>
+</div>
+<div class="paragraph">
+<p>The bootstrap context uses a different convention for locating
+external configuration than the main application context, so instead
+of <code>application.yml</code> (or <code>.properties</code>) you use <code>bootstrap.yml</code>,
+keeping the external configuration for bootstrap and main context
+nicely separate. Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  application:
+    name: foo
+  cloud:
+    config:
+      uri: ${SPRING_CONFIG_URI:http://localhost:8888}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is a good idea to set the <code>spring.application.name</code> (in
+<code>bootstrap.yml</code> or <code>application.yml</code>) if your application needs any
+application-specific configuration from the server.</p>
+</div>
+<div class="paragraph">
+<p>You can disable the bootstrap process completely by setting
+<code>spring.cloud.bootstrap.enabled=false</code> (e.g. in System properties).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_application_context_hierarchies">Application Context Hierarchies</h3>
+<div class="paragraph">
+<p>If you build an application context from <code>SpringApplication</code> or
+<code>SpringApplicationBuilder</code>, then the Bootstrap context is added as a
+parent to that context. It is a feature of Spring that child contexts
+inherit property sources and profiles from their parent, so the "main"
+application context will contain additional property sources, compared
+to building the same context without Spring Cloud Config. The
+additional property sources are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>"bootstrap": an optional <code>CompositePropertySource</code> appears with high
+priority if any <code>PropertySourceLocators</code> are found in the Bootstrap
+context, and they have non-empty properties. An example would be
+properties from the Spring Cloud Config Server. See
+<a href="#customizing-bootstrap-property-sources">below</a> for instructions
+on how to customize the contents of this property source.</p>
+</li>
+<li>
+<p>"applicationConfig: [classpath:bootstrap.yml]" (and friends if
+Spring profiles are active). If you have a <code>bootstrap.yml</code> (or
+properties) then those properties are used to configure the Bootstrap
+context, and then they get added to the child context when its parent
+is set. They have lower precedence than the <code>application.yml</code> (or
+properties) and any other property sources that are added to the child
+as a normal part of the process of creating a Spring Boot
+application. See <a href="#customizing-bootstrap-properties">below</a> for
+instructions on how to customize the contents of these property
+sources.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Because of the ordering rules of property sources the "bootstrap"
+entries take precedence, but note that these do not contain any data
+from <code>bootstrap.yml</code>, which has very low precedence, but can be used
+to set defaults.</p>
+</div>
+<div class="paragraph">
+<p>You can extend the context hierarchy by simply setting the parent
+context of any <code>ApplicationContext</code> you create, e.g. using its own
+interface, or with the <code>SpringApplicationBuilder</code> convenience methods
+(<code>parent()</code>, <code>child()</code> and <code>sibling()</code>). The bootstrap context will be
+the parent of the most senior ancestor that you create yourself.
+Every context in the hierarchy will have its own "bootstrap" property
+source (possibly empty) to avoid promoting values inadvertently from
+parents down to their descendants.  Every context in the hierarchy can
+also (in principle) have a different <code>spring.application.name</code> and
+hence a different remote property source if there is a Config
+Server. Normal Spring application context behaviour rules apply to
+property resolution: properties from a child context override those in
+the parent, by name and also by property source name (if the child has
+a property source with the same name as the parent, the one from the
+parent is not included in the child).</p>
+</div>
+<div class="paragraph">
+<p>Note that the <code>SpringApplicationBuilder</code> allows you to share an
+<code>Environment</code> amongst the whole hierarchy, but that is not the
+default. Thus, sibling contexts in particular do not need to have the
+same profiles or property sources, even though they will share common
+things with their parent.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</h3>
+<div class="paragraph">
+<p>The <code>bootstrap.yml</code> (or <code>.properties) location can be specified using
+`spring.cloud.bootstrap.name</code> (default "bootstrap") or
+<code>spring.cloud.bootstrap.location</code> (default empty), e.g. in System
+properties. Those properties behave like the <code>spring.config.*</code>
+variants with the same name, in fact they are used to set up the
+bootstrap <code>ApplicationContext</code> by setting those properties in its
+<code>Environment</code>. If there is an active profile (from
+<code>spring.profiles.active</code> or through the <code>Environment</code> API in the
+context you are building) then properties in that profile will be
+loaded as well, just like in a regular Spring Boot app, e.g. from
+<code>bootstrap-development.properties</code> for a "development" profile.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_customizing_the_bootstrap_configuration">Customizing the Bootstrap Configuration</h3>
+<div class="paragraph">
+<p>The bootstrap context can be trained to do anything you like by adding
+entries to <code>/META-INF/spring.factories</code> under the key
+<code>org.springframework.cloud.bootstrap.BootstrapConfiguration</code>. This is
+a comma-separated list of Spring <code>@Configuration</code> classes which will
+be used to create the context. Any beans that you want to be available
+to the main application context for autowiring can be created here,
+and also there is a special contract for <code>@Beans</code> of type
+<code>ApplicationContextInitializer</code>. Classes can be marked with an <code>@Order</code>
+if you want to control the startup sequence (the default order is
+"last").</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Be careful when adding custom <code>BootstrapConfiguration</code> that the
+classes you add are not <code>@ComponentScanned</code> by mistake into your
+"main" application context, where they might not be needed.
+Use a separate package name for boot configuration classes that is
+not already covered by your <code>@ComponentScan</code> or <code>@SpringBootApplication</code>
+annotated configuration classes.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The bootstrap process ends by injecting initializers into the main
+<code>SpringApplication</code> instance (i.e. the normal Spring Boot startup
+sequence, whether it is running as a standalone app or deployed in an
+application server). First a bootstrap context is created from the
+classes found in <code>spring.factories</code> and then all <code>@Beans</code> of type
+<code>ApplicationContextInitializer</code> are added to the main
+<code>SpringApplication</code> before it is started.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="customizing-bootstrap-property-sources">Customizing the Bootstrap Property Sources</h3>
+<div class="paragraph">
+<p>The default property source for external configuration added by the
+bootstrap process is the Config Server, but you can add additional
+sources by adding beans of type <code>PropertySourceLocator</code> to the
+bootstrap context (via <code>spring.factories</code>). You could use this to
+insert additional properties from a different server, or from a
+database, for instance.</p>
+</div>
+<div class="paragraph">
+<p>As an example, consider the following trivial custom locator:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+public class CustomPropertySourceLocator implements PropertySourceLocator {
+
+    @Override
+    public PropertySource&lt;?&gt; locate(Environment environment) {
+        return new MapPropertySource("customProperty",
+                Collections.&lt;String, Object&gt;singletonMap("property.from.sample.custom.source", "worked as intended"));
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Environment</code> that is passed in is the one for the
+<code>ApplicationContext</code> about to be created, i.e. the one that we are
+supplying additional property sources for. It will already have its
+normal Spring Boot-provided property sources, so you can use those to
+locate a property source specific to this <code>Environment</code> (e.g. by
+keying it on the <code>spring.application.name</code>, as is done in the default
+Config Server property source locator).</p>
+</div>
+<div class="paragraph">
+<p>If you create a jar with this class in it and then add a
+<code>META-INF/spring.factories</code> containing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>org.springframework.cloud.bootstrap.BootstrapConfiguration=sample.custom.CustomPropertySourceLocator</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then the "customProperty" <code>PropertySource</code> will show up in any
+application that includes that jar on its classpath.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_environment_changes">Environment Changes</h3>
+<div class="paragraph">
+<p>The application will listen for an <code>EnvironmentChangedEvent</code> and react
+to the change in a couple of standard ways (additional
+<code>ApplicationListeners</code> can be added as <code>@Beans</code> by the user in the
+normal way). When an <code>EnvironmentChangedEvent</code> is observed it will
+have a list of key values that have changed, and the application will
+use those to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Re-bind any <code>@ConfigurationProperties</code> beans in the context</p>
+</li>
+<li>
+<p>Set the logger levels for any properties in <code>logging.level.*</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Note that the Config Client does not by default poll for changes in
+the <code>Environment</code>, and generally we would not recommend that approach
+for detecting changes (although you could set it up with a
+<code>@Scheduled</code> annotation). If you have a scaled-out client application
+then it is better to broadcast the <code>EnvironmentChangedEvent</code> to all
+the instances instead of having them polling for changes (e.g. using
+the <a href="https://github.com/spring-cloud/spring-cloud-bus">Spring Cloud
+Bus</a>).</p>
+</div>
+<div class="paragraph">
+<p>The <code>EnvironmentChangedEvent</code> covers a large class of refresh use
+cases, as long as you can actually make a change to the <code>Environment</code>
+and publish the event (those APIs are public and part of core
+Spring). You can verify the changes are bound to
+<code>@ConfigurationProperties</code> beans by visiting the <code>/configprops</code>
+endpoint (normal Spring Boot Actuator feature). For instance a
+<code>DataSource</code> can have its <code>maxPoolSize</code> changed at runtime (the
+default <code>DataSource</code> created by Spring Boot is an
+<code>@ConfigurationProperties</code> bean) and grow capacity
+dynamically. Re-binding <code>@ConfigurationProperties</code> does not cover
+another large class of use cases, where you need more control over the
+refresh, and where you need a change to be atomic over the whole
+<code>ApplicationContext</code>. To address those concerns we have
+<code>@RefreshScope</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refresh_scope">Refresh Scope</h3>
+<div class="paragraph">
+<p>A Spring <code>@Bean</code> that is marked as <code>@RefreshScope</code> will get special
+treatment when there is a configuration change. This addresses the
+problem of stateful beans that only get their configuration injected
+when they are initialized. For instance if a <code>DataSource</code> has open
+connections when the database URL is changed via the <code>Environment</code>, we
+probably want the holders of those connections to be able to complete
+what they are doing. Then the next time someone borrows a connection
+from the pool he gets one with the new URL.</p>
+</div>
+<div class="paragraph">
+<p>Refresh scope beans are lazy proxies that initialize when they are
+used (i.e. when a method is called), and the scope acts as a cache of
+initialized values. To force a bean to re-initialize on the next
+method call you just need to invalidate its cache entry.</p>
+</div>
+<div class="paragraph">
+<p>The <code>RefreshScope</code> is a bean in the context and it has a public method
+<code>refreshAll()</code> to refresh all beans in the scope by clearing the
+target cache. There is also a <code>refresh(String)</code> method to refresh an
+individual bean by name. This functionality is exposed in the
+<code>/refresh</code> endpoint (over HTTP or JMX).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<code>@RefreshScope</code> works (technically) on an <code>@Configuration</code>
+class, but it might lead to surprising behaviour: e.g. it does <strong>not</strong>
+mean that all the <code>@Beans</code> defined in that class are themselves
+<code>@RefreshScope</code>. Specifically, anything that depends on those beans
+cannot rely on them being updated when a refresh is initiated, unless
+it is itself in <code>@RefreshScope</code> (in which it will be rebuilt on a
+refresh and its dependencies re-injected, at which point they will be
+re-initialized from the refreshed <code>@Configuration</code>).
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_encryption_and_decryption">Encryption and Decryption</h3>
+<div class="paragraph">
+<p>The Config Client has an <code>Environment</code> pre-processor for decrypting
+property values locally. It follows the same rules as the Config
+Server, and has the same external configuration via <code>encrypt.*</code>. Thus
+you can use encrypted values in the form <code>{cipher}*</code> and as long as
+there is a valid key then they will be decrypted before the main
+application context gets the <code>Environment</code>. To use the encryption
+features in a client you need to include Spring Security RSA in your
+classpath (Maven co-ordinates
+"org.springframework.security:spring-security-rsa") and you also need
+the full strength JCE extensions in your JVM (google it and download
+from Oracle).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_endpoints">Endpoints</h3>
+<div class="paragraph">
+<p>For a Spring Boot Actuator application there are some additional management endpoints:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>POST to <code>/env</code> to update the <code>Environment</code> and rebind <code>@ConfigurationProperties</code> and log levels</p>
+</li>
+<li>
+<p><code>/refresh</code> for re-loading the boot strap context and refreshing the <code>@RefreshScope</code> beans</p>
+</li>
+<li>
+<p><code>/restart</code> for closing the <code>ApplicationContext</code> and restarting it (disabled by default)</p>
+</li>
+<li>
+<p><code>/pause</code> and <code>/resume</code> for calling the <code>Lifecycle</code> methods (<code>stop()</code> and <code>start()</code> on the <code>ApplicationContext</code>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_cloud_commons_common_abstractions">Spring Cloud Commons: Common Abstractions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Patterns such as service discovery, load balancing and circuit breakers lend themselves to a common abstraction layer that can be consumed by all Spring Cloud clients, independent of the implementation (e.g. discovery via Eureka or Consul).</p>
+</div>
+<div class="sect2">
+<h3 id="_spring_resttemplate_as_a_load_balancer_client">Spring RestTemplate as a Load Balancer Client</h3>
+<div class="paragraph">
+<p>You can use Ribbon indirectly via an autoconfigured <code>RestTemplate</code>
+when RestTemplate is on the classpath and a <code>LoadBalancerClient</code> bean is defined):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyClass {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public String doOtherStuff() {
+        String results = restTemplate.getForObject("http://stores/stores", String.class);
+        return results;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The URI needs to use a virtual host name (ie. service name, not a host name).
+The Ribbon client is used to create a full physical address. See
+{github-code}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java[RibbonAutoConfiguration]
+for details of how the <code>RestTemplate</code> is set up.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_multiple_resttemplate_objects">Multiple RestTemplate objects</h3>
+<div class="paragraph">
+<p>If you want a <code>RestTemplate</code> that is not load balanced, create a <code>RestTemplate</code>
+bean  and inject it as normal.  To access the load balanced <code>RestTemplate use
+the provided `@LoadBalanced</code> <code>Qualifier</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyClass {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    @LoadBalanced
+    private RestTemplate loadBalanced;
+
+    public String doOtherStuff() {
+        return loadBalanced.getForObject("http://stores/stores", String.class);
+    }
+
+    public String doStuff() {
+        return restTemplate.getForObject("http://example.com", String.class);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 <h1 id="_spring_cloud_config" class="sect0">Spring Cloud Config</h1>
 <div class="openblock partintro">
 <div class="content">
-Spring Cloud Config provides server and client-side support for externalized configuration in a distributed system. With the Config Server you have a central place to manage external properties for applications across all environments. The concepts on both client and server map identically to the Spring <code>Environment</code> and <code>PropertySource</code> abstractions, so they fit very well with Spring applications, but can be used with any application running in any language. As an application moves through the deployment pipeline from dev to test and into production you can manage the configuration between those environments and be certain that applications have everything they need to run when they migrate. The default implementation of the server storage backend uses git so it easily supports labelled versions of configuration environments, as well as being accessible to a wide range of tooling for managing the content.  It is easy to add alternative implementations and plug them in with Spring configuration.
+<div class="paragraph">
+<p>Spring Cloud Config provides server and client-side support for externalized configuration in a distributed system. With the Config Server you have a central place to manage external properties for applications across all environments. The concepts on both client and server map identically to the Spring <code>Environment</code> and <code>PropertySource</code> abstractions, so they fit very well with Spring applications, but can be used with any application running in any language. As an application moves through the deployment pipeline from dev to test and into production you can manage the configuration between those environments and be certain that applications have everything they need to run when they migrate. The default implementation of the server storage backend uses git so it easily supports labelled versions of configuration environments, as well as being accessible to a wide range of tooling for managing the content.  It is easy to add alternative implementations and plug them in with Spring configuration.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -895,17 +1345,17 @@ repositories:</p>
 <pre>spring:
   cloud:
     config:
-    server:
-      git:
-        uri: https://github.com/spring-cloud-samples/config-repo
-        repos:
-          simple: https://github.com/pattern1/config-repo
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
+          repos:
+            simple: https://github.com/pattern1/config-repo
             special:
               pattern: pattern*,*pattern1*
-            uri: https://github.com/pattern2/config-repo
-          local:
+              uri: https://github.com/pattern2/config-repo
+            local:
               pattern: local*
-            uri: file:/home/configsvc/config-repo</pre>
+              uri: file:/home/configsvc/config-repo</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -917,6 +1367,27 @@ pattern format is a comma-separated list of application names with
 wildcards.</p>
 </div>
 <div class="paragraph">
+<p>Every repository can also optionally store config files in
+sub-directories, and patterns to search for those directories can be
+specified as <code>searchPaths</code>. For example at the top level:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
+          searchPaths: foo,bar*</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example the server searches for config files in the top level
+and in the "foo/" sub-directory and also any sub-directory whose name
+begins with "bar".</p>
+</div>
+<div class="paragraph">
 <p>To use HTTP basic authentication on the remote repository add the
 "username" and "password" properties separately (not in the URL),
 e.g.</p>
@@ -926,9 +1397,9 @@ e.g.</p>
 <pre>spring:
   cloud:
     config:
-    server:
-      git:
-        uri: https://github.com/spring-cloud-samples/config-repo
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
           username: trolley
           password: strongpassword</pre>
 </div>
@@ -936,7 +1407,7 @@ e.g.</p>
 <div class="paragraph">
 <p>If you don&#8217;t use HTTPS and user credentials, SSH should also work out
 of the box when you store keys in the default directories (<code>~/.ssh</code>)
-and the uri is points to an SSH location,
+and the uri points to an SSH location,
 e.g. "<a href="mailto:git@github.com">git@github.com</a>:configuration/cloud-configuration". The
 repository is accessed using JGit, so any documentation you find on
 that should be applicable.</p>
@@ -951,6 +1422,36 @@ system (any static URL you want to point to with
 "spring.cloud.config.server.native.searchLocations"). To use the native
 profile just launch the Config Server with
 "spring.profiles.active=native".</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+The default value of the <code>searchLocations</code> is identical to a
+local Spring Boot application (so
+<code>[classpath:/, classpath:/config, file:./, file:./config]</code>) which will
+expose the <code>application.properties</code> from the server to all clients.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+A filesystem backend is great for getting started quickly and
+for testing. To use it in production you need to be sure that the
+file system is reliable, and shared across all instances of the
+Config Server.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>This repository implementation maps the <code>{label}</code> parameter of the
@@ -980,7 +1481,7 @@ on how to do that).</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_encryption_and_decryption">Encryption and Decryption</h3>
+<h3 id="_encryption_and_decryption_2">Encryption and Decryption</h3>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -1145,8 +1646,9 @@ your <code>application.yml</code> for the Config Server:</p>
 <pre>encrypt:
   keyStore:
     location: classpath:/server.jks
+    password: letmein
     alias: mytestkey
-    password: letmein</pre>
+    secret: changeme</pre>
 </div>
 </div>
 </div>
@@ -1160,7 +1662,12 @@ need to you can embed it in another application. Just use the
 to serve the resources under a prefix. The prefix should start but not
 end with a "/". It is applied to the <code>@RequestMappings</code> in the Config
 Server (i.e. underneath the Spring Boot prefixes <code>server.servletPath</code>
-and <code>server.contextPath</code>).</p>
+and <code>server.contextPath</code>). Another optional property that can be
+useful in this case is <code>spring.cloud.config.server.bootstrap</code> which is
+a flag to indicate that the server should configure itself from its
+own remote repository. The flag is off by default because it can delay
+startup, but when embedded in another application it makes sense to
+initialize the same way as any other application.</p>
 </div>
 </div>
 </div>
@@ -1223,136 +1730,6 @@ an Exception.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_environment_changes">Environment Changes</h3>
-<div class="paragraph">
-<p>The application will listen for an <code>EnvironmentChangedEvent</code> and react
-to the change in a couple of standard ways (additional
-<code>ApplicationListeners</code> can be added as <code>@Beans</code> by the user in the
-normal way). When an <code>EnvironmentChangedEvent</code> is observed it will
-have a list of key values that have changed, and the application will
-use those to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Re-bind any <code>@ConfigurationProperties</code> beans in the context</p>
-</li>
-<li>
-<p>Set the logger levels for any properties in <code>logging.level.*</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Note that the Config Client does not by default poll for changes in
-the <code>Environment</code>, and generally we would not recommend that approach
-for detecting changes (although you could set it up with a
-<code>@Scheduled</code> annotation). If you have a scaled-out client application
-then it is better to broadcast the <code>EnvironmentChangedEvent</code> to all
-the instances instead of having them polling for changes (e.g. using
-the <a href="https://github.com/spring-cloud/spring-cloud-bus">Spring Cloud
-Bus</a>).</p>
-</div>
-<div class="paragraph">
-<p>The <code>EnvironmentChangedEvent</code> covers a large class of refresh use
-cases, as long as you can actually make a change to the <code>Environment</code>
-and publish the event (those APIs are public and part of core
-Spring). You can verify the changes are bound to
-<code>@ConfigurationProperties</code> beans by visiting the <code>/configprops</code>
-endpoint (normal Spring Boot Actuator feature). For instance a
-<code>DataSource</code> can have its <code>maxPoolSize</code> changed at runtime (the
-default <code>DataSource</code> created by Spring Boot is an
-<code>@ConfigurationProperties</code> bean) and grow capacity
-dynamically. Re-binding <code>@ConfigurationProperties</code> does not cover
-another large class of use cases, where you need more control over the
-refresh, and where you need a change to be atomic over the whole
-<code>ApplicationContext</code>. To address those concerns we have
-<code>@RefreshScope</code>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_refresh_scope">Refresh Scope</h3>
-<div class="paragraph">
-<p>A Spring <code>@Bean</code> that is marked as <code>@RefreshScope</code> will get special
-treatment when there is a configuration change. This addresses the
-problem of stateful beans that only get their configuration injected
-when they are initialized. For instance if a <code>DataSource</code> has open
-connections when the database URL is changed via the <code>Environment</code>, we
-probably want the holders of those connections to be able to complete
-what they are doing. Then the next time someone borrows a connection
-from the pool he gets one with the new URL.</p>
-</div>
-<div class="paragraph">
-<p>Refresh scope beans are lazy proxies that initialize when they are
-used (i.e. when a method is called), and the scope acts as a cache of
-initialized values. To force a bean to re-initialize on the next
-method call you just need to invalidate its cache entry.</p>
-</div>
-<div class="paragraph">
-<p>The <code>RefreshScope</code> is a bean in the context and it has a public method
-<code>refreshAll()</code> to refresh all beans in the scope by clearing the
-target cache. There is also a <code>refresh(String)</code> method to refresh an
-individual bean by name. This functionality is exposed in the
-<code>/refresh</code> endpoint (over HTTP or JMX).</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-<code>@RefreshScope</code> works (technically) on an <code>@Configuration</code>
-class, but it might lead to surprising behaviour: e.g. it does <strong>not</strong>
-mean that all the <code>@Beans</code> defined in that class are themselves
-<code>@RefreshScope</code>. Specifically, anything that depends on those beans
-cannot rely on them being updated when a refresh is initiated, unless
-it is itself in <code>@RefreshScope</code> (in which it will be rebuilt on a
-refresh and its dependencies re-injected, at which point they will be
-re-initialized from the refreshed <code>@Configuration</code>).
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_encryption_and_decryption_2">Encryption and Decryption</h3>
-<div class="paragraph">
-<p>The Config Client has an <code>Environment</code> pre-processor for decrypting
-property values locally. It follows the same rules as the Config
-Server, and has the same external configuration via <code>encrypt.*</code>. Thus
-you can use encrypted values in the form <code>{cipher}*</code> and as long as
-there is a valid key then they will be decrypted before the main
-application context gets the <code>Environment</code>. To use the encryption
-features in a client you need to include Spring Security RSA in your
-classpath (Maven co-ordinates
-"org.springframework.security:spring-security-rsa") and you also need
-the full strength JCE extensions in your JVM (google it and download
-from Oracle).</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_endpoints">Endpoints</h3>
-<div class="paragraph">
-<p>For a Spring Boot Actuator application there are some additional management endpoints:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>POST to <code>/env</code> to update the <code>Environment</code> and rebind <code>@ConfigurationProperties</code> and log levels</p>
-</li>
-<li>
-<p><code>/refresh</code> for re-loading the boot strap context and refreshing the <code>@RefreshScope</code> beans</p>
-</li>
-<li>
-<p><code>/restart</code> for closing the <code>ApplicationContext</code> and restarting it (disabled by default)</p>
-</li>
-<li>
-<p><code>/pause</code> and <code>/resume</code> for calling the <code>Lifecycle</code> methods (<code>stop()</code> and <code>start()</code> on the <code>ApplicationContext</code>)</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_locating_remote_configuration_resources">Locating Remote Configuration Resources</h3>
 <div class="paragraph">
 <p>The Config Service serves property sources from <code>/{name}/{env}/{label}</code>, where the default bindings in the
@@ -1377,200 +1754,6 @@ client app are</p>
 rolling back to previous versions of configuration; with the default
 Config Server implementation it can be a git label, branch name or
 commit id.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_the_bootstrap_application_context">The Bootstrap Application Context</h3>
-<div class="paragraph">
-<p>The Config Client operates by creating a "bootstrap" application
-context, which is a parent context for the main application. Out of
-the box it is responsible for loading configuration properties from
-the Config Server, and also decrypting properties in the local
-external configuration files. The two contexts share an <code>Environment</code>
-which is the source of external properties for any Spring
-application. Bootstrap properties are added with high precedence, so
-they cannot be overridden by local configuration.</p>
-</div>
-<div class="paragraph">
-<p>The bootstrap context uses a different convention for locating
-external configuration than the main application context, so instead
-of <code>application.yml</code> (or <code>.properties</code>) you use <code>bootstrap.yml</code>,
-keeping the external configuration for bootstrap and main context
-nicely separate. Example:</p>
-</div>
-<div class="listingblock">
-<div class="title">bootstrap.yml</div>
-<div class="content">
-<pre>spring:
-  application:
-    name: foo
-  cloud:
-    config:
-      uri: ${SPRING_CONFIG_URI:http://localhost:8888}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It is a good idea to set the <code>spring.application.name</code> (in
-<code>bootstrap.yml</code> or <code>application.yml</code>) if your application needs any
-application-specific configuration from the server.</p>
-</div>
-<div class="paragraph">
-<p>You can disable the bootstrap process completely by setting
-<code>spring.cloud.bootstrap.enabled=false</code> (e.g. in System properties).</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_application_context_hierarchies">Application Context Hierarchies</h3>
-<div class="paragraph">
-<p>If you build an application context from <code>SpringApplication</code> or
-<code>SpringApplicationBuilder</code>, then the Bootstrap context is added as a
-parent to that context. It is a feature of Spring that child contexts
-inherit property sources and profiles from their parent, so the "main"
-application context will contain additional property sources, compared
-to building the same context without Spring Cloud Config. The
-additional property sources are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>"bootstrap": an optional <code>CompositePropertySource</code> appears with high
-priority if any <code>PropertySourceLocators</code> are found in the Bootstrap
-context, and they have non-empty properties. An example would be
-properties from the Spring Cloud Config Server. See
-<a href="#customizing-bootstrap-property-sources">below</a> for instructions
-on how to customize the contents of this property source.</p>
-</li>
-<li>
-<p>"applicationConfig: [classpath:bootstrap.yml]" (and friends if
-Spring profiles are active). If you have a <code>bootstrap.yml</code> (or
-properties) then those properties are used to configure the Bootstrap
-context, and then they get added to the child context when its parent
-is set. They have lower precedence than the <code>application.yml</code> (or
-properties) and any other property sources that are added to the child
-as a normal part of the process of creating a Spring Boot
-application. See <a href="#customizing-bootstrap-properties">below</a> for
-instructions on how to customize the contents of these property
-sources.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Because of the ordering rules of property sources the "bootstrap"
-entries take precedence, but note that these do not contain any data
-from <code>bootstrap.yml</code>, which has very low precedence, but can be used
-to set defaults.</p>
-</div>
-<div class="paragraph">
-<p>You can extend the context hierarchy by simply setting the parent
-context of any <code>ApplicationContext</code> you create, e.g. using its own
-interface, or with the <code>SpringApplicationBuilder</code> convenience methods
-(<code>parent()</code>, <code>child()</code> and <code>sibling()</code>). The bootstrap context will be
-the parent of the most senior ancestor that you create yourself.
-Every context in the hierarchy will have its own "bootstrap" property
-source (possibly empty) to avoid promoting values inadvertently from
-parents down to their descendants.  Every context in the hierarchy can
-also (in principle) have a different <code>spring.application.name</code> and
-hence a different remote property source if there is a Config
-Server. Normal Spring application context behaviour rules apply to
-property resolution: properties from a child context override those in
-the parent, by name and also by property source name (if the child has
-a property source with the same name as the parent, the one from the
-parent is not included in the child).</p>
-</div>
-<div class="paragraph">
-<p>Note that the <code>SpringApplicationBuilder</code> allows you to share an
-<code>Environment</code> amongst the whole hierarchy, but that is not the
-default. Thus, sibling contexts in particular do not need to have the
-same profiles or property sources, even though they will share common
-things with their parent.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</h3>
-<div class="paragraph">
-<p>The <code>bootstrap.yml</code> (or <code>.properties) location can be specified using
-`spring.cloud.bootstrap.name</code> (default "bootstrap") or
-<code>spring.cloud.bootstrap.location</code> (default empty), e.g. in System
-properties. Those properties behave like the <code>spring.config.*</code>
-variants with the same name, in fact they are used to set up the
-bootstrap <code>ApplicationContext</code> by setting those properties in its
-<code>Environment</code>. If there is an active profile (from
-<code>spring.profiles.active</code> or through the <code>Environment</code> API in the
-context you are building) then properties in that profile will be
-loaded as well, just like in a regular Spring Boot app, e.g. from
-<code>bootstrap-development.properties</code> for a "development" profile.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_customizing_the_bootstrap_configuration">Customizing the Bootstrap Configuration</h3>
-<div class="paragraph">
-<p>The bootstrap context can be trained to do anything you like by adding
-entries to <code>/META-INF/spring.factories</code> under the key
-<code>org.springframework.cloud.bootstrap.BootstrapConfiguration</code>. This is
-a comma-separated list of Spring <code>@Configuration</code> classes which will
-be used to create the context. Any beans that you want to be available
-to the main application context for autowiring can be created here,
-and also there is a special contract for <code>@Beans</code> of type
-<code>ApplicationContextInitializer</code>.</p>
-</div>
-<div class="paragraph">
-<p>The bootstrap process ends by injecting initializers into the main
-<code>SpringApplication</code> instance (i.e. the normal Spring Boot startup
-sequence, whether it is running as a standalone app or deployed in an
-application server). First a bootstrap context is created from the
-classes found in <code>spring.factories</code> and then all <code>@Beans</code> of type
-<code>ApplicationContextInitializer</code> are added to the main
-<code>SpringApplication</code> before it is started.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="customizing-bootstrap-property-sources">Customizing the Bootstrap Property Sources</h3>
-<div class="paragraph">
-<p>The default property source for external configuration added by the
-bootstrap process is the Config Server, but you can add additional
-sources by adding beans of type <code>PropertySourceLocator</code> to the
-bootstrap context (via <code>spring.factories</code>). You could use this to
-insert additional properties from a different server, or from a
-database, for instance.</p>
-</div>
-<div class="paragraph">
-<p>As an example, consider the following trivial custom locator:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-public class CustomPropertySourceLocator implements PropertySourceLocator {
-
-    @Override
-    public PropertySource&lt;?&gt; locate(Environment environment) {
-        return new MapPropertySource("customProperty",
-                Collections.&lt;String, Object&gt;singletonMap("property.from.sample.custom.source", "worked as intended"));
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>Environment</code> that is passed in is the one for the
-<code>ApplicationContext</code> about to be created, i.e. the one that we are
-supplying additional property sources for. It will already have its
-normal Spring Boot-provided property sources, so you can use those to
-locate a property source specific to this <code>Environment</code> (e.g. by
-keying it on the <code>spring.application.name</code>, as is done in the default
-Config Server property source locator).</p>
-</div>
-<div class="paragraph">
-<p>If you create a jar with this class in it and then add a
-<code>META-INF/spring.factories</code> containing:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>org.springframework.cloud.bootstrap.BootstrapConfiguration=sample.custom.CustomPropertySourceLocator</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>then the "customProperty" <code>PropertySource</code> will show up in any
-application that includes that jar on its classpath.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1761,9 +1944,9 @@ application, so it&#8217;s helpful if they are accurate.</p>
 <div class="content">
 <pre>eureka:
   instance:
+    hostname: ${vcap.application.uris[0]}
+    nonSecurePort: 80
     metadataMap:
-      hostname: ${vcap.application.uris[0]}
-      nonSecurePort: 80
       instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${server.port}}}</pre>
 </div>
 </div>
@@ -1786,7 +1969,7 @@ application, so it&#8217;s helpful if they are accurate.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>With this meatdata, and multiple service instances deployed on
+<p>With this metadata, and multiple service instances deployed on
 localhost, the random value will kick in there to make the instance
 unique. In Cloudfoundry the <code>spring.application.instance_id</code> will be
 populated automatically in a Spring Boot Actuator application, so the
@@ -1798,7 +1981,9 @@ random value will not be needed.</p>
 <h3 id="_using_the_discoveryclient">Using the DiscoveryClient</h3>
 <div class="paragraph">
 <p>Once you have an app that is <code>@EnableEurekaClient</code> you can use it to
-discover service instances from the <a href="#spring-cloud-eureka-server">Eureka Server</a>. One way to do that is to use the native <code>DiscoveryClient</code>, e.g.</p>
+discover service instances from the <a href="#spring-cloud-eureka-server">Eureka Server</a>. One way to do that is to use the native
+<code>com.netflix.discovery.DiscoveryClient</code> (as opposed to the Spring
+Cloud <code>DiscoveryClient</code>), e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1831,7 +2016,7 @@ another <code>SmartLifecycle</code> with higher phase.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_alternatives_to_the_discoveryclient">Alternatives to the DiscoveryClient</h3>
+<h3 id="_alternatives_to_the_native_netflix_discoveryclient">Alternatives to the native Netflix DiscoveryClient</h3>
 <div class="paragraph">
 <p>You don&#8217;t have to use the raw Netflix <code>DiscoveryClient</code> and usually it
 is more convenient to use it behind a wrapper of some sort. Spring
@@ -1842,6 +2027,25 @@ URLs. To configure Ribbon with a fixed list of physical servers you
 can simply set <code>&lt;client&gt;.ribbon.listOfServers</code> to a comma-separated
 list of physical addresses (or hostnames), where <code>&lt;client&gt;</code> is the ID
 of the client.</p>
+</div>
+<div class="paragraph">
+<p>You can also use the <code>org.springframework.cloud.client.discovery.DiscoveryClient</code>
+which provides a simple API for discovery clients that is not specific
+to Netflix, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Autowired
+private DiscoveryClient discoveryClient;
+
+public String serviceUrl() {
+    List&lt;ServiceInstance&gt; list = client.getInstances("STORES");
+    if (list != null &amp;&amp; list.size() &gt; 0 ) {
+        return list.get(0).getUri();
+    }
+    return null;
+}</pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1865,12 +2069,11 @@ assumptions about the lease renewal period.</p>
 <h2 id="spring-cloud-eureka-server">Service Discovery: Eureka Server</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Example eureka server:</p>
+<p>Example eureka server (e.g. using spring-cloud-starter-eureka-server to set up the classpath):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-@EnableAutoConfiguration
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
 @EnableEurekaServer
 public class Application {
 
@@ -1939,34 +2142,32 @@ springBoot {
 </tr>
 </table>
 </div>
-<div class="admonitionblock note">
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Tip</div>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The Eureka server is tied to log4j and doesn&#8217;t work with logback,
-so the dependency configuration
-has to be tweaked compared to a normal Spring Boot app. The
-<code>spring-cloud-starter-eureka-server</code> does this for you, but if you
-add logback transitively through another dependency you will need to
-exclude it manually, e.g. in Maven</p>
+<p>Due to Gradle&#8217;s dependency resolution rules and the lack of a parent bom feature, simply depending on spring-cloud-starter-eureka-server can cause failures on application startup. To remedy this the Spring dependency management plugin must be added and the Spring cloud starter parent bom must be imported like so:</p>
 </div>
 <div class="listingblock">
-<div class="title">pom.xml</div>
+<div class="title">build.gradle</div>
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-    &lt;exclusions&gt;
-        &lt;exclusion&gt;
-            &lt;artifactId&gt;spring-boot-starter-logging&lt;/artifactId&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;/exclusion&gt;
-    &lt;/exclusions&gt;
-&lt;/dependency&gt;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">buildscript {
+  dependencies {
+    classpath "io.spring.gradle:dependency-management-plugin:0.4.0.RELEASE"
+  }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+  imports {
+    mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:1.0.0.RELEASE'
+  }
+}</code></pre>
 </div>
 </div>
 </td>
@@ -2114,9 +2315,8 @@ IP Address rather than its hostname.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@Configuration
-@EnableAutoConfiguration
-@EnableHystrix
+<pre>@SpringBootApplication
+@EnableCircuitBreaker
 public class Application {
 
     public static void main(String[] args) {
@@ -2205,10 +2405,10 @@ for details on the properties available.</p>
 <div class="sect2">
 <h3 id="_turbine">Turbine</h3>
 <div class="paragraph">
-<p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation.  All of the documented configuration properties from <a href="https://github.com/Netflix/Turbine/wiki/Configuration-(1.x)">the Turbine 1 wiki</a> apply.  The only difference is that the <code>turbine.instanceUrlSuffix</code> does not need the port prepended as this is handled automatically unless <code>turbine.instanceInsertPort=false</code>.</p>
+<p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation  (e.g. using spring-cloud-starter-turbine to set up the classpath).  All of the documented configuration properties from <a href="https://github.com/Netflix/Turbine/wiki/Configuration-(1.x)">the Turbine 1 wiki</a> apply.  The only difference is that the <code>turbine.instanceUrlSuffix</code> does not need the port prepended as this is handled automatically unless <code>turbine.instanceInsertPort=false</code>.</p>
 </div>
 <div class="paragraph">
-<p>Configuration key <code>turbine.appConfig</code> is a list of eureka serviceId&#8217;s that turbine will use to lookup instances.  The turbine stream is then used in the Hystrix dashboard using a url that looks like: <code><a href="http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt" class="bare">http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt</a>;</code> (the cluster parameter can be omitted if the name is "default"). The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>. Value returned from eureka are uppercase, thus we expect this example to work if there is an app registered with Eureka called "customers":</p>
+<p>The configuration key <code>turbine.appConfig</code> is a list of eureka serviceIds that turbine will use to lookup instances.  The turbine stream is then used in the Hystrix dashboard using a url that looks like: <code><a href="http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt" class="bare">http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt</a>;</code> (the cluster parameter can be omitted if the name is "default"). The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>. Values returned from eureka are uppercase, thus we expect this example to work if there is an app registered with Eureka called "customers":</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2219,7 +2419,22 @@ for details on the properties available.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>clusterName</code> can be customized by a SPEL expression in <code>turbine.clusterNameExpression</code>.  For example, <code>turbine.clusterNameExpression=aSGName</code> would get the cluster name from the AWS ASG name. To use the "default" cluster for all apps you need a string literal expression (with single quotes):</p>
+<p>The <code>clusterName</code> can be customized by a SPEL expression in <code>turbine.clusterNameExpression</code> with root an instance of <code>InstanceInfo</code>. The default value is <code>appName</code>, which means that the Eureka serviceId ends up as the cluster key (i.e. the <code>InstanceInfo</code> for customers has an <code>appName</code> of "CUSTOMERS").  A different example would be <code>turbine.clusterNameExpression=aSGName</code>, which would get the cluster name from the AWS ASG name. Another example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>turbine:
+  aggregator:
+    clusterConfig: SYSTEM,USER
+  appConfig: customers,stores,ui,admin
+  clusterNameExpression: metadata.cluster</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, the cluster name from 4 services is pulled from their metadata map, and is expected to have values that include "SYSTEM" and "USER".</p>
+</div>
+<div class="paragraph">
+<p>To use the "default" cluster for all apps you need a string literal expression (with single quotes):</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2314,6 +2529,24 @@ public class TestConfiguration {
 <p>In this case the client is composed from the components already in
 <code>RibbonClientConfiguration</code> together with any in <code>FooConfiguration</code>
 (where the latter generally will override the former).</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+The <code>FooConfiguration</code> has to be <code>@Configuration</code> but take
+care that it is not in a <code>@ComponentScan</code> for the main application
+context, otherwise it will be shared by all the <code>@RibbonClients</code>. If
+you use <code>@ComponentScan</code> (or <code>@SpringBootApplication</code>) you need to
+take steps to avoid it being included (for instance put it in a
+separate, non-overlapping package, or specify the packages to scan
+explicitly in the <code>@ComponentScan</code>).
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Spring Cloud Netflix provides the following beans by default for ribbon
@@ -2420,33 +2653,6 @@ configuration like this</p>
     }
 }</code></pre>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_spring_resttemplate_as_a_ribbon_client">Spring RestTemplate as a Ribbon Client</h3>
-<div class="paragraph">
-<p>You can use Ribbon indirectly via an autoconfigured <code>RestTemplate</code>
-(provided Spring Cloud and Ribbon are both on the classpath):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class MyClass {
-    @Autowired
-    private RestTemplate restTemplate;
-
-    public String doOtherStuff() {
-        String results = restTemplate.getForObject("http://stores/stores", String.class);
-        return results;
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The URI is inspected to see if it has a full host name, or a virtual
-one. If it is virtual the Ribbon client is used to create a full
-physical address. See
-<a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java">RibbonAutoConfiguration</a>
-for details of how the <code>RestTemplate</code> is set up.</p>
 </div>
 </div>
 </div>
@@ -2649,8 +2855,8 @@ and the serviceId independently:</p>
 <div class="paragraph">
 <p>This means that http calls to "/myusers" get forwarded to the
 "users_service" service.  The route has to have a "path" which can be
-specified as an ant-style pattern, so "/myusers/<strong>" only matches one
-level, but "/myusers/</strong>*" matches hierarchically.</p>
+specified as an ant-style pattern, so "/myusers/*" only matches one
+level, but "/myusers/**" matches hierarchically.</p>
 </div>
 <div class="paragraph">
 <p>The location of the backend can be specified as either a "serviceId"
@@ -2664,6 +2870,24 @@ level, but "/myusers/</strong>*" matches hierarchically.</p>
     users:
       path: /myusers/**
       url: http://example.com/users_service</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These simple url-routes doesn&#8217;t get executed as HystrixCommand nor can you loadbalance multiple url with Ribbon.
+To achieve this specify a service-route and configure a Ribbon client for the serviceId, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    users:
+      path: /myusers/**
+      serviceId: users
+
+ users:
+  ribbon:
+    listOfServers: example.com,google.com</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2707,11 +2931,47 @@ server if you set a default route ("/"), for example <code>zuul.route.home:
 </div>
 </div>
 <div class="sect2">
+<h3 id="_uploading_files_through_zuul">Uploading Files through Zuul</h3>
+<div class="paragraph">
+<p>If you <code>@EnableZuulProxy</code> you can use the proxy paths to
+upload files and it should just work as long as the files
+are small. For large files there is an alternative path
+which bypasses the Spring <code>DispatcherServlet</code> (to
+avoid multipart processing) in "/zuul/<strong>". I.e. if
+<code>zuul.routes.customers=/customers/</strong>*</code> then you can
+POST large files to "/zuul/customers/*". The servlet
+path is externalized via <code>zuul.servletPath</code>. Extremely
+large files will also require elevated timeout settings
+if the proxy route takes you through a Ribbon load
+balancer, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that for streaming to work with large files, you need to use chunked encoding in the request (which some browsers
+do not do by default). E.g. on the command line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl -v -H "Transfer-Encoding: chunked" \
+    -F "file=@mylarge.iso" localhost:9999/zuul/simple/file</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_plain_embedded_zuul">Plain Embedded Zuul</h3>
 <div class="paragraph">
 <p>You can also run a Zuul server without the proxying, or switch on parts of the proxying platform selectively, if you
 use <code>@EnableZuulServer</code> (instead of <code>@EnableZuulProxy</code>). Any beans that you add to the application of type <code>ZuulFilter</code>
-will be installed automatically.</p>
+will be installed automatically, as they are with <code>@EnableZuulProxy</code>, but without any of the proxy filters being added
+automatically.</p>
 </div>
 <div class="paragraph">
 <p>In this case the routes into the Zuul server are
@@ -2842,7 +3102,12 @@ info:
 <h1 id="_spring_cloud_bus" class="sect0">Spring Cloud Bus</h1>
 <div class="openblock partintro">
 <div class="content">
-Spring Cloud Bus links nodes of a distributed system with a lightweight message broker. This can then be used to broadcast state changes (e.g. configuration changes) or other management instructions. A key idea is that the Bus is like a distributed Actuator for a Spring Boot application that is scaled out, but it can also be used as a communication channel between apps. The only implementation currently is with an AMQP broker as the transport, but the same basic feature set (and some more depending on the transport) is on the roadmap for other transports.
+<div class="paragraph">
+<p>Spring Cloud Bus links nodes of a distributed system with a lightweight message broker. This can then be used to broadcast state changes (e.g. configuration changes) or other management instructions. A key idea is that the Bus is like a distributed Actuator for a Spring Boot application that is scaled out, but it can also be used as a communication channel between apps. The only implementation currently is with an AMQP broker as the transport, but the same basic feature set (and some more depending on the transport) is on the roadmap for other transports.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2868,6 +3133,22 @@ Spring Cloud Bus links nodes of a distributed system with a lightweight message 
 </div>
 </div>
 <div class="sect1">
+<h2 id="_addressing_an_instance">Addressing an Instance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The HTTP endpoints accept a "destination" parameter, e.g. "/bus/refresh?destination=customers:9000", where the destination is an <code>ApplicationContext</code> ID. If the ID is owned by an instance on the Bus then it will process the message and all other instances will ignore it. Spring Boot sets the ID for you in the <code>ContextIdApplicationContextInitializer</code> to a combination of the <code>spring.application.name</code>, active profiles and <code>server.port</code> by default.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_addressing_all_instances_of_a_service">Addressing all instances of a service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The "destination" parameter is used in a Spring <code>PathMatcher</code> (with the path separator as a colon <code>:</code>) to determine if an instance will process the message.   Using the example from above, "/bus/refresh?destination=customers:**" will  target  all instances of the "customers" service regardless of the profiles and ports set as the <code>ApplicationContext</code> ID.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -2889,8 +3170,15 @@ and annotate them <code>@BusConnectionFactory</code> and <code>@Primary</code> r
 <h1 id="_spring_boot_cloud_cli" class="sect0">Spring Boot Cloud CLI</h1>
 <div class="openblock partintro">
 <div class="content">
-Spring Boot command line features for
-<a href="https://github.com/spring-cloud">Spring Cloud</a>.
+<div class="paragraph">
+<p>Spring Boot CLI provides <a href="http://projects.spring.io/spring-boot">Spring Boot</a> command line features for
+<a href="https://github.com/spring-cloud">Spring Cloud</a>. You can write Groovy scripts to run Spring Cloud component applications
+(e.g. <code>@EnableEurekaServer</code>). You can also easily do things like encryption and decryption to support Spring Cloud
+Config clients with secret configuration values.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2905,7 +3193,7 @@ sure you have
 <div class="literalblock">
 <div class="content">
 <pre>$ spring version
-Spring CLI v1.2.1.RELEASE</pre>
+Spring CLI v1.2.2.RELEASE</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2913,8 +3201,8 @@ Spring CLI v1.2.1.RELEASE</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ gvm install springboot 1.2.1.RELEASE
-$ gvm use springboot 1.2.1.RELEASE</code></pre>
+<pre class="highlight"><code>$ gvm install springboot 1.2.2.RELEASE
+$ gvm use springboot 1.2.2.RELEASE</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2923,11 +3211,9 @@ $ gvm use springboot 1.2.1.RELEASE</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>$ mvn install
-$ spring install org.springframework.cloud:spring-cloud-cli:1.0.0.BUILD-SNAPSHOT</code></pre>
+$ spring install org.springframework.cloud:spring-cloud-cli:1.0.1.RELEASE</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_encryption_and_decryption_3">Encryption and Decryption</h3>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -2946,11 +3232,84 @@ in the JRE lib/security directory with the ones that you downloaded).
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_writing_groovy_scripts_and_running_applications">Writing Groovy Scripts and Running Applications</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud CLI has support for most of the Spring Cloud declarative
+features, such as the <code>@Enable*</code> class of annotations. For example,
+here is a fully functional Eureka server</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@EnableEurekaServer
+class Eureka {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which you can run from the command line like this</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ spring run app.groovy</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To include additional dependencies, often it suffices just to add the
+appropriate feature-enabling annotation, e.g. <code>@EnableConfigServer</code>,
+<code>@EnableOAuth2Sso</code> or <code>@EnableEurekaClient</code>. To manually include a
+dependency you can use a <code>@Grab</code> with the special "Spring Boot" short
+style artifact co-ordinates, i.e. with just the artifact ID (no need
+for group or version information), e.g. to set up a client app to
+listen on AMQP for management events from the Spring CLoud Bus:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Grab('spring-cloud-starter-bus-amqp')
+@RestController
+class Service {
+  @RequestMapping('/')
+  def home() { [message: 'Hello'] }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_encryption_and_decryption_3">Encryption and Decryption</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Spring Cloud CLI comes with an "encrypt" and a "decrypt"
+command. Both accept arguments in the same form with a key specified
+as a mandatory "--key", e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ spring encrypt mysecret --key foo
+682bc583f4641835fa2db009355293665d2647dade3375c0ee201de2a49f7bda
+$ spring decrypt --key foo 682bc583f4641835fa2db009355293665d2647dade3375c0ee201de2a49f7bda
+mysecret</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use a key in a file (e.g. an RSA public key for encyption) prepend
+the key value with "@" and provide the file path, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ spring encrypt mysecret --key @${HOME}/.ssh/id_rsa.pub
+AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
+</div>
+</div>
+</div>
 </div>
 <h1 id="_spring_cloud_security" class="sect0">Spring Cloud Security</h1>
 <div class="openblock partintro">
 <div class="content">
-Spring Cloud Security offers a set of primitives for building secure
+<div class="paragraph">
+<p>Spring Cloud Security offers a set of primitives for building secure
 applications and services with minimum fuss. A declarative model which
 can be heavily configured externally (or centrally) lends itself to
 the implementation of large systems of co-operating, remote components,
@@ -2958,7 +3317,11 @@ usually with a central indentity management service. It is also extremely
 easy to use in a service platform like Cloud Foundry. Building on
 Spring Boot and Spring Security OAuth2 we can quickly create systems that
 implement common patterns like single sign on, token relay and token
-exchange.
+exchange.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -3020,16 +3383,17 @@ configuration:</p>
 <div class="listingblock">
 <div class="title">application.yml</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.oauth2:
-  client:
-    clientId: bd1c0a783ccdd1c9b9e4
-    clientSecret: 1a9030fbca47a5b2c28e92f19050bb77824b5ad1
-    tokenUri: https://github.com/login/oauth/access_token
-    authorizationUri: https://github.com/login/oauth/authorize
-    authenticationScheme: form
-  resource:
-    userInfoUri: https://api.github.com/user
-    preferTokenInfo: false</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  oauth2:
+    client:
+      clientId: bd1c0a783ccdd1c9b9e4
+      clientSecret: 1a9030fbca47a5b2c28e92f19050bb77824b5ad1
+      accessTokenUri: https://github.com/login/oauth/access_token
+      userAuthorizationUri: https://github.com/login/oauth/authorize
+      clientAuthenticationScheme: form
+    resource:
+      userInfoUri: https://api.github.com/user
+      preferTokenInfo: false</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3089,10 +3453,11 @@ class Application {
 <div class="listingblock">
 <div class="title">application.yml</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">oauth2:
-  resource:
-    userInfoUri: https://api.github.com/user
-    preferTokenInfo: false</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  oauth2:
+    resource:
+      userInfoUri: https://api.github.com/user
+      preferTokenInfo: false</code></pre>
 </div>
 </div>
 </div>
@@ -3414,7 +3779,7 @@ correct header.</p>
 traditional app), and that in turn triggers some autoconfiguration for
 a <code>ZuulFilter</code>, which itself is activated because Zuul is on the
 classpath (via <code>@EnableZuulProxy</code>). The
-<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/OAuth2TokenRelayFilter.java">filter</a>
+{github}/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/OAuth2TokenRelayFilter.java[filter]
 just extracts an access token from the currently authenticated user,
 and puts it in a request header for the downstream requests.</p>
 </div>
@@ -3478,15 +3843,15 @@ relay if there is a token available, and passthru otherwise.</p>
 </div>
 <div class="paragraph">
 <p>See
-<a href="https://github.com/spring-cloud/spring-cloud-security/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/ProxyAuthenticationProperties">
-ProxyAuthenticationProperties</a> for full details.</p>
+{github}/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/ProxyAuthenticationProperties[
+ProxyAuthenticationProperties] for full details.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-06-23 10:16:37 UTC
+Last updated 2015-06-23 10:27:17 UTC
 </div>
 </div>
 </body>
