@@ -1,15 +1,15 @@
 <dependencies>
 	<parent>
-		<groupId>{@= groupId @}</groupId>
-		<artifactId>{@= artifactId @}</artifactId>
-		<version>{@= version @}</version>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-parent</artifactId>
+		<version>Angel.SR3</version>
 	</parent>
     <dependency>
-        <groupId>{@= groupId @}</groupId>
+        <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-config</artifactId>
     </dependency>
     <dependency>
-        <groupId>{@= groupId @}</groupId>
+        <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-eureka</artifactId>
     </dependency>
 </dependencies>
