@@ -1,21 +1,17 @@
 <dependencies>
+	<parent>
+		<groupId>{@= groupId @}</groupId>
+		<artifactId>{@= artifactId @}</artifactId>
+		<version>{@= version @}</version>
+	</parent>
     <dependency>
         <groupId>{@= groupId @}</groupId>
-        <artifactId>spring-cloud-spring-service-connector</artifactId>
+        <artifactId>spring-cloud-starter-config</artifactId>
         <version>{@= version @}</version>
     </dependency>
-    <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
     <dependency>
         <groupId>{@= groupId @}</groupId>
-        <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
-        <version>{@= version @}</version>
-    </dependency>
-    <!-- If you intend to deploy the app on Heroku, add the following -->
-    <!-- It is okay to add more than one cloud connector; the right one will
-         be picked during runtime -->
-    <dependency>
-        <groupId>{@= groupId @}</groupId>
-        <artifactId>spring-cloud-heroku-connector</artifactId>
+        <artifactId>spring-cloud-starter-eureka</artifactId>
         <version>{@= version @}</version>
     </dependency>
 </dependencies>

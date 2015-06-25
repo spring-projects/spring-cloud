@@ -59,7 +59,7 @@ This app runs from the Spring Boot CLI (once the `spring-cloud-cli`
 extensions are installed), e.g.
 
 ```
-$ spring install org.springframework.cloud:spring-cloud-cli:1.0.0.BUILD-SNAPSHOT
+$ spring install org.springframework.cloud:spring-cloud-cli:1.0.3.RELEASE
 $ spring run configserver.groovy -- --server.port=8888
 ```
 
@@ -83,6 +83,24 @@ results.
 (N.B. does not work if you can't connect to
 [github.com](https://github.com) because that's where the default
 configuration repository lives.)
+
+## Release Trains
+
+Spring Cloud is an umbrella project consisting of independent projects with, in principle, different
+release cadences. To manage the protfolio a BOM (Bill of Materials) is published with a curated
+set of dependencies on the individual project (see below). The release trains have names, not
+versions, to avoid confusion with the sub-projects. The names are an alphabetic sequence (so
+you can sort them chronologically) with names of London Tube stations ("Angel" is the first
+release, "Brixton" is the second). When point releases of the individual projects accumulate to 
+a critical mass, or if there is a critical bug in one of them that needs to be available to everyone,
+the release train will push out "service releases" with names ending ".SRX", where "X"
+is a number.
+
+To use Spring Cloud in a traditional Java or Groovy project using
+Maven or Gradle, you can use the BOM only for dependency management or as a parent POM (Maven
+only). Example using the latest version:
+
+{% include download_widget.md %}
 
 ## Features
 

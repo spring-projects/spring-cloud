@@ -1,11 +1,18 @@
+buildscript {
+  dependencies {
+    classpath "io.spring.gradle:dependency-management-plugin:0.4.0.RELEASE"
+  }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+  imports {
+    mavenBom '{@= groupId @}:{@= artifactId @}:{@= version @}'
+  }
+}
+
 dependencies {
-    compile '{@= groupId @}:spring-cloud-spring-service-connector:{@= version @}'
-    // If you intend to deploy the app on Cloud Foundry, add the following
-    compile '{@= groupId @}:spring-cloud-cloudfoundry-connector:{@= version @}'
-
-    // If you intend to deploy the app on Heroku, add the following
-    compile '{@= groupId @}:spring-cloud-heroku-connector:{@= version @}'
-
-    // It is okay to add more than one cloud connector; the right one will
-    // be picked during runtime 
+    compile '{@= groupId @}:spring-cloud-starter-config'
+    compile '{@= groupId @}:spring-cloud-starter-eureka'
 }
