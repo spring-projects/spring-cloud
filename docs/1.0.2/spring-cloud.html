@@ -1,0 +1,3961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.0">
+<title>Spring Cloud</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400">
+<style>
+/* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
+/* Remove the comments around the @import statement below when using this as a custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
+audio,canvas,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+[hidden],template{display:none}
+script{display:none!important}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{margin:0}
+a{background:transparent}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+#map_canvas img,#map_canvas embed,#map_canvas object,.map_canvas img,.map_canvas embed,.map_canvas object{max-width:none!important}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+.antialiased,body{-webkit-font-smoothing:antialiased}
+img{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+p.lead,.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{font-size:1.21875em;line-height:1.6}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:none}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #ddddd8;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol,ul.no-bullet,ol.no-bullet{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ul.no-bullet{list-style:none}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite:before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media only screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7;font-weight:bold}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
+.clearfix:after,.float-group:after{clear:both}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{display:inline-block;color:rgba(0,0,0,.8);font-size:.75em;line-height:1.4;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:-.15em .15em 0 .15em;padding:.2em .6em .2em .5em;vertical-align:middle;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menu{color:rgba(0,0,0,.8)}
+b.button:before,b.button:after{position:relative;top:-1px;font-weight:400}
+b.button:before{content:"[";padding:0 3px 0 2px}
+b.button:after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header:before,#header:after,#content:before,#content:after,#footnotes:before,#footnotes:after,#footer:before,#footer:after{content:" ";display:table}
+#header:after,#content:after,#footnotes:after,#footer:after{clear:both}
+#content{margin-top:1.25em}
+#content:before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #ddddd8}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #ddddd8;padding-bottom:8px}
+#header .details{border-bottom:1px solid #ddddd8;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span:before{content:"\00a0\2013\00a0"}
+#header .details br+span.author:before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark:before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber:after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #ddddd8;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #efefed;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media only screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background-color:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #efefed;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background-color:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+.sect1{padding-bottom:.625em}
+@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}.sect1+.sect1{border-top:1px solid #efefed}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor:before,h2>a.anchor:before,h3>a.anchor:before,#toctitle>a.anchor:before,.sidebarblock>.content>.title>a.anchor:before,h4>a.anchor:before,h5>a.anchor:before,h6>a.anchor:before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock>caption.title{white-space:nowrap;overflow:visible;max-width:0}
+.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #ddddd8;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock pre:not(.highlight),.listingblock pre[class="highlight"],.listingblock pre[class^="highlight "],.listingblock pre.CodeRay,.listingblock pre.prettyprint{background:#f7f7f8}
+.sidebarblock .literalblock pre,.sidebarblock .listingblock pre:not(.highlight),.sidebarblock .listingblock pre[class="highlight"],.sidebarblock .listingblock pre[class^="highlight "],.sidebarblock .listingblock pre.CodeRay,.sidebarblock .listingblock pre.prettyprint{background:#f2f1f1}
+.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
+.literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
+@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]:before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]:before{display:block}
+.listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
+.listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
+table.pyhltable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0}
+table.pyhltable td.code{padding-left:.75em;padding-right:0}
+pre.pygments .lineno,table.pyhltable td:not(.code){color:#999;padding-left:0;padding-right:.5em;border-right:1px solid #ddddd8}
+pre.pygments .lineno{display:inline-block;margin-right:.25em}
+table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock blockquote p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote:before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.5em;margin-right:.5ex;text-align:right}
+.quoteblock .quoteblock{margin-left:0;margin-right:0;padding:.5em 0;border-left:3px solid rgba(0,0,0,.6)}
+.quoteblock .quoteblock blockquote{padding:0 0 0 .75em}
+.quoteblock .quoteblock blockquote:before{display:none}
+.verseblock{margin:0 1em 1.25em 1em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.05em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract{margin:0 0 1.25em 0;display:block}
+.quoteblock.abstract blockquote,.quoteblock.abstract blockquote p{text-align:left;word-spacing:0}
+.quoteblock.abstract blockquote:before,.quoteblock.abstract blockquote p:first-of-type:before{display:none}
+table.tableblock{max-width:100%;border-collapse:separate}
+table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
+table.spread{width:100%}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all th.tableblock,table.grid-all td.tableblock{border-width:0 1px 1px 0}
+table.grid-all tfoot>tr>th.tableblock,table.grid-all tfoot>tr>td.tableblock{border-width:1px 1px 0 0}
+table.grid-cols th.tableblock,table.grid-cols td.tableblock{border-width:0 1px 0 0}
+table.grid-all *>tr>.tableblock:last-child,table.grid-cols *>tr>.tableblock:last-child{border-right-width:0}
+table.grid-rows th.tableblock,table.grid-rows td.tableblock{border-width:0 0 1px 0}
+table.grid-all tbody>tr:last-child>th.tableblock,table.grid-all tbody>tr:last-child>td.tableblock,table.grid-all thead:last-child>tr>th.tableblock,table.grid-rows tbody>tr:last-child>th.tableblock,table.grid-rows tbody>tr:last-child>td.tableblock,table.grid-rows thead:last-child>tr>th.tableblock{border-bottom-width:0}
+table.grid-rows tfoot>tr>th.tableblock,table.grid-rows tfoot>tr>td.tableblock{border-width:1px 0 0 0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot{border-width:1px 0}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+td>div.verse{white-space:pre}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.unstyled,ol.unnumbered,ul.checklist,ul.none{list-style-type:none}
+ul.unstyled,ol.unnumbered,ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-check-square-o:first-child,ul.checklist li>p:first-child>input[type="checkbox"]:first-child{margin-right:.25em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{position:relative;top:1px}
+ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
+ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
+ul.inline>li>*{display:block}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1{padding-right:.75em;font-weight:bold}
+td.hdlist1,td.hdlist2{vertical-align:top}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist>table tr>td:first-of-type{padding:0 .75em;line-height:1}
+.colist>table tr>td:last-of-type{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left,.imageblock[style*="float: left"]{margin:.25em .625em 1.25em 0}
+.imageblock.right,.imageblock[style*="float: right"]{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none}
+span.footnote,span.footnoteref{vertical-align:super;font-size:.875em}
+span.footnote a,span.footnoteref a{text-decoration:none}
+span.footnote a:active,span.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em 0;border-width:1px 0 0 0}
+#footnotes .footnote{padding:0 .375em;line-height:1.3;font-size:.875em;margin-left:1.2em;text-indent:-1.2em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background-color:#00fafa}
+.black{color:#000}
+.black-background{background-color:#000}
+.blue{color:#0000bf}
+.blue-background{background-color:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background-color:#fa00fa}
+.gray{color:#606060}
+.gray-background{background-color:#7d7d7d}
+.green{color:#006000}
+.green-background{background-color:#007d00}
+.lime{color:#00bf00}
+.lime-background{background-color:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background-color:#7d0000}
+.navy{color:#000060}
+.navy-background{background-color:#00007d}
+.olive{color:#606000}
+.olive-background{background-color:#7d7d00}
+.purple{color:#600060}
+.purple-background{background-color:#7d007d}
+.red{color:#bf0000}
+.red-background{background-color:#fa0000}
+.silver{color:#909090}
+.silver-background{background-color:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background-color:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background-color:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background-color:#fafa00}
+span.icon>.fa{cursor:default}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background-color:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+h1,h2{letter-spacing:-.01em}
+dt,th.tableblock,td.content{text-rendering:optimizeLegibility}
+p,td.content{letter-spacing:-.01em}
+p strong,td.content strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background-color:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@media print{@page{margin:1.25cm .75cm}
+*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after,a[href^="mailto:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]:after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img{page-break-inside:avoid}
+thead{display:table-header-group}
+img{max-width:100%!important}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #ddddd8!important;padding-bottom:0!important}
+.sect1{padding-bottom:0!important}
+.sect1+.sect1{border:0!important}
+#header>h1:first-child{margin-top:1.25rem}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em 0}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span:before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]:before{display:block}
+#footer{background:none!important;padding:0 .9375em}
+#footer-text{color:rgba(0,0,0,.6)!important;font-size:.9em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+</style>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Spring Cloud</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_features">Features</a></li>
+<li><a href="#_cloud_native_applications">Cloud Native Applications</a>
+<ul class="sectlevel1">
+<li><a href="#_spring_cloud_context_application_context_services">Spring Cloud Context: Application Context Services</a>
+<ul class="sectlevel2">
+<li><a href="#_the_bootstrap_application_context">The Bootstrap Application Context</a></li>
+<li><a href="#_application_context_hierarchies">Application Context Hierarchies</a></li>
+<li><a href="#customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</a></li>
+<li><a href="#_customizing_the_bootstrap_configuration">Customizing the Bootstrap Configuration</a></li>
+<li><a href="#customizing-bootstrap-property-sources">Customizing the Bootstrap Property Sources</a></li>
+<li><a href="#_environment_changes">Environment Changes</a></li>
+<li><a href="#_refresh_scope">Refresh Scope</a></li>
+<li><a href="#_encryption_and_decryption">Encryption and Decryption</a></li>
+<li><a href="#_endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_commons_common_abstractions">Spring Cloud Commons: Common Abstractions</a>
+<ul class="sectlevel2">
+<li><a href="#_spring_resttemplate_as_a_load_balancer_client">Spring RestTemplate as a Load Balancer Client</a></li>
+<li><a href="#_multiple_resttemplate_objects">Multiple RestTemplate objects</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_config">Spring Cloud Config</a>
+<ul class="sectlevel1">
+<li><a href="#_quick_start">Quick Start</a>
+<ul class="sectlevel2">
+<li><a href="#_client_side_usage">Client Side Usage</a></li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_config_server">Spring Cloud Config Server</a>
+<ul class="sectlevel2">
+<li><a href="#_environment_repository">Environment Repository</a></li>
+<li><a href="#_health_indicator">Health Indicator</a></li>
+<li><a href="#_security">Security</a></li>
+<li><a href="#_encryption_and_decryption_2">Encryption and Decryption</a></li>
+<li><a href="#_key_management">Key Management</a></li>
+<li><a href="#_creating_a_key_store_for_testing">Creating a Key Store for Testing</a></li>
+<li><a href="#_embedding_the_config_server">Embedding the Config Server</a></li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_config_client">Spring Cloud Config Client</a>
+<ul class="sectlevel2">
+<li><a href="#config-first-bootstrap">Config First Bootstrap</a></li>
+<li><a href="#eureka-first-bootstrap">Eureka First Bootstrap</a></li>
+<li><a href="#config-client-fail-fast">Config Client Fail Fast</a></li>
+<li><a href="#_locating_remote_configuration_resources">Locating Remote Configuration Resources</a></li>
+<li><a href="#_security_2">Security</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_netflix">Spring Cloud Netflix</a>
+<ul class="sectlevel1">
+<li><a href="#_service_discovery_eureka_clients">Service Discovery: Eureka Clients</a>
+<ul class="sectlevel2">
+<li><a href="#_registering_with_eureka">Registering with Eureka</a></li>
+<li><a href="#_status_page_and_health_indicator">Status Page and Health Indicator</a></li>
+<li><a href="#_eureka_metadata_for_instances_and_clients">Eureka Metadata for Instances and Clients</a></li>
+<li><a href="#_using_the_discoveryclient">Using the DiscoveryClient</a></li>
+<li><a href="#_alternatives_to_the_native_netflix_discoveryclient">Alternatives to the native Netflix DiscoveryClient</a></li>
+<li><a href="#_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</a></li>
+</ul>
+</li>
+<li><a href="#spring-cloud-eureka-server">Service Discovery: Eureka Server</a>
+<ul class="sectlevel2">
+<li><a href="#_high_availability_zones_and_regions">High Availability, Zones and Regions</a></li>
+<li><a href="#_standalone_mode">Standalone Mode</a></li>
+<li><a href="#_peer_awareness">Peer Awareness</a></li>
+<li><a href="#_prefer_ip_address">Prefer IP Address</a></li>
+</ul>
+</li>
+<li><a href="#_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</a>
+<ul class="sectlevel2">
+<li><a href="#_propagating_the_security_context_or_using_spring_scopes">Propagating the Security Context or using Spring Scopes</a></li>
+<li><a href="#_health_indicator_2">Health Indicator</a></li>
+<li><a href="#_hystrix_metrics_stream">Hystrix Metrics Stream</a></li>
+</ul>
+</li>
+<li><a href="#_circuit_breaker_hystrix_dashboard">Circuit Breaker: Hystrix Dashboard</a>
+<ul class="sectlevel2">
+<li><a href="#_turbine">Turbine</a></li>
+<li><a href="#_turbine_amqp">Turbine AMQP</a></li>
+</ul>
+</li>
+<li><a href="#_customizing_the_amqp_connectionfactory">Customizing the AMQP ConnectionFactory</a></li>
+<li><a href="#spring-cloud-ribbon">Client Side Load Balancer: Ribbon</a>
+<ul class="sectlevel2">
+<li><a href="#_customizing_the_ribbon_client">Customizing the Ribbon Client</a></li>
+<li><a href="#_using_ribbon_with_eureka">Using Ribbon with Eureka</a></li>
+<li><a href="#spring-cloud-ribbon-without-eureka">Example: How to Use Ribbon Without Eureka</a></li>
+<li><a href="#_example_disable_eureka_use_in_ribbon">Example: Disable Eureka use in Ribbon</a></li>
+<li><a href="#_using_the_ribbon_api_directly">Using the Ribbon API Directly</a></li>
+</ul>
+</li>
+<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a></li>
+<li><a href="#_external_configuration_archaius">External Configuration: Archaius</a></li>
+<li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
+<ul class="sectlevel2">
+<li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
+<li><a href="#_uploading_files_through_zuul">Uploading Files through Zuul</a></li>
+<li><a href="#_plain_embedded_zuul">Plain Embedded Zuul</a></li>
+<li><a href="#_disable_zuul_filters">Disable Zuul Filters</a></li>
+<li><a href="#_polyglot_support_with_sidecar">Polyglot support with Sidecar</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_bus">Spring Cloud Bus</a>
+<ul class="sectlevel1">
+<li><a href="#_quick_start_2">Quick Start</a></li>
+<li><a href="#_addressing_an_instance">Addressing an Instance</a></li>
+<li><a href="#_addressing_all_instances_of_a_service">Addressing all instances of a service</a></li>
+<li><a href="#_application_context_id_must_be_unique">Application Context ID must be unique</a></li>
+<li><a href="#_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</a></li>
+</ul>
+</li>
+<li><a href="#_spring_boot_cloud_cli">Spring Boot Cloud CLI</a>
+<ul class="sectlevel1">
+<li><a href="#_installation">Installation</a></li>
+<li><a href="#_writing_groovy_scripts_and_running_applications">Writing Groovy Scripts and Running Applications</a></li>
+<li><a href="#_encryption_and_decryption_3">Encryption and Decryption</a></li>
+</ul>
+</li>
+<li><a href="#_spring_cloud_security">Spring Cloud Security</a>
+<ul class="sectlevel1">
+<li><a href="#_quickstart">Quickstart</a>
+<ul class="sectlevel2">
+<li><a href="#_oauth2_single_sign_on">OAuth2 Single Sign On</a></li>
+<li><a href="#_oauth2_protected_resource">OAuth2 Protected Resource</a></li>
+</ul>
+</li>
+<li><a href="#_more_detail">More Detail</a>
+<ul class="sectlevel2">
+<li><a href="#_single_sign_on">Single Sign On</a></li>
+<li><a href="#_customizing_the_resttemplate">Customizing the RestTemplate</a></li>
+<li><a href="#_resource_server">Resource Server</a></li>
+<li><a href="#_token_relay">Token Relay</a></li>
+</ul>
+</li>
+<li><a href="#_configuring_authentication_downstream_of_a_zuul_proxy">Configuring Authentication Downstream of a Zuul Proxy</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud provides tools for developers to quickly build some of
+the common patterns in distributed systems (e.g. configuration
+management, service discovery, circuit breakers, intelligent routing,
+micro-proxy, control bus, one-time tokens, global locks, leadership
+election, distributed sessions, cluster state). Coordination of
+distributed systems leads to boiler plate patterns, and using Spring
+Cloud developers can quickly stand up services and applications that
+implement those patterns. They will work well in any distributed
+environment, including the developer&#8217;s own laptop, bare metal data
+centres, and managed platforms such as Cloud Foundry.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_features">Features</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud focuses on providing good out of box experience for typical use cases
+and extensibility mechanism to cover others.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Distributed/versioned configuration</p>
+</li>
+<li>
+<p>Service registration and discovery</p>
+</li>
+<li>
+<p>Routing</p>
+</li>
+<li>
+<p>Service-to-service calls</p>
+</li>
+<li>
+<p>Load balancing</p>
+</li>
+<li>
+<p>Circuit Breakers</p>
+</li>
+<li>
+<p>Global locks</p>
+</li>
+<li>
+<p>Leadership election and cluster state</p>
+</li>
+<li>
+<p>Distributed messaging</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<h1 id="_cloud_native_applications" class="sect0">Cloud Native Applications</h1>
+<div class="openblock partintro">
+<div class="content">
+<div class="paragraph">
+<p><a href="http://pivotal.io/platform-as-a-service/migrating-to-cloud-native-application-architectures-ebook">Cloud Native</a> is a style of application development that encourages easy adoption of best practices in the areas of continuous delivery and value-driven development. A related discipline is that of building <a href="http://12factor.net/">12-factor Apps</a> in which development practices are aligned with delivery and operations goals, for instance by using declarative programming and management and monitoring. Spring Cloud facilitates these styles of development in a number of specific ways and the starting point is a set of features that all components in a distributed system either need or need easy access to when required.</p>
+</div>
+<div class="paragraph">
+<p>Many of those features are covered by <a href="http://projects.spring.io/spring-boot">Spring Boot</a>, which we build on in Spring Cloud. Some more are delivered by Spring Cloud as two libraries: Spring Cloud Context and Spring Cloud Commons. Spring Cloud Context provides utilities and special services for the <code>ApplicationContext</code> of a Spring Cloud application (bootstrap context, encryption, refresh scope and environment endpoints). Spring Cloud Commons is a set of abstractions and common classes used in different Spring Cloud implementations (eg. Spring Cloud Netflix vs. Spring Cloud Consul).</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_cloud_context_application_context_services">Spring Cloud Context: Application Context Services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Boot has an opinionated view of how to build an application
+with Spring: for instance it has conventional locations for common
+configuration file, and endpoints for common management and monitoring
+tasks. Spring Cloud builds on top of that and adds a few features that
+probably all components in a system would use or occasionally need.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_bootstrap_application_context">The Bootstrap Application Context</h3>
+<div class="paragraph">
+<p>A Spring Cloud application operates by creating a "bootstrap"
+context, which is a parent context for the main application. Out of
+the box it is responsible for loading configuration properties from
+the external sources, and also decrypting properties in the local
+external configuration files. The two contexts share an <code>Environment</code>
+which is the source of external properties for any Spring
+application. Bootstrap properties are added with high precedence, so
+they cannot be overridden by local configuration.</p>
+</div>
+<div class="paragraph">
+<p>The bootstrap context uses a different convention for locating
+external configuration than the main application context, so instead
+of <code>application.yml</code> (or <code>.properties</code>) you use <code>bootstrap.yml</code>,
+keeping the external configuration for bootstrap and main context
+nicely separate. Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  application:
+    name: foo
+  cloud:
+    config:
+      uri: ${SPRING_CONFIG_URI:http://localhost:8888}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is a good idea to set the <code>spring.application.name</code> (in
+<code>bootstrap.yml</code> or <code>application.yml</code>) if your application needs any
+application-specific configuration from the server.</p>
+</div>
+<div class="paragraph">
+<p>You can disable the bootstrap process completely by setting
+<code>spring.cloud.bootstrap.enabled=false</code> (e.g. in System properties).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_application_context_hierarchies">Application Context Hierarchies</h3>
+<div class="paragraph">
+<p>If you build an application context from <code>SpringApplication</code> or
+<code>SpringApplicationBuilder</code>, then the Bootstrap context is added as a
+parent to that context. It is a feature of Spring that child contexts
+inherit property sources and profiles from their parent, so the "main"
+application context will contain additional property sources, compared
+to building the same context without Spring Cloud Config. The
+additional property sources are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>"bootstrap": an optional <code>CompositePropertySource</code> appears with high
+priority if any <code>PropertySourceLocators</code> are found in the Bootstrap
+context, and they have non-empty properties. An example would be
+properties from the Spring Cloud Config Server. See
+<a href="#customizing-bootstrap-property-sources">below</a> for instructions
+on how to customize the contents of this property source.</p>
+</li>
+<li>
+<p>"applicationConfig: [classpath:bootstrap.yml]" (and friends if
+Spring profiles are active). If you have a <code>bootstrap.yml</code> (or
+properties) then those properties are used to configure the Bootstrap
+context, and then they get added to the child context when its parent
+is set. They have lower precedence than the <code>application.yml</code> (or
+properties) and any other property sources that are added to the child
+as a normal part of the process of creating a Spring Boot
+application. See <a href="#customizing-bootstrap-properties">below</a> for
+instructions on how to customize the contents of these property
+sources.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Because of the ordering rules of property sources the "bootstrap"
+entries take precedence, but note that these do not contain any data
+from <code>bootstrap.yml</code>, which has very low precedence, but can be used
+to set defaults.</p>
+</div>
+<div class="paragraph">
+<p>You can extend the context hierarchy by simply setting the parent
+context of any <code>ApplicationContext</code> you create, e.g. using its own
+interface, or with the <code>SpringApplicationBuilder</code> convenience methods
+(<code>parent()</code>, <code>child()</code> and <code>sibling()</code>). The bootstrap context will be
+the parent of the most senior ancestor that you create yourself.
+Every context in the hierarchy will have its own "bootstrap" property
+source (possibly empty) to avoid promoting values inadvertently from
+parents down to their descendants.  Every context in the hierarchy can
+also (in principle) have a different <code>spring.application.name</code> and
+hence a different remote property source if there is a Config
+Server. Normal Spring application context behaviour rules apply to
+property resolution: properties from a child context override those in
+the parent, by name and also by property source name (if the child has
+a property source with the same name as the parent, the one from the
+parent is not included in the child).</p>
+</div>
+<div class="paragraph">
+<p>Note that the <code>SpringApplicationBuilder</code> allows you to share an
+<code>Environment</code> amongst the whole hierarchy, but that is not the
+default. Thus, sibling contexts in particular do not need to have the
+same profiles or property sources, even though they will share common
+things with their parent.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</h3>
+<div class="paragraph">
+<p>The <code>bootstrap.yml</code> (or <code>.properties) location can be specified using
+`spring.cloud.bootstrap.name</code> (default "bootstrap") or
+<code>spring.cloud.bootstrap.location</code> (default empty), e.g. in System
+properties. Those properties behave like the <code>spring.config.*</code>
+variants with the same name, in fact they are used to set up the
+bootstrap <code>ApplicationContext</code> by setting those properties in its
+<code>Environment</code>. If there is an active profile (from
+<code>spring.profiles.active</code> or through the <code>Environment</code> API in the
+context you are building) then properties in that profile will be
+loaded as well, just like in a regular Spring Boot app, e.g. from
+<code>bootstrap-development.properties</code> for a "development" profile.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_customizing_the_bootstrap_configuration">Customizing the Bootstrap Configuration</h3>
+<div class="paragraph">
+<p>The bootstrap context can be trained to do anything you like by adding
+entries to <code>/META-INF/spring.factories</code> under the key
+<code>org.springframework.cloud.bootstrap.BootstrapConfiguration</code>. This is
+a comma-separated list of Spring <code>@Configuration</code> classes which will
+be used to create the context. Any beans that you want to be available
+to the main application context for autowiring can be created here,
+and also there is a special contract for <code>@Beans</code> of type
+<code>ApplicationContextInitializer</code>. Classes can be marked with an <code>@Order</code>
+if you want to control the startup sequence (the default order is
+"last").</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Be careful when adding custom <code>BootstrapConfiguration</code> that the
+classes you add are not <code>@ComponentScanned</code> by mistake into your
+"main" application context, where they might not be needed.
+Use a separate package name for boot configuration classes that is
+not already covered by your <code>@ComponentScan</code> or <code>@SpringBootApplication</code>
+annotated configuration classes.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The bootstrap process ends by injecting initializers into the main
+<code>SpringApplication</code> instance (i.e. the normal Spring Boot startup
+sequence, whether it is running as a standalone app or deployed in an
+application server). First a bootstrap context is created from the
+classes found in <code>spring.factories</code> and then all <code>@Beans</code> of type
+<code>ApplicationContextInitializer</code> are added to the main
+<code>SpringApplication</code> before it is started.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="customizing-bootstrap-property-sources">Customizing the Bootstrap Property Sources</h3>
+<div class="paragraph">
+<p>The default property source for external configuration added by the
+bootstrap process is the Config Server, but you can add additional
+sources by adding beans of type <code>PropertySourceLocator</code> to the
+bootstrap context (via <code>spring.factories</code>). You could use this to
+insert additional properties from a different server, or from a
+database, for instance.</p>
+</div>
+<div class="paragraph">
+<p>As an example, consider the following trivial custom locator:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+public class CustomPropertySourceLocator implements PropertySourceLocator {
+
+    @Override
+    public PropertySource&lt;?&gt; locate(Environment environment) {
+        return new MapPropertySource("customProperty",
+                Collections.&lt;String, Object&gt;singletonMap("property.from.sample.custom.source", "worked as intended"));
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Environment</code> that is passed in is the one for the
+<code>ApplicationContext</code> about to be created, i.e. the one that we are
+supplying additional property sources for. It will already have its
+normal Spring Boot-provided property sources, so you can use those to
+locate a property source specific to this <code>Environment</code> (e.g. by
+keying it on the <code>spring.application.name</code>, as is done in the default
+Config Server property source locator).</p>
+</div>
+<div class="paragraph">
+<p>If you create a jar with this class in it and then add a
+<code>META-INF/spring.factories</code> containing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>org.springframework.cloud.bootstrap.BootstrapConfiguration=sample.custom.CustomPropertySourceLocator</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then the "customProperty" <code>PropertySource</code> will show up in any
+application that includes that jar on its classpath.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_environment_changes">Environment Changes</h3>
+<div class="paragraph">
+<p>The application will listen for an <code>EnvironmentChangedEvent</code> and react
+to the change in a couple of standard ways (additional
+<code>ApplicationListeners</code> can be added as <code>@Beans</code> by the user in the
+normal way). When an <code>EnvironmentChangedEvent</code> is observed it will
+have a list of key values that have changed, and the application will
+use those to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Re-bind any <code>@ConfigurationProperties</code> beans in the context</p>
+</li>
+<li>
+<p>Set the logger levels for any properties in <code>logging.level.*</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Note that the Config Client does not by default poll for changes in
+the <code>Environment</code>, and generally we would not recommend that approach
+for detecting changes (although you could set it up with a
+<code>@Scheduled</code> annotation). If you have a scaled-out client application
+then it is better to broadcast the <code>EnvironmentChangedEvent</code> to all
+the instances instead of having them polling for changes (e.g. using
+the <a href="https://github.com/spring-cloud/spring-cloud-bus">Spring Cloud
+Bus</a>).</p>
+</div>
+<div class="paragraph">
+<p>The <code>EnvironmentChangedEvent</code> covers a large class of refresh use
+cases, as long as you can actually make a change to the <code>Environment</code>
+and publish the event (those APIs are public and part of core
+Spring). You can verify the changes are bound to
+<code>@ConfigurationProperties</code> beans by visiting the <code>/configprops</code>
+endpoint (normal Spring Boot Actuator feature). For instance a
+<code>DataSource</code> can have its <code>maxPoolSize</code> changed at runtime (the
+default <code>DataSource</code> created by Spring Boot is an
+<code>@ConfigurationProperties</code> bean) and grow capacity
+dynamically. Re-binding <code>@ConfigurationProperties</code> does not cover
+another large class of use cases, where you need more control over the
+refresh, and where you need a change to be atomic over the whole
+<code>ApplicationContext</code>. To address those concerns we have
+<code>@RefreshScope</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refresh_scope">Refresh Scope</h3>
+<div class="paragraph">
+<p>A Spring <code>@Bean</code> that is marked as <code>@RefreshScope</code> will get special
+treatment when there is a configuration change. This addresses the
+problem of stateful beans that only get their configuration injected
+when they are initialized. For instance if a <code>DataSource</code> has open
+connections when the database URL is changed via the <code>Environment</code>, we
+probably want the holders of those connections to be able to complete
+what they are doing. Then the next time someone borrows a connection
+from the pool he gets one with the new URL.</p>
+</div>
+<div class="paragraph">
+<p>Refresh scope beans are lazy proxies that initialize when they are
+used (i.e. when a method is called), and the scope acts as a cache of
+initialized values. To force a bean to re-initialize on the next
+method call you just need to invalidate its cache entry.</p>
+</div>
+<div class="paragraph">
+<p>The <code>RefreshScope</code> is a bean in the context and it has a public method
+<code>refreshAll()</code> to refresh all beans in the scope by clearing the
+target cache. There is also a <code>refresh(String)</code> method to refresh an
+individual bean by name. This functionality is exposed in the
+<code>/refresh</code> endpoint (over HTTP or JMX).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<code>@RefreshScope</code> works (technically) on an <code>@Configuration</code>
+class, but it might lead to surprising behaviour: e.g. it does <strong>not</strong>
+mean that all the <code>@Beans</code> defined in that class are themselves
+<code>@RefreshScope</code>. Specifically, anything that depends on those beans
+cannot rely on them being updated when a refresh is initiated, unless
+it is itself in <code>@RefreshScope</code> (in which it will be rebuilt on a
+refresh and its dependencies re-injected, at which point they will be
+re-initialized from the refreshed <code>@Configuration</code>).
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_encryption_and_decryption">Encryption and Decryption</h3>
+<div class="paragraph">
+<p>The Config Client has an <code>Environment</code> pre-processor for decrypting
+property values locally. It follows the same rules as the Config
+Server, and has the same external configuration via <code>encrypt.*</code>. Thus
+you can use encrypted values in the form <code>{cipher}*</code> and as long as
+there is a valid key then they will be decrypted before the main
+application context gets the <code>Environment</code>. To use the encryption
+features in a client you need to include Spring Security RSA in your
+classpath (Maven co-ordinates
+"org.springframework.security:spring-security-rsa") and you also need
+the full strength JCE extensions in your JVM (google it and download
+from Oracle).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_endpoints">Endpoints</h3>
+<div class="paragraph">
+<p>For a Spring Boot Actuator application there are some additional management endpoints:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>POST to <code>/env</code> to update the <code>Environment</code> and rebind <code>@ConfigurationProperties</code> and log levels</p>
+</li>
+<li>
+<p><code>/refresh</code> for re-loading the boot strap context and refreshing the <code>@RefreshScope</code> beans</p>
+</li>
+<li>
+<p><code>/restart</code> for closing the <code>ApplicationContext</code> and restarting it (disabled by default)</p>
+</li>
+<li>
+<p><code>/pause</code> and <code>/resume</code> for calling the <code>Lifecycle</code> methods (<code>stop()</code> and <code>start()</code> on the <code>ApplicationContext</code>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_cloud_commons_common_abstractions">Spring Cloud Commons: Common Abstractions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Patterns such as service discovery, load balancing and circuit breakers lend themselves to a common abstraction layer that can be consumed by all Spring Cloud clients, independent of the implementation (e.g. discovery via Eureka or Consul).</p>
+</div>
+<div class="sect2">
+<h3 id="_spring_resttemplate_as_a_load_balancer_client">Spring RestTemplate as a Load Balancer Client</h3>
+<div class="paragraph">
+<p>You can use Ribbon indirectly via an autoconfigured <code>RestTemplate</code>
+when RestTemplate is on the classpath and a <code>LoadBalancerClient</code> bean is defined):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyClass {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public String doOtherStuff() {
+        String results = restTemplate.getForObject("http://stores/stores", String.class);
+        return results;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The URI needs to use a virtual host name (ie. service name, not a host name).
+The Ribbon client is used to create a full physical address. See
+{github-code}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java[RibbonAutoConfiguration]
+for details of how the <code>RestTemplate</code> is set up.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_multiple_resttemplate_objects">Multiple RestTemplate objects</h3>
+<div class="paragraph">
+<p>If you want a <code>RestTemplate</code> that is not load balanced, create a <code>RestTemplate</code>
+bean  and inject it as normal.  To access the load balanced <code>RestTemplate use
+the provided `@LoadBalanced</code> <code>Qualifier</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyClass {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    @LoadBalanced
+    private RestTemplate loadBalanced;
+
+    public String doOtherStuff() {
+        return loadBalanced.getForObject("http://stores/stores", String.class);
+    }
+
+    public String doStuff() {
+        return restTemplate.getForObject("http://example.com", String.class);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h1 id="_spring_cloud_config" class="sect0">Spring Cloud Config</h1>
+<div class="openblock partintro">
+<div class="content">
+<div class="paragraph">
+<p>Spring Cloud Config provides server and client-side support for externalized configuration in a distributed system. With the Config Server you have a central place to manage external properties for applications across all environments. The concepts on both client and server map identically to the Spring <code>Environment</code> and <code>PropertySource</code> abstractions, so they fit very well with Spring applications, but can be used with any application running in any language. As an application moves through the deployment pipeline from dev to test and into production you can manage the configuration between those environments and be certain that applications have everything they need to run when they migrate. The default implementation of the server storage backend uses git so it easily supports labelled versions of configuration environments, as well as being accessible to a wide range of tooling for managing the content.  It is easy to add alternative implementations and plug them in with Spring configuration.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quick_start">Quick Start</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Start the server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cd spring-cloud-config-server
+$ mvn spring-boot:run</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The server is a Spring Boot application so you can build the jar file
+and run that (<code>java -jar &#8230;&#8203;</code>) or pull it down from a Maven
+repository. Then try it out as a client:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl localhost:8888/foo/development
+{"name":"development","label":"master","propertySources":[
+  {"name":"https://github.com/scratches/config-repo/foo-development.properties","source":{"bar":"spam"}},
+  {"name":"https://github.com/scratches/config-repo/foo.properties","source":{"foo":"bar"}}
+]}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default strategy for locating property sources is to clone a git
+repository (at "spring.cloud.config.server.git.uri") and use it to
+initialize a mini <code>SpringApplication</code>. The mini-application&#8217;s
+<code>Environment</code> is used to enumerate property sources and publish them
+via a JSON endpoint.</p>
+</div>
+<div class="paragraph">
+<p>The HTTP service has resources in the form:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/{application}/{profile}[/{label}]
+/{application}-{profile}.yml
+/{label}/{application}-{profile}.yml
+/{application}-{profile}.properties
+/{label}/{application}-{profile}.properties</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where the "application" is injected as the "spring.config.name" in the
+<code>SpringApplication</code> (i.e. what is normally "application" in a regular
+Spring Boot app), "profile" is an active profile (or comma-separated
+list of properties), and "label" is an optional git label (defaults to
+"master".)</p>
+</div>
+<div class="paragraph">
+<p>The YAML and properties forms are coalesced into a single
+map, even if the origin of the values (reflected in the
+"propertySources" of the "standard" form) has multiple sources.</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Config Server pulls configuration for remote clients
+from a git repository (which must be provided):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+	  server:
+	    git:
+	      uri: https://github.com/spring-cloud-samples/config-repo</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_side_usage">Client Side Usage</h3>
+<div class="paragraph">
+<p>To use these features in an application, just build it as a Spring
+Boot application that depends on spring-cloud-config-client (e.g. see
+the test cases for the config-client, or the sample app). The most
+convenient way to add the dependency is via a Spring Boot starter
+<code>org.springframework.cloud:spring-cloud-starter</code>. There is also a
+parent pom and BOM (<code>spring-cloud-starter-parent</code>) for Maven users and a
+Spring IO version management properties file for Gradle and Spring CLI
+users. Example Maven configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;1.1.7.RELEASE&lt;/version&gt;
+    &lt;relativePath /&gt; &lt;!-- lookup parent from repository --&gt;
+&lt;/parent&gt;
+
+&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-parent&lt;/artifactId&gt;
+            &lt;version&gt;1.0.0.BUILD-SNAPSHOT&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+
+&lt;build&gt;
+    &lt;plugins&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;/build&gt;
+
+&lt;!-- repositories also needed for snapshots and milestones --&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can create a standard Spring Boot application, like this simple HTTP server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Configuration
+@EnableAutoConfiguration
+@RestController
+public class Application {
+
+    @RequestMapping("/")
+    public String home() {
+        return "Hello World!";
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When it runs it will pick up the external configuration from the
+default local config server on port 8888 if it is running. To modify
+the startup behaviour you can change the location of the config server
+using <code>bootstrap.properties</code> (like <code>application.properties</code> but for
+the bootstrap phase of an application context), e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring.cloud.config.uri: http://myconfigserver.com</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The bootstrap properties will show up in the <code>/env</code> endpoint as a
+high-priority property source, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl localhost:8080/env
+{
+  "profiles":[],
+  "configService:https://github.com/scratches/config-repo/bar.properties":{"foo":"bar"},
+  "servletContextInitParams":{},
+  "systemProperties":{...},
+  ...
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(a property source called "configService:&lt;URL of remote
+repository&gt;/&lt;file name&gt;" contains the property "foo" with value
+"bar" and is highest priority).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_cloud_config_server">Spring Cloud Config Server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Server provides an HTTP, resource-based API for external
+configuration (name-value pairs, or equivalent YAML content).  The
+server is easily embeddable in a Spring Boot application using the
+<code>@EnableConfigServer</code> annotation.</p>
+</div>
+<div class="sect2">
+<h3 id="_environment_repository">Environment Repository</h3>
+<div class="paragraph">
+<p>Where do you want to store the configuration data for the Config
+Server? The strategy that governs this behaviour is the
+<code>EnvironmentRepository</code>, serving <code>Environment</code> objects. This
+<code>Environment</code> is a shallow copy of the domain from the Spring
+<code>Environment</code> (including <code>propertySources</code> as the main feature). The
+<code>Environment</code> resources are parametrized by three variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{application}</code> maps to "spring.application.name" on the client side;</p>
+</li>
+<li>
+<p><code>{profile}</code> maps to "spring.active.profiles" on the client (comma separated list); and</p>
+</li>
+<li>
+<p><code>{label}</code> which is a server side feature labelling a "versioned" set of config files.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Repository implementations generally behave just like a Spring Boot
+application loading configuration files from a "spring.config.name"
+equal to the <code>{application}</code> parameter, and "spring.profiles.active"
+equal to the <code>{profiles}</code> parameter. Precedence rules for profiles are
+also the same as in a regular Boot application: active profiles take
+precedence over defaults, and if there are multiple profiles the last
+one wins (like adding entries to a <code>Map</code>).</p>
+</div>
+<div class="paragraph">
+<p>Example: a client application has this bootstrap configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  application:
+    name: foo
+  profiles:
+    active: dev,mysql</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(as usual with a Spring Boot application, these properties could also
+be set as environment variables or command line arguments).</p>
+</div>
+<div class="paragraph">
+<p>If the repository is file-based, the server will create an
+<code>Environment</code> from <code>application.yml</code> (shared between all clients), and
+<code>foo.yml</code> (with <code>foo.yml</code> taking precedence). If the YAML files have
+documents inside them that point to Spring profiles, those are applied
+with higher precendence (in order of the profiles listed), and if
+there are profile-specific YAML (or properties) files these are also
+applied with higher precedence than the defaults. Higher precendence
+translates to a <code>PropertySource</code> listed earlier in the
+<code>Environment</code>. (These are the same rules as apply in a standalone
+Spring Boot application.)</p>
+</div>
+<div class="sect3">
+<h4 id="_git_backend">Git Backend</h4>
+<div class="paragraph">
+<p>The default implementation of <code>EnvironmentRepository</code> uses a Git
+backend, which is very convenient for managing upgrades and physical
+environments, and also for auditing changes. To change the location of
+the repository you can set the "spring.cloud.config.server.git.uri"
+configuration property in the Config Server (e.g. in
+<code>application.yml</code>). If you set it with a <code>file:</code> prefix it should work
+from a local repository so you can get started quickly and easily
+without a server, but in that case the server operates directly on the
+local repository without cloning it (it doesn&#8217;t matter if it&#8217;s not
+bare because the Config Server never makes changes to the "remote"
+repository). To scale the Config Server up and make it highly
+available, you would need to have all instances of the server pointing
+to the same repository, so only a shared file system would work. Even
+in that case it is better to use the <code>ssh:</code> protocol for a shared
+filesystem repository, so that the server can clone it and use a local
+working copy as a cache.</p>
+</div>
+<div class="paragraph">
+<p>This repository implementation maps the <code>{label}</code> parameter of the
+HTTP resource to a git label (commit id, branch name or tag).</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Config Server supports a single or multiple git
+repositories:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
+          repos:
+            simple: https://github.com/pattern1/config-repo
+            special:
+              pattern: pattern*,*pattern1*
+              uri: https://github.com/pattern2/config-repo
+            local:
+              pattern: local*
+              uri: file:/home/configsvc/config-repo</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the above example, if {application} does not match to any of the
+patterns, it will use the default uri defined under
+"spring.cloud.config.server.git.uri". For the "simple" repository, the
+pattern is "simple" (i.e. it only matches one application).  The
+pattern format is a comma-separated list of application names with
+wildcards.</p>
+</div>
+<div class="paragraph">
+<p>Every repository can also optionally store config files in
+sub-directories, and patterns to search for those directories can be
+specified as <code>searchPaths</code>. For example at the top level:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
+          searchPaths: foo,bar*</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example the server searches for config files in the top level
+and in the "foo/" sub-directory and also any sub-directory whose name
+begins with "bar".</p>
+</div>
+<div class="paragraph">
+<p>To use HTTP basic authentication on the remote repository add the
+"username" and "password" properties separately (not in the URL),
+e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
+          username: trolley
+          password: strongpassword</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you don&#8217;t use HTTPS and user credentials, SSH should also work out
+of the box when you store keys in the default directories (<code>~/.ssh</code>)
+and the uri points to an SSH location,
+e.g. "<a href="mailto:git@github.com">git@github.com</a>:configuration/cloud-configuration". The
+repository is accessed using JGit, so any documentation you find on
+that should be applicable.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_file_system_backend">File System Backend</h4>
+<div class="paragraph">
+<p>There is also a "native" profile in the Config Server that doesn&#8217;t use
+Git, but just loads the config files from the local classpath or file
+system (any static URL you want to point to with
+"spring.cloud.config.server.native.searchLocations"). To use the native
+profile just launch the Config Server with
+"spring.profiles.active=native".</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+The default value of the <code>searchLocations</code> is identical to a
+local Spring Boot application (so
+<code>[classpath:/, classpath:/config, file:./, file:./config]</code>) which will
+expose the <code>application.properties</code> from the server to all clients.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+A filesystem backend is great for getting started quickly and
+for testing. To use it in production you need to be sure that the
+file system is reliable, and shared across all instances of the
+Config Server.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This repository implementation maps the <code>{label}</code> parameter of the
+HTTP resource to a suffix on the search path, so properties files are
+loaded from each search location <strong>and</strong> a subdirectory with the same
+name as the label (the labelled properties take precedence in the
+Spring Environment).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_health_indicator">Health Indicator</h3>
+<div class="paragraph">
+<p>Config Server comes with a Health Indicator that checks if the configured
+<code>EnvironmentRepository</code> is working.  By default it asks the <code>EnvironmentRepository</code>
+for an application named <code>app</code>, the <code>default</code> profile and the default
+label provided by the <code>EnvironmentRepository</code> implementation.</p>
+</div>
+<div class="paragraph">
+<p>You can configure the Health Indicator to check more appliations
+along with custom profiles and custom labels, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+      server:
+        health:
+          repositories:
+            myservice:
+              label: mylabel
+            myservice-dev:
+              name: myservice
+              profiles: development</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can disable the Health Indicator by setting <code>spring.cloud.config.server.health.enabled=false</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_security">Security</h3>
+<div class="paragraph">
+<p>You are free to secure your Config Server in any way that makes sense
+to you (from physical network security to OAuth2 bearer
+tokens), and Spring Security and Spring Boot make it easy to do pretty
+much anything.</p>
+</div>
+<div class="paragraph">
+<p>To use the default Spring Boot configured HTTP Basic security, just
+include Spring Security on the classpath (e.g. through
+<code>spring-boot-starter-security</code>). The default is a username of "user"
+and a randomly generated password, which isn&#8217;t going to be very useful
+in practice, so we recommend you configure the password (via
+<code>security.user.password</code>) and encrypt it (see below for instructions
+on how to do that).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_encryption_and_decryption_2">Encryption and Decryption</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<strong>Prerequisites:</strong> to use the encryption and decryption features
+you need the full-strength JCE installed in your JVM (it&#8217;s not there by default).
+You can download the "Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files"
+from Oracle, and follow instructions for installation (essentially replace the 2 policy files
+in the JRE lib/security directory with the ones that you downloaded).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The server exposes <code>/encrypt</code> and <code>/decrypt</code> endpoints (on the
+assumption that these will be secured and only accessed by authorized
+agents). If the remote property sources contain encryted content
+(values starting with <code>{cipher}</code>) they will be decrypted before
+sending to clients over HTTP. The main advantage of this set up is
+that the property values don&#8217;t have to be in plain text when they are
+"at rest" (e.g. in a git repository). If a value cannot be decrypted
+it is replaced with an empty string, largely to prevent cipher text
+being used as a password in Spring Boot autconfigured HTTP basic.</p>
+</div>
+<div class="paragraph">
+<p>If you are setting up a remote config repository for config client
+applications it might contain an <code>application.yml</code> like this, for
+instance:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>spring:
+  datasource:
+    username: dbuser
+    password: '{cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can safely push this plain text to a shared git repository and the
+secret password is protected.</p>
+</div>
+<div class="paragraph">
+<p>If you are editing a remote config file you can use the Config Server
+to encrypt values by POSTing to the <code>/encrypt</code> endpoint, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl localhost:8888/encrypt -d mysecret
+682bc583f4641835fa2db009355293665d2647dade3375c0ee201de2a49f7bda</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The inverse operation is also available via <code>/decrypt</code> (provided the server is
+configured with a symmetric key or a full key pair):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl localhost:8888/decrypt -d 682bc583f4641835fa2db009355293665d2647dade3375c0ee201de2a49f7bda
+mysecret</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Take the encypted value and add the <code>{cipher}</code> prefix before you put
+it in the YAML or properties file, and before you commit and push it
+to a remote, potentially insecure store.</p>
+</div>
+<div class="paragraph">
+<p>The <code>spring</code> command line client (with Spring Cloud CLI extensions
+installed) can also be used to encrypt and decrypt, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ spring encrypt mysecret --key foo
+682bc583f4641835fa2db009355293665d2647dade3375c0ee201de2a49f7bda
+$ spring decrypt --key foo 682bc583f4641835fa2db009355293665d2647dade3375c0ee201de2a49f7bda
+mysecret</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use a key in a file (e.g. an RSA public key for encyption) prepend
+the key value with "@" and provide the file path, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ spring encrypt mysecret --key @${HOME}/.ssh/id_rsa.pub
+AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The key argument is mandatory (despite having a <code>--</code> prefix).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_key_management">Key Management</h3>
+<div class="paragraph">
+<p>The Config Server can use a symmetric (shared) key or an asymmetric
+one (RSA key pair). The asymmetric choice is superior in terms of
+security, but it is often more convenient to use a symmetric key since
+it is just a single property value to configure.</p>
+</div>
+<div class="paragraph">
+<p>To configure a symmetric key you just need to set <code>encrypt.key</code> to a
+secret String (or use an enviroment variable <code>ENCRYPT_KEY</code> to keep it
+out of plain text configuration files). You can also POST a key value
+to the <code>/key</code> endpoint (but that won&#8217;t change any existing encrypted
+values in remote repositories).</p>
+</div>
+<div class="paragraph">
+<p>To configure an asymmetric key you can either set the key as a
+PEM-encoded text value (in <code>encrypt.key</code>), or via a keystore (e.g. as
+created by the <code>keytool</code> utility that comes with the JDK). The
+keystore properties are <code>encrypt.keyStore.*</code> with <code>*</code> equal to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>location</code> (a <code>Resource</code> location),</p>
+</li>
+<li>
+<p><code>password</code> (to unlock the keystore) and</p>
+</li>
+<li>
+<p><code>alias</code> (to identify which key in the store is to be
+used).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The encryption is done with the public key, and a private key is
+needed for decryption. Thus in principle you can configure only the
+public key in the server if you only want to do encryption (and are
+prepared to decrypt the values yourself locally with the private
+key). In practice you might not want to do that because it spreads the
+key management process around all the clients, instead of
+concentrating it in the server. On the other hand it&#8217;s a useful option
+if your config server really is relatively insecure and only a
+handful of clients need the encrypted properties.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_key_store_for_testing">Creating a Key Store for Testing</h3>
+<div class="paragraph">
+<p>To create a keystore for testing you can do something like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ keytool -genkeypair -alias mytestkey -keyalg RSA \
+  -dname "CN=Web Server,OU=Unit,O=Organization,L=City,S=State,C=US" \
+  -keypass changeme -keystore server.jks -storepass letmein</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Put the <code>server.jks</code> file in the classpath (for instance) and then in
+your <code>application.yml</code> for the Config Server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>encrypt:
+  keyStore:
+    location: classpath:/server.jks
+    password: letmein
+    alias: mytestkey
+    secret: changeme</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_embedding_the_config_server">Embedding the Config Server</h3>
+<div class="paragraph">
+<p>The Config Server runs best as a standalone application, but if you
+need to you can embed it in another application. Just use the
+<code>@EnableConfigServer</code> annotation and (optionally) set
+<code>spring.cloud.config.server.prefix</code> to a path prefix, e.g. "/config",
+to serve the resources under a prefix. The prefix should start but not
+end with a "/". It is applied to the <code>@RequestMappings</code> in the Config
+Server (i.e. underneath the Spring Boot prefixes <code>server.servletPath</code>
+and <code>server.contextPath</code>). Another optional property that can be
+useful in this case is <code>spring.cloud.config.server.bootstrap</code> which is
+a flag to indicate that the server should configure itself from its
+own remote repository. The flag is off by default because it can delay
+startup, but when embedded in another application it makes sense to
+initialize the same way as any other application.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spring_cloud_config_client">Spring Cloud Config Client</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A Spring Boot application can take immediate advantage of the Spring
+Config Server (or other external property sources provided by the
+application developer), and it will also pick up some additional
+useful features related to <code>Environment</code> change events.</p>
+</div>
+<div class="sect2">
+<h3 id="config-first-bootstrap">Config First Bootstrap</h3>
+<div class="paragraph">
+<p>This is the default behaviour for any application which has the Spring
+Cloud Config Client on the classpath. When a config client starts up
+it binds to the Config Server (via the bootstrap configuration
+property <code>spring.cloud.config.uri</code>) and initializes Spring
+<code>Environment</code> with remote property sources.</p>
+</div>
+<div class="paragraph">
+<p>The net result of this is that all client apps that want to consume
+the Config Server need a <code>bootstrap.yml</code> (or an environment variable)
+with the server address in <code>spring.cloud.config.uri</code> (defaults to
+"http://localhost:8888").</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="eureka-first-bootstrap">Eureka First Bootstrap</h3>
+<div class="paragraph">
+<p>If you are using Spring Cloud Netflix and Eureka Service Discovery,
+then you can have the Config Server register with Eureka if you want
+to, but in the default "Config First" mode, clients won&#8217;t be able to
+take advantage of the registration.</p>
+</div>
+<div class="paragraph">
+<p>If you prefer to use Eureka to locate the Config Server, you can do
+that by setting <code>spring.cloud.config.discovery.enabled=true</code> (default
+"false"). The net result of that is that client apps all need a
+<code>bootstrap.yml</code> (or an environment variable) with the Eureka server
+address, e.g. in <code>eureka.client.serviceUrl.defaultZone</code>.  The price
+for using this option is an extra network round trip on start up to
+locate the service registration. The benefit is that the Config Server
+can change its co-ordinates, as long as Eureka is a fixed point. The
+default service id is "CONFIGSERVER" but you can change that on the
+client with <code>spring.cloud.config.discovery.serviceId</code> (and on the server
+in the usual way for a service, e.g. by setting <code>spring.application.name</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="config-client-fail-fast">Config Client Fail Fast</h3>
+<div class="paragraph">
+<p>In some cases, it may be desirable to fail startup of a service if
+it cannot connect to the Config Server.  If this is the desired
+behavior, set the bootstrap configuration property
+<code>spring.cloud.config.failFast=true</code> and the client will halt with
+an Exception.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_locating_remote_configuration_resources">Locating Remote Configuration Resources</h3>
+<div class="paragraph">
+<p>The Config Service serves property sources from <code>/{name}/{env}/{label}</code>, where the default bindings in the
+client app are</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>"name" = <code>${spring.application.name}</code></p>
+</li>
+<li>
+<p>"env" = <code>${spring.profiles.active}</code> (actually <code>Environment.getActiveProfiles()</code>)</p>
+</li>
+<li>
+<p>"label" = "master"</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All of them can be overridden by setting <code>spring.cloud.config.*</code>
+(where <code>*</code> is "name", "env" or "label"). The "label" is useful for
+rolling back to previous versions of configuration; with the default
+Config Server implementation it can be a git label, branch name or
+commit id.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_security_2">Security</h3>
+<div class="paragraph">
+<p>If you use HTTP Basic security on the server then clients just need to
+know the password (and username if it isn&#8217;t the default). You can do
+that via the config server URI, or via separate username and password
+properties, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+     uri: https://user:secret@myconfig.mycompany.com</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+     uri: https://myconfig.mycompany.com
+     username: user
+     password: secret</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>spring.cloud.config.password</code> and <code>spring.cloud.config.username</code>
+values override anything that is provided in the URI.</p>
+</div>
+<div class="paragraph">
+<p>If you deploy your apps on Cloud Foundry then the best way to provide
+the password is through service credentials, e.g. in the URI, since
+then it doesn&#8217;t even need to be in a config file. An example which
+works locally and for a user-provided service on Cloud Foundry named
+"configserver":</p>
+</div>
+<div class="listingblock">
+<div class="title">bootstrap.yml</div>
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+     uri: ${vcap.services.configserver.credentials.uri:http://user:password@localhost:8888}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you use another form of security you might need to provide a
+<code>RestTemplate</code> to the <code>ConfigServicePropertySourceLocator</code> (e.g. by
+grabbing it in the bootstrap context and injecting one).</p>
+</div>
+</div>
+</div>
+</div>
+<h1 id="_spring_cloud_netflix" class="sect0">Spring Cloud Netflix</h1>
+<div class="openblock partintro">
+<div class="content">
+This project provides Netflix OSS integrations for Spring Boot apps through autoconfiguration
+and binding to the Spring Environment and other Spring programming model idioms. With a few
+simple annotations you can quickly enable and configure the common patterns inside your
+application and build large distributed systems with battle-tested Netflix components. The
+patterns provided include Service Discovery (Eureka), Circuit Breaker (Hystrix),
+Intelligent Routing (Zuul) and Client Side Load Balancing (Ribbon).
+</div>
+</div>
+<div class="sect1">
+<h2 id="_service_discovery_eureka_clients">Service Discovery: Eureka Clients</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Service Discovery is one of the key tenets of a microservice based architecture. Trying to hand configure each client or some form of convention can be very difficult to do and can be very brittle.  Eureka is the Netflix Service Discovery Server and Client.  The server can be configured and deployed to be highly available, with each server replicating state about the registered services to the others.</p>
+</div>
+<div class="sect2">
+<h3 id="_registering_with_eureka">Registering with Eureka</h3>
+<div class="paragraph">
+<p>When a client registers with Eureka, it provide meta-data about itself
+such as host and port, health indicator URL, home page etc.  Eureka
+receives heartbeat messages from each instance belonging to a service.
+If the heartbeat fails over a configurable timetable, the instance is
+normally removed from the registry.</p>
+</div>
+<div class="paragraph">
+<p>Example eureka client:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+@EnableEurekaClient
+@RestController
+public class Application {
+
+    @RequestMapping("/")
+    public String home() {
+        return "Hello world";
+    }
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(Application.class).web(true).run(args);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(i.e. utterly normal Spring Boot app). In this example we use
+<code>@EnableEurekaClient</code> explicitly, but with only Eureka available you
+could also use <code>@EnableDiscoveryClient</code>. Configuration is required to
+locate the Eureka server. Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where "defaultZone" is a magic string fallback value that provides the
+service URL for any client that doesn&#8217;t express a preference
+(i.e. it&#8217;s a useful default).</p>
+</div>
+<div class="paragraph">
+<p>The default application name (service ID), virtual host and non-secure
+port, taken from the <code>Environment</code>, are <code>${spring.application.name}</code>,
+<code>${spring.application.name}</code> and <code>${server.port}</code> respectively.</p>
+</div>
+<div class="paragraph">
+<p><code>@EnableEurekaClient</code> makes the app into both a Eureka "instance"
+(i.e. it registers itself) and a "client" (i.e. it can query the
+registry to locate other services). The instance behaviour is driven
+by <code>eureka.instance.*</code> configuration keys, but the defaults will be
+fine if you ensure that your application has a
+<code>spring.application.name</code> (this is the default for the Eureka service
+ID, or VIP).</p>
+</div>
+<div class="paragraph">
+<p>See <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaInstanceConfigBean.java">EurekaInstanceConfigBean</a> and <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaClientConfigBean.java">EurekaClientConfigBean</a> for more details of the configurable options.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_status_page_and_health_indicator">Status Page and Health Indicator</h3>
+<div class="paragraph">
+<p>The status page and health indicators for a Eureka instance default to
+"/info" and "/health" respectively, which are the default locations of
+useful endpoints in a Spring Boot Actuator application. You need to
+change these, even for an Actuator application if you use a
+non-default context path or servlet path
+(e.g. <code>server.servletPath=/foo</code>) or management endpoint path
+(e.g. <code>management.contextPath=/admin</code>). Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>eureka:
+  instance:
+    statusPageUrlPath: ${management.contextPath}/info
+    healthCheckUrlPath: ${management.contextPath}/health</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These links show up in the metadata that is consumers by clients, and
+used in some scenarios to decide whether to send requests to your
+application, so it&#8217;s helpful if they are accurate.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_eureka_metadata_for_instances_and_clients">Eureka Metadata for Instances and Clients</h3>
+<div class="paragraph">
+<p>It&#8217;s worth spending a bit of time understanding how the Eureka metadata works, so you can use it in a way that makes sense in your platform. There is standard metadata for things like hostname, IP address, port numbers, status page and health check. These are published in the service registry and used by clients to contact the services in a straightforward way. Additional metadata can be added to the instance registration in the <code>eureka.instance.metadataMap</code>, and this will be accessible in the remote clients, but in general will not change the behaviour of the client, unless it is made aware of the meaning of the metadata. There are a couple of special cases described below where Spring Cloud already assigns meaning to the metadata map.</p>
+</div>
+<div class="sect3">
+<h4 id="_using_eureka_on_cloudfoundry">Using Eureka on Cloudfoundry</h4>
+<div class="paragraph">
+<p>Cloudfoundry has a global router so that all instances of the same app have the same hostname (it&#8217;s the same in other PaaS solutions with a similar architecture). This isn&#8217;t necessarily a barrier to using Eureka, but if you use the router (recommended, or even mandatory depending on the way your platform was set up), you need to explicitly set the hostname and port numbers (secure or non-secure) so that they use the router. You might also want to use instance metadata so you can distinguish between the instances on the client (e.g. in a custom load balancer). For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>eureka:
+  instance:
+    hostname: ${vcap.application.uris[0]}
+    nonSecurePort: 80
+    metadataMap:
+      instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${server.port}}}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Depending on the way the security rules are set up in your Cloudfoundry instance, you might be able to register and use the IP address of the host VM for direct service-to-service calls. This feature is not (yet) available on Pivotal Web Services (<a href="https://run.pivotal.io">PWS</a>).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_making_the_eureka_instance_id_unique">Making the Eureka Instance ID Unique</h4>
+<div class="paragraph">
+<p>By default a eureka instance is registered with an ID that is equal to its host name (i.e. only one service per host). Using Spring Cloud you can override this by providing a unique identifier in <code>eureka.instance.metadataMap.instanceId</code>. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>eureka:
+  instance:
+    metadataMap:
+      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this metadata, and multiple service instances deployed on
+localhost, the random value will kick in there to make the instance
+unique. In Cloudfoundry the <code>spring.application.instance_id</code> will be
+populated automatically in a Spring Boot Actuator application, so the
+random value will not be needed.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_discoveryclient">Using the DiscoveryClient</h3>
+<div class="paragraph">
+<p>Once you have an app that is <code>@EnableEurekaClient</code> you can use it to
+discover service instances from the <a href="#spring-cloud-eureka-server">Eureka Server</a>. One way to do that is to use the native
+<code>com.netflix.discovery.DiscoveryClient</code> (as opposed to the Spring
+Cloud <code>DiscoveryClient</code>), e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Autowired
+private DiscoveryClient discoveryClient;
+
+public String serviceUrl() {
+    InstanceInfo instance = discoveryClient.getNextServerFromEureka("STORES", false);
+    return instance.getHomePageUrl();
+}</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Don&#8217;t use the <code>DiscoveryClient</code> in <code>@PostConstruct</code> method or in a
+<code>@Scheduled</code> method (or anywhere where the <code>ApplicationContext</code> might
+not be started yet). It is initialized in a <code>SmartLifecycle</code> (with
+<code>phase=0</code>) so the earliest you can rely on it being available is in
+another <code>SmartLifecycle</code> with higher phase.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_alternatives_to_the_native_netflix_discoveryclient">Alternatives to the native Netflix DiscoveryClient</h3>
+<div class="paragraph">
+<p>You don&#8217;t have to use the raw Netflix <code>DiscoveryClient</code> and usually it
+is more convenient to use it behind a wrapper of some sort. Spring
+Cloud has support for <a href="#spring-cloud-feign">Feign</a> (a REST client
+builder) and also <a href="#spring-cloud-ribbon">Spring <code>RestTemplate</code></a> using
+the logical Eureka service identifiers (VIPs) instead of physical
+URLs. To configure Ribbon with a fixed list of physical servers you
+can simply set <code>&lt;client&gt;.ribbon.listOfServers</code> to a comma-separated
+list of physical addresses (or hostnames), where <code>&lt;client&gt;</code> is the ID
+of the client.</p>
+</div>
+<div class="paragraph">
+<p>You can also use the <code>org.springframework.cloud.client.discovery.DiscoveryClient</code>
+which provides a simple API for discovery clients that is not specific
+to Netflix, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Autowired
+private DiscoveryClient discoveryClient;
+
+public String serviceUrl() {
+    List&lt;ServiceInstance&gt; list = client.getInstances("STORES");
+    if (list != null &amp;&amp; list.size() &gt; 0 ) {
+        return list.get(0).getUri();
+    }
+    return null;
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</h3>
+<div class="paragraph">
+<p>Being an instance also involves a periodic heartbeat to the registry
+(via the client&#8217;s <code>serviceUrl</code>) with default duration 30 seconds. A
+service is not available for discovery by clients until the instance,
+the server and the client all have the same metadata in their local
+cache (so it could take 3 hearbeats). You can change the period using
+<code>eureka.instance.leaseRenewalIntervalInSeconds</code> and this will speed up
+the process of getting clients connected to other services. In
+production it&#8217;s probably better to stick with the default because
+there are some computations internally in the server that make
+assumptions about the lease renewal period.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-cloud-eureka-server">Service Discovery: Eureka Server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Example eureka server (e.g. using spring-cloud-starter-eureka-server to set up the classpath):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+@EnableEurekaServer
+public class Application {
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(Application.class).web(true).run(args);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The server has a home page with a UI, and HTTP API endpoints per the
+normal Eureka functionality under <code>/eureka/*</code>.</p>
+</div>
+<div class="paragraph">
+<p>Eureka background reading: see <a href="https://github.com/cfregly/fluxcapacitor/wiki/NetflixOSS-FAQ#eureka-service-discovery-load-balancer">flux capacitor</a> and <a href="https://groups.google.com/forum/?fromgroups#!topic/eureka_netflix/g3p2r7gHnN0">google group discussion</a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can run the Eureka server as an executable JAR (or WAR) using the
+<a href="http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#build-tool-plugins">Spring
+Boot build tools</a>, but to avoid problems with classpath scanning in
+Jersey 1.x you have to tell the build plugins to unpack the jars that
+contain JAX-RS resources, e.g. (for Maven)</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+    &lt;configuration&gt;
+        &lt;requiresUnpack&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;com.netflix.eureka&lt;/groupId&gt;
+                &lt;artifactId&gt;eureka-core&lt;/artifactId&gt;
+            &lt;/dependency&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;com.netflix.eureka&lt;/groupId&gt;
+                &lt;artifactId&gt;eureka-client&lt;/artifactId&gt;
+            &lt;/dependency&gt;
+        &lt;/requiresUnpack&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or with Gradle</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">apply plugin: 'spring-boot'
+springBoot {
+    requiresUnpack = ['com.netflix.eureka:eureka-core','com.netflix.eureka:eureka-client']
+}</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Due to Gradle&#8217;s dependency resolution rules and the lack of a parent bom feature, simply depending on spring-cloud-starter-eureka-server can cause failures on application startup. To remedy this the Spring dependency management plugin must be added and the Spring cloud starter parent bom must be imported like so:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">buildscript {
+  dependencies {
+    classpath "io.spring.gradle:dependency-management-plugin:0.4.0.RELEASE"
+  }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+  imports {
+    mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:1.0.0.RELEASE'
+  }
+}</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_high_availability_zones_and_regions">High Availability, Zones and Regions</h3>
+<div class="paragraph">
+<p>The Eureka server does not have a backend store, but the service
+instances in the registry all have to send heartbeats to keep their
+registrations up to date (so this can be done in memory). Clients also
+have an in-memory cache of eureka registrations (so they don&#8217;t have to
+go to the registry for every single request to a service).</p>
+</div>
+<div class="paragraph">
+<p>By default every Eureka server is also a Eureka client and requires
+(at least one) service URL to locate a peer. If you don&#8217;t provide it
+the service will run and work, but it will shower your logs with a lot
+of noise about not being able to register with the peer.</p>
+</div>
+<div class="paragraph">
+<p>See also <a href="#spring-cloud-ribbon">below for details of Ribbon
+support</a> on the client side for Zones and Regions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_standalone_mode">Standalone Mode</h3>
+<div class="paragraph">
+<p>The combination of the two caches (client and server) and the
+heartbeats make a standalone Eureka server fairly resilient to
+failure, as long as there is some sort of monitor or elastic runtime
+keeping it alive (e.g. Cloud Foundry). In standalone mode, you might
+prefer to switch off the client side behaviour, so it doesn&#8217;t keep
+trying and failing to reach its peers. Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml (Standalone Eureka Server)</div>
+<div class="content">
+<pre>server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that the <code>serviceUrl</code> is pointing to the same host as the local
+instance.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_peer_awareness">Peer Awareness</h3>
+<div class="paragraph">
+<p>Eureka can be made even more resilient and available by running
+multiple instances and asking them to register with each other. In
+fact, this is the default behaviour, so all you need to do to make it
+work is add a valid <code>serviceUrl</code> to a peer, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml (Two Peer Aware Eureka Servers)</div>
+<div class="content">
+<pre>---
+spring:
+  profiles: peer1
+eureka:
+  instance:
+    hostname: peer1
+  client:
+    serviceUrl:
+      defaultZone: http://peer2/eureka/
+
+---
+spring:
+  profiles: peer2
+eureka:
+  instance:
+    hostname: peer2
+  client:
+    serviceUrl:
+      defaultZone: http://peer1/eureka/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example we have a YAML file that can be used to run the same
+server on 2 hosts (peer1 and peer2), by running it in different
+Spring profiles. You could use this configuration to test the peer
+awareness on a single host (there&#8217;s not much value in doing that in
+production) by manipulating <code>/etc/hosts</code> to resolve the host names. In
+fact, the <code>eureka.instance.hostname</code> is not needed if you are running
+on a machine that knows its own hostname (it is looked up using
+<code>java.net.InetAddress</code> by default).</p>
+</div>
+<div class="paragraph">
+<p>You can add multiple peers to a system, and as long as they are all
+connected to each other by at least one edge, they will synchronize
+the registrations amongst themselves. If the peers are physically
+separated (inside a data centre or between multiple data centres) then
+the system can in principle survive split-brain type failures.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prefer_ip_address">Prefer IP Address</h3>
+<div class="paragraph">
+<p>In some cases, it is preferable for Eureka to advertise the IP Adresses
+of services rather than the hostname.  Set <code>eureka.instance.preferIpAddress</code>
+to <code>true</code> and when the application registers with eureka, it will use its
+IP Address rather than its hostname.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Netflix has created a library called <a href="https://github.com/Netflix/Hystrix">Hystrix</a> that implements the <a href="http://martinfowler.com/bliki/CircuitBreaker.html">circuit breaker pattern</a>.  In a microservice architecture it is common to have multiple layers of service calls.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/HystrixGraph.png" alt="HystrixGraph">
+</div>
+<div class="title">Figure 1. Microservice Graph</div>
+</div>
+<div class="paragraph">
+<p>A service failure in the lower level of services can cause cascading failure all the way up to the user.  When calls to a particular service reach a certain threshold (20 failures in 5 seconds is the default in Hystrix), the circuit opens and the call is not made.  In cases of error and an open circuit a fallback can be provided by the developer.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/HystrixFallback.png" alt="HystrixFallback">
+</div>
+<div class="title">Figure 2. Hystrix fallback prevents cascading failures</div>
+</div>
+<div class="paragraph">
+<p>Having an open circuit stops cascading failures and allows overwhelmed or failing services time to heal.  The fallback can be another Hystrix protected call, static data or a sane empty value.  Fallbacks may be chained so the first fallback makes some other business call which in turn falls back to static data.</p>
+</div>
+<div class="paragraph">
+<p>Example boot app:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@SpringBootApplication
+@EnableCircuitBreaker
+public class Application {
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(Application.class).web(true).run(args);
+    }
+
+}
+
+@Component
+public class StoreIntegration {
+
+    @HystrixCommand(fallbackMethod = "defaultStores")
+    public Object getStores(Map&lt;String, Object&gt; parameters) {
+        //do stuff that might fail
+    }
+
+    public Object defaultStores(Map&lt;String, Object&gt; parameters) {
+        return /* something useful */;
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@HystrixCommand</code> is provided by a Netflix contrib library called
+<a href="https://github.com/Netflix/Hystrix/tree/master/hystrix-contrib/hystrix-javanica">"javanica"</a>.
+Spring Cloud automatically wraps Spring beans with that
+annotation in a proxy that is connected to the Hystrix circuit
+breaker. The circuit breaker calculates when to open and close the
+circuit, and what to do in case of a failure.</p>
+</div>
+<div class="paragraph">
+<p>To configure the <code>@HystrixCommand</code> you can use the <code>commandProperties</code>
+attribute with a list of <code>@HystrixProperty</code> annotations.  See
+<a href="https://github.com/Netflix/Hystrix/tree/master/hystrix-contrib/hystrix-javanica#configuration">here</a>
+for more details.  See the <a href="https://github.com/Netflix/Hystrix/wiki/Configuration">Hystrix wiki</a>
+for details on the properties available.</p>
+</div>
+<div class="sect2">
+<h3 id="_propagating_the_security_context_or_using_spring_scopes">Propagating the Security Context or using Spring Scopes</h3>
+<div class="paragraph">
+<p>If you want some thread local context to propagate into a <code>@HystrixCommand</code> the default declaration will not work because it executes the command in a thread pool (in case of timeouts). You can switch Hystrix to use the same thread as the caller using some configuration, or directly in the annotation, by asking it to use a different "Isolation Strategy". For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@HystrixCommand(fallbackMethod = "stubMyService",
+    commandProperties = {
+      @HystrixProperty(name="execution.isolation.strategy", value="SEMAPHORE")
+    }
+)
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The same thing applies if you are using <code>@SessionScope</code> or <code>@RequestScope</code>. You will know when you need to do this because of a runtime exception that says it can&#8217;t find the scoped context.</p>
+</div>
+<div class="paragraph">
+<p>In particular you might be interested</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_health_indicator_2">Health Indicator</h3>
+<div class="paragraph">
+<p>The state of the connected circuit breakers are also exposed in the
+<code>/health</code> endpoint of the calling application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+    "hystrix": {
+        "openCircuitBreakers": [
+            "StoreIntegration::getStoresByLocationLink"
+        ],
+        "status": "CIRCUIT_OPEN"
+    },
+    "status": "UP"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hystrix_metrics_stream">Hystrix Metrics Stream</h3>
+<div class="paragraph">
+<p>To enable the Hystrix metrics stream include a dependency on <code>spring-boot-starter-actuator</code>.  This will expose the <code>/hystrix.stream</code> as a management endpoint.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+    &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_circuit_breaker_hystrix_dashboard">Circuit Breaker: Hystrix Dashboard</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One of the main benefits of Hystrix is the set of metrics it gathers about each HystrixCommand.  The Hystrix Dashboard displays the health of each circuit breaker in an efficient manner.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/Hystrix.png" alt="Hystrix">
+</div>
+<div class="title">Figure 3. Hystrix Dashboard</div>
+</div>
+<div class="paragraph">
+<p>To run the Hystrix Dashboard annotate your Spring Boot main class with <code>@EnableHystrixDashboard</code>.  You then visit <code>/hystrix</code> and point the dashboard to an individual instances <code>/hystrix.stream</code> endpoint in a Hystrix client application.</p>
+</div>
+<div class="sect2">
+<h3 id="_turbine">Turbine</h3>
+<div class="paragraph">
+<p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation  (e.g. using spring-cloud-starter-turbine to set up the classpath).  All of the documented configuration properties from <a href="https://github.com/Netflix/Turbine/wiki/Configuration-(1.x)">the Turbine 1 wiki</a> apply.  The only difference is that the <code>turbine.instanceUrlSuffix</code> does not need the port prepended as this is handled automatically unless <code>turbine.instanceInsertPort=false</code>.</p>
+</div>
+<div class="paragraph">
+<p>The configuration key <code>turbine.appConfig</code> is a list of eureka serviceIds that turbine will use to lookup instances.  The turbine stream is then used in the Hystrix dashboard using a url that looks like: <code><a href="http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt" class="bare">http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt</a>;</code> (the cluster parameter can be omitted if the name is "default"). The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>. Values returned from eureka are uppercase, thus we expect this example to work if there is an app registered with Eureka called "customers":</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>turbine:
+  aggregator:
+    clusterConfig: CUSTOMERS
+  appConfig: customers</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>clusterName</code> can be customized by a SPEL expression in <code>turbine.clusterNameExpression</code> with root an instance of <code>InstanceInfo</code>. The default value is <code>appName</code>, which means that the Eureka serviceId ends up as the cluster key (i.e. the <code>InstanceInfo</code> for customers has an <code>appName</code> of "CUSTOMERS").  A different example would be <code>turbine.clusterNameExpression=aSGName</code>, which would get the cluster name from the AWS ASG name. Another example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>turbine:
+  aggregator:
+    clusterConfig: SYSTEM,USER
+  appConfig: customers,stores,ui,admin
+  clusterNameExpression: metadata.cluster</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, the cluster name from 4 services is pulled from their metadata map, and is expected to have values that include "SYSTEM" and "USER".</p>
+</div>
+<div class="paragraph">
+<p>To use the "default" cluster for all apps you need a string literal expression (with single quotes):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>turbine:
+  appConfig: customers,stores
+  clusterNameExpression: 'default'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Spring Cloud provides a <code>spring-cloud-starter-turbine</code> that has all the dependencies you need to get a Turbine server running. Just create a Spring Boot application and annotate it with <code>@EnableTurbine</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_turbine_amqp">Turbine AMQP</h3>
+<div class="paragraph">
+<p>In some environments (e.g. in a PaaS setting), the classic Turbine model of pulling metrics from all the distributed Hystrix commands doesn&#8217;t work. In that case you might want to have your Hystrix commands push metrics to Turbine, and Spring Cloud enables that with AMQP messaging. All you need to do on the client is add a dependency to <code>spring-cloud-netflix-hystrix-amqp</code> and make sure there is a Rabbit broker available (see Spring Boot documentation for details on how to configure the client credentials, but it should work out of the box for a local broker or in Cloud Foundry).</p>
+</div>
+<div class="paragraph">
+<p>On the server side Just create a Spring Boot application and annotate it with <code>@EnableTurbineAmqp</code> and by default it will come up on port 8989 (point your Hystrix dashboard to that port, any path). You can customize the port using either <code>server.port</code> or <code>turbine.amqp.port</code>. If you have <code>spring-boot-starter-web</code> and <code>spring-boot-starter-actuator</code> on the classpath as well, then you can open up the Actuator endpoints on a separate port (with Tomcat by default) by providing a <code>management.port</code> which is different.</p>
+</div>
+<div class="paragraph">
+<p>You can then point the Hystrix Dashboard to the Turbine AMQP Server instead of individual Hystrix streams.  If Turbine AMQP is running on port 8989 on myhost, then put <code><a href="http://myhost:8989" class="bare">http://myhost:8989</a></code> in the stream input field in the Hystrix Dashboard. Circuits will be prefixed by their respective serviceId, followed by a dot, then the circuit name.</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud provides a <code>spring-cloud-starter-turbine-amqp</code> that has all the dependencies you need to get a Turbine AMQP server running. You need Java 8 to run the app because it is Netty-based.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_customizing_the_amqp_connectionfactory">Customizing the AMQP ConnectionFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are using AMQP there needs to be a <code>ConnectionFactory</code> (from
+Spring Rabbit) in the application context. If there is a single
+<code>ConnectionFactory</code> it will be used, or if there is a one qualified as
+<code>@HystrixConnectionFactory</code> (on the client) and
+<code>@TurbineConnectionFactory</code> (on the server) it will be preferred over
+others, otherwise the <code>@Primary</code> one will be used. If there are
+multiple unqualified connection factories there will be an error.</p>
+</div>
+<div class="paragraph">
+<p>Note that Spring Boot (as of 1.2.2) creates a <code>ConnectionFactory</code> that
+is <em>not</em> <code>@Primary</code>, so if you want to use one connection factory for
+the bus and another for business messages, you need to create both,
+and annotate them <code>@*ConnectionFactory</code> and <code>@Primary</code> respectively.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-cloud-ribbon">Client Side Load Balancer: Ribbon</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ribbon is a client side load balancer which gives you a lot of control
+over the behaviour of HTTP and TCP clients. Feign already uses Ribbon,
+so if you are using <code>@FeignClient</code> then this section also applies.</p>
+</div>
+<div class="paragraph">
+<p>A central concept in Ribbon is that of the named client. Each load
+balancer is part of an ensemble of components that work together to
+contact a remote server on demand, and the ensemble has a name that
+you give it as an application developer (e.g. using the <code>@FeignClient</code>
+annotation). Spring Cloud creates a new ensemble as an
+<code>ApplicationContext</code> on demand for each named client using
+<code>RibbonClientConfiguration</code>. This contains (amongst other things) an
+<code>ILoadBalancer</code>, a <code>RestClient</code>, and a <code>ServerListFilter</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_customizing_the_ribbon_client">Customizing the Ribbon Client</h3>
+<div class="paragraph">
+<p>You can configure some bits of a Ribbon client using external
+properties in <code>&lt;client&gt;.ribbon.*</code>, which is no different than using
+the Netflix APIs natively, except that you can use Spring Boot
+configuration files. The native options can
+be inspected as static fields in <code>CommonClientConfigKey</code> (part of
+ribbon-core).</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud also lets you take full control of the client by
+declaring additional configuration (on top of the
+<code>RibbonClientConfiguration</code>) using <code>@RibbonClient</code>. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@RibbonClient(name = "foo", configuration = FooConfiguration.class)
+public class TestConfiguration {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the client is composed from the components already in
+<code>RibbonClientConfiguration</code> together with any in <code>FooConfiguration</code>
+(where the latter generally will override the former).</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+The <code>FooConfiguration</code> has to be <code>@Configuration</code> but take
+care that it is not in a <code>@ComponentScan</code> for the main application
+context, otherwise it will be shared by all the <code>@RibbonClients</code>. If
+you use <code>@ComponentScan</code> (or <code>@SpringBootApplication</code>) you need to
+take steps to avoid it being included (for instance put it in a
+separate, non-overlapping package, or specify the packages to scan
+explicitly in the <code>@ComponentScan</code>).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Netflix provides the following beans by default for ribbon
+(<code>BeanType</code> beanName: <code>ClassName</code>):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>IClientConfig</code> ribbonClientConfig: <code>DefaultClientConfigImpl</code></p>
+</li>
+<li>
+<p><code>IRule</code> ribbonRule: <code>ZoneAvoidanceRule</code></p>
+</li>
+<li>
+<p><code>IPing</code> ribbonPing: <code>NoOpPing</code></p>
+</li>
+<li>
+<p><code>ServerList&lt;Server&gt; ribbonServerList: `ConfigurationBasedServerList</code></p>
+</li>
+<li>
+<p><code>ServerListFilter&lt;Server&gt;</code> ribbonServerListFilter: <code>ZonePreferenceServerListFilter</code></p>
+</li>
+<li>
+<p><code>ILoadBalancer</code> ribbonLoadBalancer: <code>ZoneAwareLoadBalancer</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Creating a bean of one of those type and placing it in a <code>@RibbonClient</code>
+configuration (such as <code>FooConfiguration</code> above) allows you to override each
+one of the beans described.  Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+public class FooConfiguration {
+    @Bean
+    public IPing ribbonPing(IClientConfig config) {
+        return new PingUrl();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This replaces the <code>NoOpPing</code> with <code>PingUrl</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_ribbon_with_eureka">Using Ribbon with Eureka</h3>
+<div class="paragraph">
+<p>When Eureka is used in conjunction with Ribbon the <code>ribbonServerList</code>
+is overridden with an extension of <code>DiscoveryEnabledNIWSServerList</code>
+which populates the list of servers from Eureka.  It also replaces the
+<code>IPing</code> interface with <code>NIWSDiscoveryPing</code> which delegates to Eureka
+to determine if a server is up. The <code>ServerList</code> that is installed by
+default is a <code>DomainExtractingServerList</code> and the purpose of this is
+to make physical metadata available to the load balancer without using
+AWS AMI metadata (which is what Netflix relies on). By default the
+server list will be constructed with "zone" information as provided in
+the instance metadata (so on the client set
+<code>eureka.instance.metadataMap.zone</code>), and if that is missing it can use
+the domain name from the server hostname as a proxy for zone (if the
+flag <code>approximateZoneFromDomain</code> is set). Once the zone information is
+available it can be used in a <code>ServerListFilter</code> (by default it will
+be used to locate a server in the same zone as the client because the
+default is a <code>ZonePreferenceServerListFilter</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="spring-cloud-ribbon-without-eureka">Example: How to Use Ribbon Without Eureka</h3>
+<div class="paragraph">
+<p>Eureka is a convenient way to abstract the discovery of remote servers
+so you don&#8217;t have to hard code their URLs in clients, but if you
+prefer not to use it, Ribbon and Feign are still quite
+amenable. Suppose you have declared a <code>@RibbonClient</code> for "stores",
+and Eureka is not in use (and not even on the classpath). The Ribbon
+client defaults to a configured server list, and you can supply the
+configuration like this</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>stores:
+  ribbon:
+    listOfServers: example.com,google.com</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_disable_eureka_use_in_ribbon">Example: Disable Eureka use in Ribbon</h3>
+<div class="paragraph">
+<p>Setting the property <code>ribbon.eureka.enabled = false</code> will explicitly
+disable the use of Eureka in Ribbon.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>ribbon:
+  eureka:
+   enabled: false</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_ribbon_api_directly">Using the Ribbon API Directly</h3>
+<div class="paragraph">
+<p>You can also use the <code>LoadBalancerClient</code> directly. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyClass {
+    @Autowired
+    private LoadBalancerClient loadBalancer;
+
+    public void doStuff() {
+        ServiceInstance instance = loadBalancer.choose("stores");
+        URI storesUri = URI.create(String.format("http://%s:%s", instance.getHost(), instance.getPort()));
+        // ... do something with the URI
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-cloud-feign">Declarative REST Client: Feign</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/Netflix/feign">Feign</a> is a declarative web service client.  It makes writing web service clients easier.  To use Feign create an interface and annotate it.  It has pluggable annotation support including Feign annotations and JAX-RS annotations. Feign also supports pluggable encoders and decoders.  Spring Cloud adds support for Spring MVC annotations and for using the same <code>HttpMessageConverters</code> used by default in Spring Web.  Spring Cloud integrates Ribbon and Eureka to provide a load balanced http client when using Feign.</p>
+</div>
+<div class="paragraph">
+<p>Example spring boot app</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+@EnableEurekaClient
+@EnableFeignClients
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">StoreClient.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@FeignClient("stores")
+public interface StoreClient {
+    @RequestMapping(method = RequestMethod.GET, value = "/stores")
+    List&lt;Store&gt; getStores();
+
+    @RequestMapping(method = RequestMethod.POST, value = "/stores/{storeId}", consumes = "application/json")
+    Store update(@PathParameter("storeId") Long storeId, Store store);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the <code>@FeignClient</code> annotation the String value ("stores" above) is
+an arbitrary client name, which is used to create a Ribbon load
+balancer (see <a href="#spring-cloud-ribbon">below for details of Ribbon
+support</a>). You can also specify a URL using the <code>url</code> attribute
+(absolute value or just a hostname).</p>
+</div>
+<div class="paragraph">
+<p>The Ribbon client above will want to discover the physical addresses
+for the "stores" service. If your application is a Eureka client then
+it will resolve the service in the Eureka service registry. If you
+don&#8217;t want to use Eureka, you can simply configure a list of servers
+in your external configuration (see
+<a href="#spring-cloud-ribbon-without-eureka">above for example</a>).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_external_configuration_archaius">External Configuration: Archaius</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/Netflix/archaius">Archaius</a> is the Netflix client side configuration library.  It is the library used by all of the Netflix OSS components for configuration.  Archaius is an extension of the <a href="http://commons.apache.org/proper/commons-configuration">Apache Commons Configuration</a> project.  It allows updates to configuration by either polling a source for changes or for a source to push changes to the client.  Archaius uses Dynamic&lt;Type&gt;Property classes as handles to properties.</p>
+</div>
+<div class="listingblock">
+<div class="title">Archaius Example</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">class ArchaiusTest {
+    DynamicStringProperty myprop = DynamicPropertyFactory
+            .getInstance()
+            .getStringProperty("my.prop");
+
+    void doSomething() {
+        OtherClass.someMethod(myprop.get());
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Archaius has its own set of configuration files and loading priorities.  Spring applications should generally not use Archaius directly., but the need to configure the Netflix tools natively remains.  Spring Cloud has a Spring Environment Bridge so Archaius can read properties from the Spring Environment.  This allows Spring Boot projects to use the normal configuration toolchain, while allowing them to configure the Netflix tools, for the most part, as documented.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_router_and_filter_zuul">Router and Filter: Zuul</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Routing in an integral part of a microservice architecture.  For example, <code>/</code> may be mapped to your web application, <code>/api/users</code> is mapped to the user service and <code>/api/shop</code> is mapped to the shop service.  <a href="https://github.com/Netflix/zuul">Zuul</a> is a JVM based router and server side load balancer by Netflix.</p>
+</div>
+<div class="paragraph">
+<p><a href="http://www.slideshare.net/MikeyCohen1/edge-architecture-ieee-international-conference-on-cloud-engineering-32240146/27">Netflix uses Zuul</a> for the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Authentication</p>
+</li>
+<li>
+<p>Insights</p>
+</li>
+<li>
+<p>Stress Testing</p>
+</li>
+<li>
+<p>Canary Testing</p>
+</li>
+<li>
+<p>Dynamic Routing</p>
+</li>
+<li>
+<p>Service Migration</p>
+</li>
+<li>
+<p>Load Shedding</p>
+</li>
+<li>
+<p>Security</p>
+</li>
+<li>
+<p>Static Response handling</p>
+</li>
+<li>
+<p>Active/Active traffic management</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Zuul&#8217;s rule engine allows rules and filters to be written in essentially any JVM language, with built in support for Java and Groovy.</p>
+</div>
+<div class="sect2">
+<h3 id="netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</h3>
+<div class="paragraph">
+<p>Spring Cloud has created an embedded Zuul proxy to ease the
+development of a very common use case where a UI application wants to
+proxy calls to one or more back end services.  This feature is useful
+for a user interface to proxy to the backend services it requires,
+avoiding the need to manage CORS and authentication concerns
+independently for all the backends.</p>
+</div>
+<div class="paragraph">
+<p>To enable it, annotate a Spring Boot main class with
+<code>@EnableZuulProxy</code>, and this forwards local calls to the appropriate
+service.  By convention, a service with the Eureka ID "users", will
+receive requests from the proxy located at <code>/users</code> (with the prefix
+stripped). The proxy uses Ribbon to locate an instance to forward to
+via Eureka, and all requests are executed in a hystrix command, so
+failures will show up in Hystrix metrics, and once the circuit is open
+the proxy will not try to contact the service.</p>
+</div>
+<div class="paragraph">
+<p>To skip having a service automatically added, set
+<code>zuul.ignored-services</code> to a list of service id patterns. If a service
+matches a pattern that is ignored, but also included in the explicitly
+configured routes map, then it will be unignored. Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  ignoredServices: *
+  routes:
+    users: /myusers/**</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example, all services are ignored <strong>except</strong> "users".</p>
+</div>
+<div class="paragraph">
+<p>To augment or change
+the proxy routes, you can add external configuration like the
+following:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    users: /myusers/**</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This means that http calls to "/myusers" get forwarded to the "users"
+service (for example "/myusers/101" is forwarded to "/101").</p>
+</div>
+<div class="paragraph">
+<p>To get more fine-grained control over a route you can specify the path
+and the serviceId independently:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    users:
+      path: /myusers/**
+      serviceId: users_service</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This means that http calls to "/myusers" get forwarded to the
+"users_service" service.  The route has to have a "path" which can be
+specified as an ant-style pattern, so "/myusers/*" only matches one
+level, but "/myusers/**" matches hierarchically.</p>
+</div>
+<div class="paragraph">
+<p>The location of the backend can be specified as either a "serviceId"
+(for a Eureka service) or a "url" (for a physical location), e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    users:
+      path: /myusers/**
+      url: http://example.com/users_service</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These simple url-routes doesn&#8217;t get executed as HystrixCommand nor can you loadbalance multiple url with Ribbon.
+To achieve this specify a service-route and configure a Ribbon client for the
+serviceId (this currently requires disabling Eureka support in Ribbon:
+see <a href="#spring-cloud-ribbon-without-eureka">above for more information</a>), e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">zuul:
+  routes:
+    users:
+      path: /myusers/**
+      serviceId: users
+
+ribbon:
+  eureka:
+    enabled: false
+
+users:
+  ribbon:
+    listOfServers: example.com,google.com</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To add a prefix to all mappings, set <code>zuul.prefix</code> to a value, such as
+<code>/api</code>. The proxy prefix is stripped from the request before the
+request is forwarded by default (switch this behaviour off with
+<code>zuul.stripPrefix=false</code>). You can also switch off the stripping of
+the service-specific prefix from individual routes, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    users:
+      path: /myusers/**
+      stripPrefix: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example requests to "/myusers/101" will be forwarded to "/myusers/101" on the "users" service.</p>
+</div>
+<div class="paragraph">
+<p>The <code>zuul.routes</code> entries actually bind to an object of type <code>ProxyRouteLocator</code>. If you
+look at the properties of that object you will see that it also has a "retryable" flag.
+Set that flag to "true" to have the Ribbon client automatically retry failed requests
+(and if you need to you can modify the parameters of the retry operations using
+the Ribbon client configuration).</p>
+</div>
+<div class="paragraph">
+<p>The <code>X-Forwarded-Host</code> header added to the forwarded requests by
+default.  To turn it off set <code>zuul.addProxyHeaders = false</code>.  The
+prefix path is stripped by default, and the request to the backend
+picks up a header "X-Forwarded-Prefix" ("/myusers" in the examples
+above).</p>
+</div>
+<div class="paragraph">
+<p>An application with the <code>@EnableZuulProxy</code> could act as a standalone
+server if you set a default route ("/"), for example <code>zuul.route.home:
+/</code> would route all traffic (i.e. "/**") to the "home" service.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_uploading_files_through_zuul">Uploading Files through Zuul</h3>
+<div class="paragraph">
+<p>If you <code>@EnableZuulProxy</code> you can use the proxy paths to
+upload files and it should just work as long as the files
+are small. For large files there is an alternative path
+which bypasses the Spring <code>DispatcherServlet</code> (to
+avoid multipart processing) in "/zuul/<strong>". I.e. if
+<code>zuul.routes.customers=/customers/</strong>*</code> then you can
+POST large files to "/zuul/customers/*". The servlet
+path is externalized via <code>zuul.servletPath</code>. Extremely
+large files will also require elevated timeout settings
+if the proxy route takes you through a Ribbon load
+balancer, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that for streaming to work with large files, you need to use chunked encoding in the request (which some browsers
+do not do by default). E.g. on the command line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl -v -H "Transfer-Encoding: chunked" \
+    -F "file=@mylarge.iso" localhost:9999/zuul/simple/file</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plain_embedded_zuul">Plain Embedded Zuul</h3>
+<div class="paragraph">
+<p>You can also run a Zuul server without the proxying, or switch on parts of the proxying platform selectively, if you
+use <code>@EnableZuulServer</code> (instead of <code>@EnableZuulProxy</code>). Any beans that you add to the application of type <code>ZuulFilter</code>
+will be installed automatically, as they are with <code>@EnableZuulProxy</code>, but without any of the proxy filters being added
+automatically.</p>
+</div>
+<div class="paragraph">
+<p>In this case the routes into the Zuul server are
+still specified by configuring "zuul.routes.*", but there is no service discovery and no proxying, so the
+"serviceId" and "url" settings are ignored. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    api: /api/**</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>maps all paths in "/api/**" to the Zuul filter chain.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_disable_zuul_filters">Disable Zuul Filters</h3>
+<div class="paragraph">
+<p>Zuul for Spring Cloud comes with a number of <code>ZuulFilter</code> beans enabled by default
+in both proxy and server mode.  See <a href="https://github.com/spring-cloud/spring-cloud-netflix/tree/master/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/zuul/filters">the zuul filters package</a> for the
+possible filters that are enabled.  If you want to disable one, simply set
+<code>zuul.&lt;SimpleClassName&gt;.&lt;filterType&gt;.disable=true</code>. By convention, the package after
+<code>filters</code> is the Zuul filter type. For example to disable
+<code>org.springframework.cloud.netflix.zuul.filters.post.SendResponseFilter</code> set
+<code>zuul.SendResponseFilter.post.disable=true</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_polyglot_support_with_sidecar">Polyglot support with Sidecar</h3>
+<div class="paragraph">
+<p>Do you have non-jvm languages you want to take advantage of Eureka, Ribbon and
+Config Server?  The Spring Cloud Netflix Sidecar was inspired by
+<a href="https://github.com/Netflix/Prana">Netflix Prana</a>.  It includes a simple http api
+to get all of the instances (ie host and port) for a given service.  You can
+also proxy service calls through an embedded Zuul proxy which gets its route
+entries from Eureka.  The Spring Cloud Config Server can be accessed directly
+via host lookup or through the Zuul Proxy.  The non-jvm app should implement
+a health check so the Sidecar can report to eureka if the app is up or down.</p>
+</div>
+<div class="paragraph">
+<p>To enable the Sidecar, create a Spring Boot application with <code>@EnableSidecar</code>.
+This annotation includes <code>@EnableCircuitBreaker</code>, <code>@EnableDiscoveryClient</code>,
+and <code>@EnableZuulProxy</code>.  Run the resulting application on the same host as the
+non-jvm application.</p>
+</div>
+<div class="paragraph">
+<p>To configure the side car add <code>sidecar.port</code> and <code>sidecar.health-uri</code> to <code>application.yml</code>.
+The <code>sidecar.port</code> property is the port the non-jvm app is listening on.  This
+is so the Sidecar can properly register the app with Eureka.  The <code>sidecar.health-uri</code>
+is a uri accessible on the non-jvm app that mimicks a Spring Boot health
+indicator.  It should return a json document like the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">health-uri-document</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "status":"UP"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example application.yml for a Sidecar application:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">server:
+  port: 5678
+spring:
+  application:
+    name: sidecar
+
+sidecar:
+  port: 8000
+  health-uri: http://localhost:8000/health.json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The api for the <code>DiscoveryClient.getInstances()</code> method is <code>/hosts/{serviceId}</code>.
+Here is an example response for <code>/hosts/customers</code> that returns two instances on
+different hosts.  This api is accessible to the non-jvm app (if the sidecar is
+on port 5678) at <code><a href="http://localhost:5678/hosts/{serviceId}" class="bare">http://localhost:5678/hosts/{serviceId}</a></code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">/hosts/customers</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">[
+    {
+        "host": "myhost",
+        "port": 9000,
+        "uri": "http://myhost:9000",
+        "serviceId": "CUSTOMERS",
+        "secure": false
+    },
+    {
+        "host": "myhost2",
+        "port": 9000,
+        "uri": "http://myhost2:9000",
+        "serviceId": "CUSTOMERS",
+        "secure": false
+    }
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Zuul proxy automatically adds routes for each service known in eureka to
+<code>/&lt;serviceId&gt;</code>, so the customers service is available at <code>/customers</code>.  The
+Non-jvm app can access the customer service via <code><a href="http://localhost:5678/customers" class="bare">http://localhost:5678/customers</a></code>
+(assuming the sidecar is listening on port 5678).</p>
+</div>
+<div class="paragraph">
+<p>If the Config Server is registered with Eureka, non-jvm application can access
+it via the Zuul proxy.  If the serviceId of the ConfigServer is <code>configserver</code>
+and the Sidecar is on port 5678, then it can be accessed at
+<a href="http://localhost:5678/configserver" class="bare">http://localhost:5678/configserver</a></p>
+</div>
+<div class="paragraph">
+<p>Non-jvm app can take advantage of the Config Server&#8217;s ability to return YAML
+documents.  For example, a call to <a href="http://sidecar.local.spring.io:5678/configserver/default-master.yml" class="bare">http://sidecar.local.spring.io:5678/configserver/default-master.yml</a>
+might result in a YAML document like the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  password: password
+info:
+  description: Spring Cloud Samples
+  url: https://github.com/spring-cloud-samples</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h1 id="_spring_cloud_bus" class="sect0">Spring Cloud Bus</h1>
+<div class="openblock partintro">
+<div class="content">
+<div class="paragraph">
+<p>Spring Cloud Bus links nodes of a distributed system with a lightweight message broker. This can then be used to broadcast state changes (e.g. configuration changes) or other management instructions. A key idea is that the Bus is like a distributed Actuator for a Spring Boot application that is scaled out, but it can also be used as a communication channel between apps. The only implementation currently is with an AMQP broker as the transport, but the same basic feature set (and some more depending on the transport) is on the roadmap for other transports.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quick_start_2">Quick Start</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud Bus works by adding Spring Boot autconfiguration if it detects itself on the classpath. All you need to do to enable the bus is to add <code>spring-cloud-starter-bus-amqp</code> to your dependency management and Spring Cloud takes care of the rest. Make sure RabbitMQ is available and configured to provide a <code>ConnectionFactory</code>: running on localhost you shouldn&#8217;t have to do anything, but if you are running remotely use Spring Cloud Connectors, or Spring Boot conventions to define the broker credentials, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>spring:
+  rabbitmq:
+    host: mybroker.com
+    port: 5672
+    username: user
+    password: secret</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The bus currently supports sending messages to all nodes listening or all nodes for a particular service (as defined by Eureka).  More selector criteria will be added in the future (ie. only service X nodes in data center Y, etc&#8230;&#8203;). The http endpoints are under the <code>/bus/*</code> actuator namespace.  There are currently two implemented.  The first, <code>/bus/env</code>, sends key/values pairs to update each nodes Spring Environment.  The second, <code>/bus/refresh</code>, will reload each application&#8217;s configuration, just as if they had all been pinged on their <code>/refresh</code> endpoint.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_addressing_an_instance">Addressing an Instance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The HTTP endpoints accept a "destination" parameter, e.g. "/bus/refresh?destination=customers:9000", where the destination is an <code>ApplicationContext</code> ID. If the ID is owned by an instance on the Bus then it will process the message and all other instances will ignore it. Spring Boot sets the ID for you in the <code>ContextIdApplicationContextInitializer</code> to a combination of the <code>spring.application.name</code>, active profiles and <code>server.port</code> by default.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_addressing_all_instances_of_a_service">Addressing all instances of a service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The "destination" parameter is used in a Spring <code>PathMatcher</code> (with the path separator as a colon <code>:</code>) to determine if an instance will process the message.   Using the example from above, "/bus/refresh?destination=customers:**" will  target  all instances of the "customers" service regardless of the profiles and ports set as the <code>ApplicationContext</code> ID.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_application_context_id_must_be_unique">Application Context ID must be unique</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The bus tries to eliminate processing an event twice, once from the original <code>ApplicationEvent</code> and once from the queue.  To do this, it checks the sending application context id againts the current application context id.  If multiple instances of a service have the same application context id, events will not be processed.  Running on a local machine, each service will be on a different port and that will be part of the application context id.  Cloud Foundry supplies an index to differentiate.  To ensure that the application context id is the unique, set <code>spring.application.index</code> to something unique for each instance of a service.  For example, in lattice, set <code>spring.application.index=${INSTANCE_INDEX}</code> in application.properties (or bootstrap.properties if using configserver).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are using AMQP there needs to be a <code>ConnectionFactory</code> (from
+Spring Rabbit) in the application context. If there is a single
+<code>ConnectionFactory</code> it will be used, or if there is a one qualified as
+<code>@BusConnectionFactory</code> it will be preferred over others, otherwise
+the <code>@Primary</code> one will be used. If there are multiple unqualified
+connection factories there will be an error.</p>
+</div>
+<div class="paragraph">
+<p>Note that Spring Boot (as of 1.2.2) creates a <code>ConnectionFactory</code> that
+is <em>not</em> <code>@Primary</code>, so if you want to use one connection factory for
+the bus and another for business messages, you need to create both,
+and annotate them <code>@BusConnectionFactory</code> and <code>@Primary</code> respectively.</p>
+</div>
+</div>
+</div>
+<h1 id="_spring_boot_cloud_cli" class="sect0">Spring Boot Cloud CLI</h1>
+<div class="openblock partintro">
+<div class="content">
+<div class="paragraph">
+<p>Spring Boot CLI provides <a href="http://projects.spring.io/spring-boot">Spring Boot</a> command line features for
+<a href="https://github.com/spring-cloud">Spring Cloud</a>. You can write Groovy scripts to run Spring Cloud component applications
+(e.g. <code>@EnableEurekaServer</code>). You can also easily do things like encryption and decryption to support Spring Cloud
+Config clients with secret configuration values.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation">Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To install, make
+sure you have
+<a href="https://github.com/spring-projects/spring-boot">Spring Boot CLI</a>
+(1.2.0 or better):</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ spring version
+Spring CLI v1.2.3.RELEASE</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>E.g. for GVM users</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$ gvm install springboot 1.2.3.RELEASE
+$ gvm use springboot 1.2.3.RELEASE</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and install the Spring Cloud plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$ mvn install
+$ spring install org.springframework.cloud:spring-cloud-cli:1.0.2.RELEASE</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<strong>Prerequisites:</strong> to use the encryption and decryption features
+you need the full-strength JCE installed in your JVM (it&#8217;s not there by default).
+You can download the "Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files"
+from Oracle, and follow instructions for installation (essentially replace the 2 policy files
+in the JRE lib/security directory with the ones that you downloaded).
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_writing_groovy_scripts_and_running_applications">Writing Groovy Scripts and Running Applications</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud CLI has support for most of the Spring Cloud declarative
+features, such as the <code>@Enable*</code> class of annotations. For example,
+here is a fully functional Eureka server</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@EnableEurekaServer
+class Eureka {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which you can run from the command line like this</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ spring run app.groovy</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To include additional dependencies, often it suffices just to add the
+appropriate feature-enabling annotation, e.g. <code>@EnableConfigServer</code>,
+<code>@EnableOAuth2Sso</code> or <code>@EnableEurekaClient</code>. To manually include a
+dependency you can use a <code>@Grab</code> with the special "Spring Boot" short
+style artifact co-ordinates, i.e. with just the artifact ID (no need
+for group or version information), e.g. to set up a client app to
+listen on AMQP for management events from the Spring CLoud Bus:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Grab('spring-cloud-starter-bus-amqp')
+@RestController
+class Service {
+  @RequestMapping('/')
+  def home() { [message: 'Hello'] }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_encryption_and_decryption_3">Encryption and Decryption</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Spring Cloud CLI comes with an "encrypt" and a "decrypt"
+command. Both accept arguments in the same form with a key specified
+as a mandatory "--key", e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ spring encrypt mysecret --key foo
+682bc583f4641835fa2db009355293665d2647dade3375c0ee201de2a49f7bda
+$ spring decrypt --key foo 682bc583f4641835fa2db009355293665d2647dade3375c0ee201de2a49f7bda
+mysecret</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use a key in a file (e.g. an RSA public key for encyption) prepend
+the key value with "@" and provide the file path, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ spring encrypt mysecret --key @${HOME}/.ssh/id_rsa.pub
+AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
+</div>
+</div>
+</div>
+</div>
+<h1 id="_spring_cloud_security" class="sect0">Spring Cloud Security</h1>
+<div class="openblock partintro">
+<div class="content">
+<div class="paragraph">
+<p>Spring Cloud Security offers a set of primitives for building secure
+applications and services with minimum fuss. A declarative model which
+can be heavily configured externally (or centrally) lends itself to
+the implementation of large systems of co-operating, remote components,
+usually with a central indentity management service. It is also extremely
+easy to use in a service platform like Cloud Foundry. Building on
+Spring Boot and Spring Security OAuth2 we can quickly create systems that
+implement common patterns like single sign on, token relay and token
+exchange.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quickstart">Quickstart</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_oauth2_single_sign_on">OAuth2 Single Sign On</h3>
+<div class="paragraph">
+<p>Here&#8217;s a Spring Cloud "Hello World" app with HTTP Basic
+authentication and a single user account:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Grab('spring-boot-starter-security')
+@Controller
+class Application {
+
+  @RequestMapping('/')
+  String home() {
+    'Hello World'
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can run it with <code>spring run app.groovy</code> and watch the logs for the password (username is "user"). So far this is just the default for a Spring Boot app.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s a Spring Cloud app with OAuth2 SSO:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Controller
+@EnableOAuth2Sso
+class Application {
+
+  @RequestMapping('/')
+  String home() {
+    'Hello World'
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Spot the difference? This app will actually behave exactly the same as
+the previous one, because it doesn&#8217;t know it&#8217;s OAuth2 credentals
+yet.</p>
+</div>
+<div class="paragraph">
+<p>You can register an app in github quite easily, so try that if you
+want a production app on your own domain. If you are happy to test on
+localhost:8080, then set up these properties in your application
+configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  oauth2:
+    client:
+      clientId: bd1c0a783ccdd1c9b9e4
+      clientSecret: 1a9030fbca47a5b2c28e92f19050bb77824b5ad1
+      accessTokenUri: https://github.com/login/oauth/access_token
+      userAuthorizationUri: https://github.com/login/oauth/authorize
+      clientAuthenticationScheme: form
+    resource:
+      userInfoUri: https://api.github.com/user
+      preferTokenInfo: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>run the app above and it will redirect to github for authorization. If
+you are already signed into github you won&#8217;t even notice that it has
+authenticated.  These credentials will only work if your app is
+running on port 8080.</p>
+</div>
+<div class="paragraph">
+<p>To limit the scope that the client asks for when it obtains an access token
+you can set <code>spring.oauth2.client.scope</code> (comma separated or an array in YAML). By
+default the scope is empty and it is up to to Authorization Server to
+decide what the defaults should be, usually depending on the settings in
+the client registration that it holds.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The examples above are all Groovy scripts. If you want to write the
+same code in Java (or Groovy) you need to add Spring Security OAuth2
+to the classpath (e.g. see the
+<a href="https://github.com/spring-cloud-samples/sso">sample here</a>).
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_oauth2_protected_resource">OAuth2 Protected Resource</h3>
+<div class="paragraph">
+<p>You want to protect an API resource with an OAuth2 token? Here&#8217;s a
+simple example (paired with the client above):</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Grab('spring-cloud-starter-security')
+@RestController
+@EnableOAuth2Resource
+class Application {
+
+  @RequestMapping('/')
+  def home() {
+    [message: 'Hello World']
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  oauth2:
+    resource:
+      userInfoUri: https://api.github.com/user
+      preferTokenInfo: false</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_more_detail">More Detail</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_single_sign_on">Single Sign On</h3>
+<div class="paragraph">
+<p>An app will activate <code>@EnableOAuth2Sso</code> if you bind provide the
+following properties in the <code>Environment</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spring.oauth2.client.*</code> with <code>*</code> equal to <code>clientId</code>, <code>clientSecret</code>,
+<code>accessTokenUri</code>, <code>userAuthorizationUri</code> and one of:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spring.oauth2.resource.userInfoUri</code> to use the "/me" resource
+(e.g. "https://uaa.run.pivotal.io/userinfo" on PWS), or</p>
+</li>
+<li>
+<p><code>spring.oauth2.resource.tokenInfoUri</code> to use the token decoding endpoint
+(e.g. "https://uaa.run.pivotal.io/check_token" on PWS).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you specify both the <code>userInfoUri</code> and the <code>tokenInfoUri</code> then
+you can set a flag to say that one is preferred over the other
+(<code>preferTokenInfo=true</code> is the default). Or</p>
+</div>
+</li>
+<li>
+<p><code>spring.oauth2.resource.jwt.keyValue</code> to
+decode a JWT token locally, where the key is a verification key. The
+verification key value is either a symmetric secret or PEM-encoded
+RSA public key. If you don&#8217;t have the key and it&#8217;s public you can
+provide a URI where it can be downloaded (as a JSON object with a
+"value" field) with <code>spring.oauth2.resource.jwt.keyUri</code>. E.g. on PWS:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl https://uaa.run.pivotal.io/token_key
+{"alg":"SHA256withRSA","value":"-----BEGIN PUBLIC KEY-----\nMIIBI...\n-----END PUBLIC KEY-----\n"}</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+If you use the <code>spring.oauth2.resource.jwt.keyUri</code> the authorization
+server needs to be running when your application starts up. It will
+log a warning if it can&#8217;t find the key, and tell you what to do to fix
+it.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can set the preferred scope (as a comma-separated list or YAML
+array) in <code>spring.oauth2.client.scope</code>. It defaults to empty, in which case
+most Authorization Servers will ask the user for approval for the
+maximum allowed scope for the client.</p>
+</div>
+<div class="paragraph">
+<p>There is also a setting for <code>spring.oauth2.client.clientAuthenticationScheme</code> which
+defaults to "header" (but you might need to set it to "form" if, like
+Github for instance, your OAuth2 provider doesn&#8217;t like header
+authentication). The <code>spring.oauth2.client.*</code> properties are bound to an instance
+of <code>AuthorizationCodeResourceDetails</code> so all its properties can be specified.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_customizing_the_resttemplate">Customizing the RestTemplate</h3>
+<div class="paragraph">
+<p>The SSO (and Resource Server) features use an <code>OAuth2RestTemplate</code>
+internally to fetch user details for authentication. This is provided
+as a qualified <code>@Bean</code> with id "userInfoRestTemplate", but you
+shouldn&#8217;t need to know that to just use it. The default should be fine
+for most providers, but occasionally you might need to add additional
+interceptors, or change the request authenticator (which is how the
+token gets attached to outgoing requests). To add a customization just
+create a bean of type <code>UserInfoRestTemplateCustomizer</code> - it has a
+single method that will be called after the bean is created but before
+it is initialized. The rest template that is being customized here is
+<em>only</em> used internally to carry out authentication (in the SSO or
+Resource Server use cases).</p>
+</div>
+<div class="paragraph">
+<p>A second {@link OAuth2RestTemplate} is available for autowiring if you
+want to use it for back channel calls, and if there is a
+token-authenticated user (in a web application) it will have the token
+injected for you.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To set an RSA key value in YAML use the "pipe" continuation
+marker to split it over multiple lines ("|") and remember to indent
+the key value (it&#8217;s a standard YAML language feature). Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">oauth2:
+  resource:
+    jwt:
+      keyValue: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC...
+        -----END PUBLIC KEY-----</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_access_decision_rules">Access Decision Rules</h4>
+<div class="paragraph">
+<p>By default the whole application will be secured with OAuth2 with the
+same access rule ("authenticated"). This includes the Actuator
+endpoints, which you might prefer to be secured differently, so Spring
+Cloud Security provides a configurer callback that lets you change the
+matching and access rules for OAuth2 authentication. Any bean of type
+<code>OAuth2SsoConfigurer</code> (there is a convenient empty base class) will
+get 2 callbacks, one to set the request matchers for the OAuth2
+filter, and one with the full <code>HttpSecurity</code> builder (so you can set
+up all sorts of behaviour, but the main application is to control
+access rules).</p>
+</div>
+<div class="paragraph">
+<p>The default login path, i.e. the one that triggers the redirect to the
+OAuth2 Authorization Server, is "/login". It will always be added to
+the matching patterns for the OAuth2 SSO, even if you have
+<code>OAuth2SsoConfigurer</code> beans as well. The default logout path is
+"/logout" and it gets similar treatment, as does the "home" page
+(which is the logout success page, defaults to "/"). Those paths can
+be overriden by setting <code>spring.oauth2.sso.*' (`loginPath</code>, <code>logoutPath</code> and
+<code>home.path</code>).</p>
+</div>
+<div class="paragraph">
+<p>For example if you want the resources under "/ui/**" to be protected with OAuth2:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableOAuth2Sso
+@EnableAutoConfiguration
+protected static class TestConfiguration extends OAuth2SsoConfigurerAdapter {
+    @Override
+    public void match(RequestMatchers matchers) {
+        matchers.antMatchers("/ui/**");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the rest of the application will default to the normal
+Spring Boot access control (Basic authentication, or whatever custom
+filters you put in place).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_integrating_with_the_actuator_endpoints">Integrating with the Actuator Endpoints</h4>
+<div class="paragraph">
+<p>The Spring Boot Actuator endpoints ("/env", "/metrics", etc.) if
+present will, by default, be protected by the standard Spring Boot
+basic authentication. The SSO authentication filter is added in a
+position directly behind the filter that intercepts requests to the
+Actuator endpoints by default (i.e.
+<code>ManagementProperties.BASIC_AUTH_ORDER + 1</code> which is
+<code>Ordered.LOWEST_PRECEDENCE-9</code> or <code>2147483636</code>). If you want to change
+the order you can set <code>spring.oauth2.sso.filterOrder</code>. If you do that
+and the value is less than the default, then you will need to consider
+setting the access rules for the Actuator, since they will become
+accessible to all authenticated users who sign on with the external
+provider. One way to do that would be to set
+<code>management.contextPath=/admin</code> (for instance) and use an
+<code>OAuth2SsoConfigurer</code> to set the access rules, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">	@Configuration
+	@EnableOAuth2Sso
+	@EnableAutoConfiguration
+	protected static class TestConfiguration extends OAuth2SsoConfigurerAdapter {
+		@Override
+		public void configure(HttpSecurity http) {
+	         http.authorizeRequests()
+                 .antMatchers("/admin/**").role("ADMIN")
+                 .anyRequest().authenticated();
+		}
+	}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_resource_server">Resource Server</h3>
+<div class="paragraph">
+<p>The <code>@EnableOAuth2Resource</code> annotation will protect your API endpoints
+if you have the same environment settings as the SSO client, except
+that it doesn&#8217;t need a <code>tokenUri</code> or <code>authorizationUri</code>, and it also
+doesn&#8217;t need a <code>clientId</code> and <code>clientSecret</code> if it isn&#8217;t using the
+<code>tokenInfoUri</code> (i.e. if it has <code>jwt.*</code> or <code>userInfoUri</code>).</p>
+</div>
+<div class="paragraph">
+<p>By default <strong>all</strong> your endpoints are protected (i.e. "/**") but you can
+pick and choose by adding a <code>ResourceServerConfigurerAdapter</code> (standard
+Spring OAuth feature), e.g. to protect only the "/api/**" resources</p>
+</div>
+<div class="listingblock">
+<div class="title">Application.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@RestController
+@EnableOAuth2Resource
+class Application extends ResourceServerConfigurerAdapter {
+
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+    http.requestMatchers()
+      .antMatchers("/api/**")
+   .and()
+     .authorizeRequests()
+       .anyRequest().authenticated();
+  }
+
+  @RequestMapping("/api")
+  public String home() {
+    return "Hello World";
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_customizing_the_jwt_token_converter">Customizing the JWT Token Converter</h4>
+<div class="paragraph">
+<p>When a resource server accepts an access token as a JWT, it has to
+convert it to an <code>Authentication</code> so that Spring Security can do its
+access decisions. Different token providers might support JWT tokens
+with different contents, so Spring OAuth2 has an abstraction for
+converting the token into security domain objects
+(<code>AccessTokenConverter</code>). You can modify the default behaviour easily
+by providing a <code>@Bean</code> of type <code>JwtAccessTokenConverterConfigurer</code>,
+e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Component
+public class JwtCustomization extends DefaultAccessTokenConverter implements
+        JwtAccessTokenConverterConfigurer {
+
+    @Override
+    public void configure(JwtAccessTokenConverter converter) {
+        converter.setAccessTokenConverter(this);
+    }
+
+    ... // implement custom AccessTokenConverter here
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_token_relay">Token Relay</h3>
+<div class="paragraph">
+<p>A Token Relay is where an OAuth2 consumer acts as a Client and
+forwards the incoming token to outgoing resource requests. The
+consumer can be a pure Client (like an SSO application) or a Resource
+Server.</p>
+</div>
+<div class="sect3">
+<h4 id="_client_token_relay">Client Token Relay</h4>
+<div class="paragraph">
+<p>If your app has a
+<a href="http://cloud.spring.io/spring-cloud.html#netflix-zuul-reverse-proxy">Spring
+Cloud Zuul</a> embedded reverse proxy (using <code>@EnableZuulProxy</code>) then you
+can ask it to forward OAuth2 access tokens downstream to the services
+it is proxying. Thus the SSO app above can be enhanced simply like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">app.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Controller
+@EnableOAuth2Sso
+@EnableZuulProxy
+class Application {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and it will (in addition to loggin the user in and grabbing a token)
+pass the authentication token downstream to the <code>/proxy/*</code>
+services. If those services are implemented with
+<code>@EnableOAuth2Resource</code> then they will get a valid token in the
+correct header.</p>
+</div>
+<div class="paragraph">
+<p>How does it work? The <code>@EnableOAuth2Sso</code> annotation pulls in
+<code>spring-cloud-starter-security</code> (which you could do manually in a
+traditional app), and that in turn triggers some autoconfiguration for
+a <code>ZuulFilter</code>, which itself is activated because Zuul is on the
+classpath (via <code>@EnableZuulProxy</code>). The
+{github}/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/OAuth2TokenRelayFilter.java[filter]
+just extracts an access token from the currently authenticated user,
+and puts it in a request header for the downstream requests.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_resource_server_token_relay">Resource Server Token Relay</h4>
+<div class="paragraph">
+<p>If your app has <code>@EnableOAuth2Resource</code> and also is a Client (i.e. it
+has a <code>spring.oauth2.client.clientId</code>, even if it doesn&#8217;t use it),
+then the <code>OAuth2RestOperations</code> that is provided for <code>@Autowired</code>
+users by Spring Cloud (it is declared as <code>@Primary</code>) will also forward
+tokens. If you don&#8217;t want to forward tokens (and that is a valid
+choice, since you might want to act as yourself, rather than the
+client that sent you the token), then you only need to create your own
+<code>OAuth2RestOperations</code> instead of autowiring the default one. Here&#8217;s
+a basic example showing the use of the autowired rest template ("foo.com"
+is a Resource Server accepting the same tokens as the surrounding app):</p>
+</div>
+<div class="listingblock">
+<div class="title">MyController.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+private OAuth2RestOperations restTemplate;
+
+@RequestMapping("/relay")
+public String relay() {
+    ResponseEntity&lt;String&gt; response =
+      restTemplate.getForEntity("https://foo.com/bar", String.class);
+    return "Success! (" + response.getBody() + ")";
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_authentication_downstream_of_a_zuul_proxy">Configuring Authentication Downstream of a Zuul Proxy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can control the authorization behaviour downstream of an
+<code>@EnableZuulProxy</code> through the <code>proxy.auth.*</code> settings. Example:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">proxy:
+  auth:
+    routes:
+      customers: oauth2
+      stores: passthru
+      recommendations: none</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example the "customers" service gets an OAuth2 token relay,
+the "stores" service gets a passthrough (the authorization header is
+just passed downstream), and the "recommendations" service has its
+authorization header removed. The default behaviour is to do a token
+relay if there is a token available, and passthru otherwise.</p>
+</div>
+<div class="paragraph">
+<p>See
+{github}/tree/master/src/main/java/org/springframework/cloud/security/oauth2/proxy/ProxyAuthenticationProperties[
+ProxyAuthenticationProperties] for full details.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-05-13 14:09:58 UTC
+</div>
+</div>
+</body>
+</html>
