@@ -1,6 +1,6 @@
 <parent>
     <groupId>{@= groupId @}</groupId>
-    <artifactId>{@= artifactId @}</artifactId>
+    <artifactId>spring-cloud-starter-parent</artifactId>
     <version>{@= version @}</version>
 </parent>
 <dependencies>
