@@ -753,8 +753,8 @@ things with their parent.</p>
 <div class="sect2">
 <h3 id="customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</h3>
 <div class="paragraph">
-<p>The <code>bootstrap.yml</code> (or <code>.properties</code>) location can be specified using
-<code>spring.cloud.bootstrap.name</code> (default "bootstrap") or
+<p>The <code>bootstrap.yml</code> (or <code>.properties) location can be specified using
+`spring.cloud.bootstrap.name</code> (default "bootstrap") or
 <code>spring.cloud.bootstrap.location</code> (default empty), e.g. in System
 properties. Those properties behave like the <code>spring.config.*</code>
 variants with the same name, in fact they are used to set up the
@@ -1236,7 +1236,7 @@ high-priority property source, e.g.</p>
 <pre>$ curl localhost:8080/env
 {
   "profiles":[],
-  "configService:https://github.com/scratches/config-repo/bar.properties":{"foo":"bar"},
+  "configService:https://github.com/spring-cloud-samples/config-repo/bar.properties":{"foo":"bar"},
   "servletContextInitParams":{},
   "systemProperties":{...},
   ...
@@ -1247,6 +1247,19 @@ high-priority property source, e.g.</p>
 <p>(a property source called "configService:&lt;URL of remote
 repository&gt;/&lt;file name&gt;" contains the property "foo" with value
 "bar" and is highest priority).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+the URL in the property source name is the git repository not
+the config server URL.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1876,7 +1889,7 @@ an Exception.</p>
 <div class="sect2">
 <h3 id="_locating_remote_configuration_resources">Locating Remote Configuration Resources</h3>
 <div class="paragraph">
-<p>The Config Service serves property sources from <code>/{name}/{env}/{label}</code>, where the default bindings in the client app are</p>
+<p>The Config Service serves property sources from <code>/{name}/{profile}/{label}</code>, where the default bindings in the client app are</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1884,7 +1897,7 @@ an Exception.</p>
 <p>"name" = <code>${spring.application.name}</code></p>
 </li>
 <li>
-<p>"env" = <code>${spring.profiles.active}</code> (actually <code>Environment.getActiveProfiles()</code>)</p>
+<p>"profile" = <code>${spring.profiles.active}</code> (actually <code>Environment.getActiveProfiles()</code>)</p>
 </li>
 <li>
 <p>"label" = "master"</p>
@@ -1893,7 +1906,7 @@ an Exception.</p>
 </div>
 <div class="paragraph">
 <p>All of them can be overridden by setting <code>spring.cloud.config.*</code>
-(where <code>*</code> is "name", "env" or "label"). The "label" is useful for
+(where <code>*</code> is "name", "profile" or "label"). The "label" is useful for
 rolling back to previous versions of configuration; with the default
 Config Server implementation it can be a git label, branch name or
 commit id. Label can also be provided as a comma-separated list, in
@@ -2099,6 +2112,24 @@ application, so it&#8217;s helpful if they are accurate.</p>
 </div>
 <div class="paragraph">
 <p>Depending on the way the security rules are set up in your Cloudfoundry instance, you might be able to register and use the IP address of the host VM for direct service-to-service calls. This feature is not (yet) available on Pivotal Web Services (<a href="https://run.pivotal.io">PWS</a>).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_using_eureka_on_aws">Using Eureka on AWS</h4>
+<div class="paragraph">
+<p>If the application is planned to be deployed to an AWS cloud, then the Eureka instance will have to be configured to be Amazon aware and this can be done by customizing the <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaInstanceConfigBean.java">EurekaInstanceConfigBean</a> the following way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+@Profile("!default")
+public EurekaInstanceConfigBean eurekaInstanceConfig() {
+  EurekaInstanceConfigBean b = new EurekaInstanceConfigBean();
+  AmazonInfo info = AmazonInfo.Builder.newBuilder().autoBuild("eureka");
+  b.setDataCenterInfo(info);
+  return b;
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -3470,7 +3501,7 @@ AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-07-15 15:38:13 UTC
+Last updated 2015-07-24 08:45:24 UTC
 </div>
 </div>
 </body>
