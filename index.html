@@ -47,42 +47,7 @@ configure or extend to create a custom solution.
 <span id="quick-start"></span>
 ## Quick Start
 
-You can create a Config Server with a single annotation:
-
-```groovy
-@EnableConfigServer
-class ConfigServer {
-}
-```
-
-This app runs from the Spring Boot CLI (once the `spring-cloud-cli`
-extensions are installed), e.g.
-
-```
-$ spring install org.springframework.cloud:spring-cloud-cli:1.0.3.RELEASE
-$ spring run configserver.groovy -- --server.port=8888
-```
-
-Any other local application that includes `spring-cloud-config` as a
-dependency will be able to contact this server and pre-initialize the
-Spring `Environment` with external configuration managed by the
-server. The Spring Boot CLI (with the Cloud extensions) will do this
-automatically for all applications.
-
-```groovy
-@Controller
-class ConfigClient {
-}
-```
-
-Run this app with the Spring Boot CLI and then visit
-http://localhost:8080/env (the `Environment` endpoint). Notice the
-property sources that come from the config server at the top of the
-results.
-
-(N.B. does not work if you can't connect to
-[github.com](https://github.com) because that's where the default
-configuration repository lives.)
+{% include download_widget.md %}
 
 ## Release Trains
 
@@ -103,8 +68,6 @@ project). The starter parent is the one you can use as a BOM for
 dependency management or as a parent POM (Maven only). Example using
 the latest version with the config client and eureka (change the
 artifact ids to pull in other starters):
-
-{% include download_widget.md %}
 
 Release train contents:
 
