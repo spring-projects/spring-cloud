@@ -44,47 +44,6 @@ classpath. You can take advantage of the basic default behaviour to
 get started really quickly, and then when you need to, you can
 configure or extend to create a custom solution. 
 
-<span id="quick-start"></span>
-## Quick Start
-
-{% include download_widget.md %}
-
-## Release Trains
-
-Spring Cloud is an umbrella project consisting of independent projects with, in principle, different
-release cadences. To manage the protfolio a BOM (Bill of Materials) is published with a curated
-set of dependencies on the individual project (see below). The release trains have names, not
-versions, to avoid confusion with the sub-projects. The names are an alphabetic sequence (so
-you can sort them chronologically) with names of London Tube stations ("Angel" is the first
-release, "Brixton" is the second). When point releases of the individual projects accumulate to 
-a critical mass, or if there is a critical bug in one of them that needs to be available to everyone,
-the release train will push out "service releases" with names ending ".SRX", where "X"
-is a number.
-
-The release train label is actually only used
-explicitly in one artifact: "spring-cloud-starter-parent" (all the
-others have normal "Spring" release labels tied to their parent
-project). The starter parent is the one you can use as a BOM for
-dependency management or as a parent POM (Maven only). Example using
-the latest version with the config client and eureka (change the
-artifact ids to pull in other starters):
-
-Release train contents:
-
-|Component|Angel.SR3 | Brixton.BUILD-SNAPSHOT | 
-|---------|-------|------|
-|spring-cloud-aws | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-bus | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-cli | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-commons | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-config | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-netflix | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-security | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-starters | 1.0.3.RELEASE |  |
-|spring-cloud-zookeeper |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-sleuth |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-consul |  | 1.0.0.BUILD-SNAPSHOT |
-
 ## Features
 
 Spring Cloud focuses on providing good out of box experience for typical use cases and extensibility mechanism to cover others. 
@@ -129,7 +88,7 @@ An event bus for linking services and service instances together with distribute
 Integrates your application with Pivotal Cloudfoundry. Makes it easy to implement SSO and OAuth2 protected resources, and also to create a Cloudfoundry servive broker.
 {% endcapture %}
 
-{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-cloudfoundry" project_title="Spring Cloud for Cloud Foundry" project_description=project_description %}
+{% include project_block.md site_url="http://cloud.spring.io/spring-cloud-cloudfoundry" repo_url="http://github.com/spring-cloud/spring-cloud-cloudfoundry" project_title="Spring Cloud for Cloud Foundry" project_description=project_description %}
 
 <!-- Spring Cloud AWS -->
 {% capture project_description %}
@@ -153,6 +112,47 @@ databases and message brokers (the project formerly known as "Spring Cloud").
 {% endcapture %}
 
 {% include project_block.md site_url=site_url repo_url="http://github.com/spring-cloud/spring-cloud-connectors" project_title="Spring Cloud Connectors" project_description=project_description %}
+
+<span id="quick-start"></span>
+## Quick Start
+
+{% include download_widget.md %}
+
+## Release Trains
+
+Spring Cloud is an umbrella project consisting of independent projects with, in principle, different
+release cadences. To manage the protfolio a BOM (Bill of Materials) is published with a curated
+set of dependencies on the individual project (see below). The release trains have names, not
+versions, to avoid confusion with the sub-projects. The names are an alphabetic sequence (so
+you can sort them chronologically) with names of London Tube stations ("Angel" is the first
+release, "Brixton" is the second). When point releases of the individual projects accumulate to 
+a critical mass, or if there is a critical bug in one of them that needs to be available to everyone,
+the release train will push out "service releases" with names ending ".SRX", where "X"
+is a number.
+
+The release train label is actually only used
+explicitly in one artifact: "spring-cloud-starter-parent" (all the
+others have normal "Spring" release labels tied to their parent
+project). The starter parent is the one you can use as a BOM for
+dependency management or as a parent POM (Maven only). Example using
+the latest version with the config client and eureka (change the
+artifact ids to pull in other starters):
+
+Release train contents:
+
+|Component|Angel.SR3 | Brixton.BUILD-SNAPSHOT | 
+|---------|-------|------|
+|spring-cloud-aws | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-bus | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-cli | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-commons | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-config | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-netflix | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-security | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-starters | 1.0.3.RELEASE |  |
+|spring-cloud-zookeeper |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-sleuth |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-consul |  | 1.0.0.BUILD-SNAPSHOT |
 
 <!-- Spring Cloud Starters -->
 {% capture project_description %}
