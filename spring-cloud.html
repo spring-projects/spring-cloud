@@ -463,6 +463,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#config-first-bootstrap">Config First Bootstrap</a></li>
 <li><a href="#eureka-first-bootstrap">Eureka First Bootstrap</a></li>
 <li><a href="#config-client-fail-fast">Config Client Fail Fast</a></li>
+<li><a href="#config-client-retry">Config Client Retry</a></li>
 <li><a href="#_locating_remote_configuration_resources">Locating Remote Configuration Resources</a></li>
 <li><a href="#_security_2">Security</a></li>
 </ul>
@@ -753,8 +754,8 @@ things with their parent.</p>
 <div class="sect2">
 <h3 id="customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</h3>
 <div class="paragraph">
-<p>The <code>bootstrap.yml</code> (or <code>.properties</code>) location can be specified using
-<code>spring.cloud.bootstrap.name</code> (default "bootstrap") or
+<p>The <code>bootstrap.yml</code> (or <code>.properties) location can be specified using
+`spring.cloud.bootstrap.name</code> (default "bootstrap") or
 <code>spring.cloud.bootstrap.location</code> (default empty), e.g. in System
 properties. Those properties behave like the <code>spring.config.*</code>
 variants with the same name, in fact they are used to set up the
@@ -1887,6 +1888,32 @@ an Exception.</p>
 </div>
 </div>
 <div class="sect2">
+<h3 id="config-client-retry">Config Client Retry</h3>
+<div class="paragraph">
+<p>If you expect that the config server may occasionally be unavailable when
+your app starts, you can ask it to keep trying after a failure. First you need
+to set <code>spring.cloud.config.failFast=true</code>, and then you need to add
+<code>spring-retry</code> and <code>spring-boot-starter-aop</code> to your classpath. The default
+behaviour is to retry 6 times with an initial backoff interval of 1000ms and an
+exponential multiplier of 1.1 for subsequent backoffs. You can configure these
+properties (and others) using <code>spring.config.retry.*</code> configuration properties.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+To take full control of the retry add a <code>@Bean</code> of type
+<code>RetryOperationsInterceptor</code> with id "configServerRetryInterceptor". Spring
+Retry has a <code>RetryInterceptorBuilder</code> that makes it easy to create one.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_locating_remote_configuration_resources">Locating Remote Configuration Resources</h3>
 <div class="paragraph">
 <p>The Config Service serves property sources from <code>/{name}/{profile}/{label}</code>, where the default bindings in the client app are</p>
@@ -2084,7 +2111,7 @@ non-default context path or servlet path
 </div>
 </div>
 <div class="paragraph">
-<p>These links show up in the metadata that is consumed by clients, and
+<p>These links show up in the metadata that is consumers by clients, and
 used in some scenarios to decide whether to send requests to your
 application, so it&#8217;s helpful if they are accurate.</p>
 </div>
@@ -2499,6 +2526,9 @@ for details on the properties available.</p>
 <div class="paragraph">
 <p>The same thing applies if you are using <code>@SessionScope</code> or <code>@RequestScope</code>. You will know when you need to do this because of a runtime exception that says it can&#8217;t find the scoped context.</p>
 </div>
+<div class="paragraph">
+<p>In particular you might be interested</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_health_indicator_2">Health Indicator</h3>
@@ -2713,7 +2743,7 @@ explicitly in the <code>@ComponentScan</code>).
 <p><code>IPing</code> ribbonPing: <code>NoOpPing</code></p>
 </li>
 <li>
-<p><code>ServerList&lt;Server&gt;</code> ribbonServerList: <code>ConfigurationBasedServerList</code></p>
+<p><code>ServerList&lt;Server&gt; ribbonServerList: `ConfigurationBasedServerList</code></p>
 </li>
 <li>
 <p><code>ServerListFilter&lt;Server&gt;</code> ribbonServerListFilter: <code>ZonePreferenceServerListFilter</code></p>
@@ -2758,7 +2788,7 @@ server list will be constructed with "zone" information as provided in
 the instance metadata (so on the client set
 <code>eureka.instance.metadataMap.zone</code>), and if that is missing it can use
 the domain name from the server hostname as a proxy for zone (if the
-flag <code>approximateZoneFromHostname</code> is set). Once the zone information is
+flag <code>approximateZoneFromDomain</code> is set). Once the zone information is
 available it can be used in a <code>ServerListFilter</code> (by default it will
 be used to locate a server in the same zone as the client because the
 default is a <code>ZonePreferenceServerListFilter</code>).</p>
@@ -2977,7 +3007,7 @@ configured routes map, then it will be unignored. Example:</p>
 <div class="title">application.yml</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
-  ignoredServices: '*'
+  ignoredServices: *
   routes:
     users: /myusers/**</code></pre>
 </div>
@@ -3088,7 +3118,7 @@ Set that flag to "true" to have the Ribbon client automatically retry failed req
 the Ribbon client configuration).</p>
 </div>
 <div class="paragraph">
-<p>The <code>X-Forwarded-Host</code> header is added to the forwarded requests by
+<p>The <code>X-Forwarded-Host</code> header added to the forwarded requests by
 default.  To turn it off set <code>zuul.addProxyHeaders = false</code>.  The
 prefix path is stripped by default, and the request to the backend
 picks up a header "X-Forwarded-Prefix" ("/myusers" in the examples
@@ -3501,7 +3531,7 @@ AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-07-24 08:47:07 UTC
+Last updated 2015-08-13 12:15:40 UTC
 </div>
 </div>
 </body>
