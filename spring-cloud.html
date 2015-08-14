@@ -513,7 +513,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_using_the_ribbon_api_directly">Using the Ribbon API Directly</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a></li>
+<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a>
+<ul class="sectlevel2">
+<li><a href="#spring-cloud-feign-inheritance">Feign Inheritance Support</a></li>
+</ul>
+</li>
 <li><a href="#_external_configuration_archaius">External Configuration: Archaius</a></li>
 <li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
 <ul class="sectlevel2">
@@ -754,8 +758,8 @@ things with their parent.</p>
 <div class="sect2">
 <h3 id="customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</h3>
 <div class="paragraph">
-<p>The <code>bootstrap.yml</code> (or <code>.properties) location can be specified using
-`spring.cloud.bootstrap.name</code> (default "bootstrap") or
+<p>The <code>bootstrap.yml</code> (or <code>.properties</code>) location can be specified using
+<code>spring.cloud.bootstrap.name</code> (default "bootstrap") or
 <code>spring.cloud.bootstrap.location</code> (default empty), e.g. in System
 properties. Those properties behave like the <code>spring.config.*</code>
 variants with the same name, in fact they are used to set up the
@@ -1057,12 +1061,7 @@ the provided `@LoadBalanced</code> <code>Qualifier</code>:</p>
 <h1 id="_spring_cloud_config" class="sect0">Spring Cloud Config</h1>
 <div class="openblock partintro">
 <div class="content">
-<div class="paragraph">
-<p>Spring Cloud Config provides server and client-side support for externalized configuration in a distributed system. With the Config Server you have a central place to manage external properties for applications across all environments. The concepts on both client and server map identically to the Spring <code>Environment</code> and <code>PropertySource</code> abstractions, so they fit very well with Spring applications, but can be used with any application running in any language. As an application moves through the deployment pipeline from dev to test and into production you can manage the configuration between those environments and be certain that applications have everything they need to run when they migrate. The default implementation of the server storage backend uses git so it easily supports labelled versions of configuration environments, as well as being accessible to a wide range of tooling for managing the content.  It is easy to add alternative implementations and plug them in with Spring configuration.</p>
-</div>
-<div class="paragraph">
-<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
-</div>
+Spring Cloud Config provides server and client-side support for externalized configuration in a distributed system. With the Config Server you have a central place to manage external properties for applications across all environments. The concepts on both client and server map identically to the Spring <code>Environment</code> and <code>PropertySource</code> abstractions, so they fit very well with Spring applications, but can be used with any application running in any language. As an application moves through the deployment pipeline from dev to test and into production you can manage the configuration between those environments and be certain that applications have everything they need to run when they migrate. The default implementation of the server storage backend uses git so it easily supports labelled versions of configuration environments, as well as being accessible to a wide range of tooling for managing the content.  It is easy to add alternative implementations and plug them in with Spring configuration.
 </div>
 </div>
 <div class="sect1">
@@ -1272,7 +1271,78 @@ the config server URL.
 <p>The Server provides an HTTP, resource-based API for external
 configuration (name-value pairs, or equivalent YAML content).  The
 server is easily embeddable in a Spring Boot application using the
-<code>@EnableConfigServer</code> annotation.</p>
+<code>@EnableConfigServer</code> annotation. So this app is a config server:</p>
+</div>
+<div class="listingblock">
+<div class="title">ConfigServer.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+@EnableConfigServer
+public class ConfigServer {
+  public static void main(String[] args) {
+    SpringApplication.run(ConfigServer.class, args);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Like all Spring Boot apps it runs on port 8080 by default, but you
+can switch it to the conventional port 8888 in various ways. The
+easiest, which also sets a default configuration repository,
+is by launching it with <code>spring.config.name=configserver</code> (there
+is a <code>configserver.yml</code> in the Config Server jar). Another is
+to use your own <code>application.properties</code>, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">server.port: 8888
+spring.cloud.config.server.git.uri: file://${HOME}/config-repo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>${HOME}/config-repo</code> is a git repository containing
+YAML and properties files.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Here&#8217;s a recipe for creating the git repository in the example
+above:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cd $HOME
+$ mkdir config-repo
+$ cd config-repo
+$ git init .
+$ echo info.foo: bar &gt; application.properties
+$ git add -A .
+$ git commit -m "Add application.properties"</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+using the local filesystem for your git repository is
+intended for testing only. Use a server to host your
+configuration repositories in production.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_environment_repository">Environment Repository</h3>
@@ -1377,22 +1447,37 @@ repositories:</p>
         git:
           uri: https://github.com/spring-cloud-samples/config-repo
           repos:
-            simple: https://github.com/pattern1/config-repo
+            simple: https://github.com/simple/config-repo
             special:
               pattern: pattern*,*pattern1*
-              uri: https://github.com/pattern2/config-repo
+              uri: https://github.com/special/config-repo
             local:
               pattern: local*
               uri: file:/home/configsvc/config-repo</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the above example, if {application} does not match to any of the
+<p>In the above example, if <code>{application}</code> does not match any of the
 patterns, it will use the default uri defined under
 "spring.cloud.config.server.git.uri". For the "simple" repository, the
-pattern is "simple" (i.e. it only matches one application).  The
-pattern format is a comma-separated list of application names with
-wildcards.</p>
+pattern is "simple" (i.e. it only matches one application named "simple").
+The pattern format is a comma-separated list of application names with
+wildcards (a pattern beginning with a wildcard may need to be quoted).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+the "one-liner" short cut used in the "simple" example above can
+only be used if the only property to be set is the URI. If you need to
+set anything else (credentials, pattern, etc.) you need to use the full
+form.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Every repository can also optionally store config files in
@@ -1639,9 +1724,9 @@ mysecret</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Take the encypted value and add the <code>{cipher}</code> prefix before you put
+<p>Take the encrypted value and add the <code>{cipher}</code> prefix before you put
 it in the YAML or properties file, and before you commit and push it
-to a remote, potentially insecure store. The <code>/encypt</code> and <code>/decrypt</code>
+to a remote, potentially insecure store. The <code>/encrypt</code> and <code>/decrypt</code>
 endpoints also both accept paths of the form <code>/*/{name}/{profiles}</code>
 which can be used to control cryptography per application (name)
 and profile when clients call into the main Environment resource.</p>
@@ -1674,7 +1759,7 @@ mysecret</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To use a key in a file (e.g. an RSA public key for encyption) prepend
+<p>To use a key in a file (e.g. an RSA public key for encryption) prepend
 the key value with "@" and provide the file path, e.g.</p>
 </div>
 <div class="listingblock">
@@ -2106,12 +2191,12 @@ non-default context path or servlet path
 <div class="content">
 <pre>eureka:
   instance:
-    statusPageUrlPath: ${management.contextPath}/info
-    healthCheckUrlPath: ${management.contextPath}/health</pre>
+    statusPageUrlPath: ${management.context-path}/info
+    healthCheckUrlPath: ${management.context-path}/health</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>These links show up in the metadata that is consumers by clients, and
+<p>These links show up in the metadata that is consumed by clients, and
 used in some scenarios to decide whether to send requests to your
 application, so it&#8217;s helpful if they are accurate.</p>
 </div>
@@ -2526,9 +2611,6 @@ for details on the properties available.</p>
 <div class="paragraph">
 <p>The same thing applies if you are using <code>@SessionScope</code> or <code>@RequestScope</code>. You will know when you need to do this because of a runtime exception that says it can&#8217;t find the scoped context.</p>
 </div>
-<div class="paragraph">
-<p>In particular you might be interested</p>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_health_indicator_2">Health Indicator</h3>
@@ -2743,7 +2825,7 @@ explicitly in the <code>@ComponentScan</code>).
 <p><code>IPing</code> ribbonPing: <code>NoOpPing</code></p>
 </li>
 <li>
-<p><code>ServerList&lt;Server&gt; ribbonServerList: `ConfigurationBasedServerList</code></p>
+<p><code>ServerList&lt;Server&gt;</code> ribbonServerList: <code>ConfigurationBasedServerList</code></p>
 </li>
 <li>
 <p><code>ServerListFilter&lt;Server&gt;</code> ribbonServerListFilter: <code>ZonePreferenceServerListFilter</code></p>
@@ -2788,7 +2870,7 @@ server list will be constructed with "zone" information as provided in
 the instance metadata (so on the client set
 <code>eureka.instance.metadataMap.zone</code>), and if that is missing it can use
 the domain name from the server hostname as a proxy for zone (if the
-flag <code>approximateZoneFromDomain</code> is set). Once the zone information is
+flag <code>approximateZoneFromHostname</code> is set). Once the zone information is
 available it can be used in a <code>ServerListFilter</code> (by default it will
 be used to locate a server in the same zone as the client because the
 default is a <code>ZonePreferenceServerListFilter</code>).</p>
@@ -2904,6 +2986,43 @@ don&#8217;t want to use Eureka, you can simply configure a list of servers
 in your external configuration (see
 <a href="#spring-cloud-ribbon-without-eureka">above for example</a>).</p>
 </div>
+<div class="sect2">
+<h3 id="spring-cloud-feign-inheritance">Feign Inheritance Support</h3>
+<div class="paragraph">
+<p>Feign supports boilerplate apis via single-inheritance interfaces.
+This allows grouping common operations into convenient base interfaces.
+Together with Spring MVC you can share the same contract for your
+REST endpoint and Feign client.</p>
+</div>
+<div class="listingblock">
+<div class="title">UserService.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface UserService {
+
+    @RequestMapping(method = RequestMethod.GET, value ="/users/{id}")
+    User getUser(@PathVariable("id") long id);
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">UserResource.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@RestController
+public class UserResource implements UserService {
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">UserClient.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@FeignClient("users")
+public interface UserClient extends UserService {
+
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -3007,7 +3126,7 @@ configured routes map, then it will be unignored. Example:</p>
 <div class="title">application.yml</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
-  ignoredServices: *
+  ignoredServices: '*'
   routes:
     users: /myusers/**</code></pre>
 </div>
@@ -3118,7 +3237,7 @@ Set that flag to "true" to have the Ribbon client automatically retry failed req
 the Ribbon client configuration).</p>
 </div>
 <div class="paragraph">
-<p>The <code>X-Forwarded-Host</code> header added to the forwarded requests by
+<p>The <code>X-Forwarded-Host</code> header is added to the forwarded requests by
 default.  To turn it off set <code>zuul.addProxyHeaders = false</code>.  The
 prefix path is stripped by default, and the request to the backend
 picks up a header "X-Forwarded-Prefix" ("/myusers" in the examples
@@ -3128,6 +3247,25 @@ above).</p>
 <p>An application with the <code>@EnableZuulProxy</code> could act as a standalone
 server if you set a default route ("/"), for example <code>zuul.route.home:
 /</code> would route all traffic (i.e. "/**") to the "home" service.</p>
+</div>
+<div class="paragraph">
+<p>If more fine-grained ignoring is needed, you can specify specific patterns to ignore.
+These patterns are being evaluated at the end of the route location process, which
+means prefixes should be included in the pattern to warrant a match. Ignored patterns
+span all services and supersede any other route specification.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  ignoredPatterns: */admin/**
+  routes:
+    users: /myusers/**</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This means that all calls such as "/myusers/101" will be forwarded to "/101" on the "users" service.
+But calls including "/admin/" will not resolve.</p>
 </div>
 </div>
 <div class="sect2">
@@ -3531,7 +3669,7 @@ AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-08-13 12:15:40 UTC
+Last updated 2015-08-14 09:07:46 UTC
 </div>
 </div>
 </body>
