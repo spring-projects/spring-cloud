@@ -84,48 +84,6 @@ results.
 [github.com](https://github.com) because that's where the default
 configuration repository lives.)
 
-## Release Trains
-
-Spring Cloud is an umbrella project consisting of independent projects with, in principle, different
-release cadences. To manage the protfolio a BOM (Bill of Materials) is published with a curated
-set of dependencies on the individual project (see below). The release trains have names, not
-versions, to avoid confusion with the sub-projects. The names are an alphabetic sequence (so
-you can sort them chronologically) with names of London Tube stations ("Angel" is the first
-release, "Brixton" is the second). When point releases of the individual projects accumulate to 
-a critical mass, or if there is a critical bug in one of them that needs to be available to everyone,
-the release train will push out "service releases" with names ending ".SRX", where "X"
-is a number.
-
-The release train label is actually only used
-explicitly in one artifact: "spring-cloud-starter-parent" (all the
-others have normal "Spring" release labels tied to their parent
-project). The starter parent is the one you can use as a BOM for
-dependency management or as a parent POM (Maven only). Example using
-the latest version with the config client and eureka (change the
-artifact ids to pull in other starters):
-
-{% include download_widget.md %}
-
-Release train contents:
-
-|Component|Angel.SR3 | Brixton.BUILD-SNAPSHOT | 
-|---------|-------|------|
-|spring-cloud-aws | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-bus | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-cli | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-commons | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-config | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-netflix | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-security | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-starters | 1.0.3.RELEASE |  |
-|spring-cloud-cloudfoundry |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-cluster |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-consul |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-lattice |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-sleuth |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-stream |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-zookeeper |  | 1.0.0.BUILD-SNAPSHOT |
-
 ## Features
 
 Spring Cloud focuses on providing good out of box experience for typical use cases and extensibility mechanism to cover others. 
@@ -276,6 +234,8 @@ dependency management or as a parent POM (Maven only). Example using
 the latest version with the config client and eureka (change the
 artifact ids to pull in other starters):
 
+{% include download_widget.md %}
+
 Release train contents:
 
 |Component|Angel.SR3 | Brixton.BUILD-SNAPSHOT | 
@@ -288,9 +248,13 @@ Release train contents:
 |spring-cloud-netflix | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
 |spring-cloud-security | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
 |spring-cloud-starters | 1.0.3.RELEASE |  |
-|spring-cloud-zookeeper |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-sleuth |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-cloudfoundry |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-cluster |  | 1.0.0.BUILD-SNAPSHOT |
 |spring-cloud-consul |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-lattice |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-sleuth |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-stream |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-zookeeper |  | 1.0.0.BUILD-SNAPSHOT |
 
 {% endcapture %}
 
