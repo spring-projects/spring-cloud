@@ -44,6 +44,88 @@ classpath. You can take advantage of the basic default behaviour to
 get started really quickly, and then when you need to, you can
 configure or extend to create a custom solution. 
 
+<span id="quick-start"></span>
+## Quick Start
+
+You can create a Config Server with a single annotation:
+
+```groovy
+@EnableConfigServer
+class ConfigServer {
+}
+```
+
+This app runs from the Spring Boot CLI (once the `spring-cloud-cli`
+extensions are installed), e.g.
+
+```
+$ spring install org.springframework.cloud:spring-cloud-cli:1.0.3.RELEASE
+$ spring run configserver.groovy -- --server.port=8888
+```
+
+Any other local application that includes `spring-cloud-config` as a
+dependency will be able to contact this server and pre-initialize the
+Spring `Environment` with external configuration managed by the
+server. The Spring Boot CLI (with the Cloud extensions) will do this
+automatically for all applications.
+
+```groovy
+@Controller
+class ConfigClient {
+}
+```
+
+Run this app with the Spring Boot CLI and then visit
+http://localhost:8080/env (the `Environment` endpoint). Notice the
+property sources that come from the config server at the top of the
+results.
+
+(N.B. does not work if you can't connect to
+[github.com](https://github.com) because that's where the default
+configuration repository lives.)
+
+## Release Trains
+
+Spring Cloud is an umbrella project consisting of independent projects with, in principle, different
+release cadences. To manage the protfolio a BOM (Bill of Materials) is published with a curated
+set of dependencies on the individual project (see below). The release trains have names, not
+versions, to avoid confusion with the sub-projects. The names are an alphabetic sequence (so
+you can sort them chronologically) with names of London Tube stations ("Angel" is the first
+release, "Brixton" is the second). When point releases of the individual projects accumulate to 
+a critical mass, or if there is a critical bug in one of them that needs to be available to everyone,
+the release train will push out "service releases" with names ending ".SRX", where "X"
+is a number.
+
+The release train label is actually only used
+explicitly in one artifact: "spring-cloud-starter-parent" (all the
+others have normal "Spring" release labels tied to their parent
+project). The starter parent is the one you can use as a BOM for
+dependency management or as a parent POM (Maven only). Example using
+the latest version with the config client and eureka (change the
+artifact ids to pull in other starters):
+
+{% include download_widget.md %}
+
+Release train contents:
+
+|Component|Angel.SR3 | Brixton.BUILD-SNAPSHOT | 
+|---------|-------|------|
+|spring-cloud-aws | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-bus | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-cli | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-commons | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-config | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-netflix | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-security | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
+|spring-cloud-starters | 1.0.3.RELEASE |  |
+|spring-cloud-cloudfoundry |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-cluster |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-consul |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-lattice |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-sleuth |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-stream |  | 1.0.0.BUILD-SNAPSHOT |
+|spring-cloud-zookeeper |  | 1.0.0.BUILD-SNAPSHOT |
+
 ## Features
 
 Spring Cloud focuses on providing good out of box experience for typical use cases and extensibility mechanism to cover others. 
@@ -85,10 +167,52 @@ An event bus for linking services and service instances together with distribute
 
 <!-- Spring Cloud Cloudfoundry -->
 {% capture project_description %}
-Integrates your application with Pivotal Cloudfoundry. Makes it easy to implement SSO and OAuth2 protected resources, and also to create a Cloudfoundry servive broker.
+Integrates your application with Pivotal Cloudfoundry. Provides a service discovery implementation and also makes it easy to implement SSO and OAuth2 protected resources, and also to create a Cloudfoundry service broker.
 {% endcapture %}
 
 {% include project_block.md site_url="http://github.com/spring-cloud/spring-cloud-cloudfoundry" repo_url="http://github.com/spring-cloud/spring-cloud-cloudfoundry" project_title="Spring Cloud for Cloud Foundry" project_description=project_description %}
+
+<!-- Spring Cloud Cluster -->
+{% capture project_description %}
+Leadership election and common stateful patterns with an abstraction and implementation for Zookeeper, Redis, Hazelcast, Consul.
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-cluster" project_title="Spring Cloud Cluster" project_description=project_description %}
+
+<!-- Spring Cloud Consul -->
+{% capture project_description %}
+Service discovery and configuration management with Hasicorp Consul.
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-consul" project_title="Spring Cloud Consul" project_description=project_description %}
+
+<!-- Spring Cloud Security -->
+{% capture project_description %}
+Provides support for load-balanced OAuth2 rest client and authentication header relays in a Zuul proxy.
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-security" project_title="Spring Cloud Security" project_description=project_description %}
+
+<!-- Spring Cloud Sleuth -->
+{% capture project_description %}
+Distributed tracing for Spring Cloud applications, compatible with Zipkin, HTrace and log-based (e.g. ELK) tracing.
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-sleuth" project_title="Spring Cloud Sleuth" project_description=project_description %}
+
+<!-- Spring Cloud Stream -->
+{% capture project_description %}
+Messaging microservices with Redis, Rabbit or Kafka. Simple declarative model to send and receive messages in a Spring Cloud app.
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-stream" project_title="Spring Cloud Stream" project_description=project_description %}
+
+<!-- Spring Cloud Zookeeper -->
+{% capture project_description %}
+Service discovery and configuration management with Apache Zookeeper.
+{% endcapture %}
+
+{% include project_block.md site_url="/spring-cloud" repo_url="http://github.com/spring-cloud/spring-cloud-zookeeper" project_title="Spring Cloud Zookeeper" project_description=project_description %}
 
 <!-- Spring Cloud AWS -->
 {% capture project_description %}
@@ -115,7 +239,7 @@ databases and message brokers (the project formerly known as "Spring Cloud").
 
 <!-- Spring Cloud Starters -->
 {% capture project_description %}
-Spring Boot-style starter projects to ease dependency management for consumers of Spring Cloud.
+Spring Boot-style starter projects to ease dependency management for consumers of Spring Cloud. (Discontinued as a project and merged with the other projects after Angel.SR2.)
 {% endcapture %}
 
 {% include project_block.md site_url="http://github.com/spring-cloud/spring-cloud-starters" repo_url="http://github.com/spring-cloud/spring-cloud-starters" project_title="Spring Cloud Starters" project_description=project_description %}
@@ -178,7 +302,7 @@ Release train contents:
 * [Service Registry](https://github.com/spring-cloud-samples/eureka)
 * [Circuit Breaker Dashboard](https://github.com/spring-cloud-samples/hystrix-dashboard)
 * [Business Application](https://github.com/spring-cloud-samples/customers-stores) (Customers and Stores)
-* [OAuth2 AuthorizationServer](https://github.com/spring-cloud-samples/authserver)
+* [OAuth2 Authorization Server](https://github.com/spring-cloud-samples/authserver)
 * [OAuth2 SSO Client](https://github.com/spring-cloud-samples/sso)
 * [Integration Test Samples](https://github.com/spring-cloud-samples/tests)
 
