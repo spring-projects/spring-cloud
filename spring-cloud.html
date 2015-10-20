@@ -455,9 +455,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_key_management">Key Management</a></li>
 <li><a href="#_creating_a_key_store_for_testing">Creating a Key Store for Testing</a></li>
 <li><a href="#_using_multiple_keys_and_key_rotation">Using Multiple Keys and Key Rotation</a></li>
-<li><a href="#_embedding_the_config_server">Embedding the Config Server</a></li>
 </ul>
 </li>
+<li><a href="#_serving_plain_text">Serving Plain Text</a></li>
+<li><a href="#_embedding_the_config_server">Embedding the Config Server</a></li>
+<li><a href="#_push_notifications_and_spring_cloud_bus">Push Notifications and Spring Cloud Bus</a></li>
 <li><a href="#_spring_cloud_config_client">Spring Cloud Config Client</a>
 <ul class="sectlevel2">
 <li><a href="#config-first-bootstrap">Config First Bootstrap</a></li>
@@ -476,10 +478,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_registering_with_eureka">Registering with Eureka</a></li>
 <li><a href="#_status_page_and_health_indicator">Status Page and Health Indicator</a></li>
+<li><a href="#_registering_a_secure_application">Registering a Secure Application</a></li>
 <li><a href="#_eureka_s_health_checks">Eureka&#8217;s Health Checks</a></li>
 <li><a href="#_eureka_metadata_for_instances_and_clients">Eureka Metadata for Instances and Clients</a></li>
-<li><a href="#_using_the_discoveryclient">Using the DiscoveryClient</a></li>
-<li><a href="#_alternatives_to_the_native_netflix_discoveryclient">Alternatives to the native Netflix DiscoveryClient</a></li>
+<li><a href="#_using_the_eurekaclient">Using the EurekaClient</a></li>
+<li><a href="#_alternatives_to_the_native_netflix_eurekaclient">Alternatives to the native Netflix EurekaClient</a></li>
 <li><a href="#_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</a></li>
 </ul>
 </li>
@@ -516,13 +519,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a>
 <ul class="sectlevel2">
+<li><a href="#spring-cloud-feign-overriding-defaults">Overriding Feign Defaults</a></li>
 <li><a href="#spring-cloud-feign-inheritance">Feign Inheritance Support</a></li>
+<li><a href="#_feign_request_response_compression">Feign request/response compression</a></li>
+<li><a href="#_feign_logging">Feign logging</a></li>
 </ul>
 </li>
 <li><a href="#_external_configuration_archaius">External Configuration: Archaius</a></li>
 <li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
 <ul class="sectlevel2">
 <li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
+<li><a href="#_strangulation_patterns_and_local_forwards">Strangulation Patterns and Local Forwards</a></li>
 <li><a href="#_uploading_files_through_zuul">Uploading Files through Zuul</a></li>
 <li><a href="#_plain_embedded_zuul">Plain Embedded Zuul</a></li>
 <li><a href="#_disable_zuul_filters">Disable Zuul Filters</a></li>
@@ -1437,7 +1444,10 @@ them from the shell with quotes '').</p>
 </div>
 <div class="paragraph">
 <p>Spring Cloud Config Server supports a single or multiple git
-repositories:</p>
+repositories with pattern matching on the application and profile
+name. The pattern format is a comma-separated list of
+<code>{application}/{profile}</code> names with wildcards (where a pattern
+beginning with a wildcard may need to be quoted). Example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1450,7 +1460,7 @@ repositories:</p>
           repos:
             simple: https://github.com/simple/config-repo
             special:
-              pattern: pattern*,*pattern1*
+              pattern: special*/dev*,*special*/dev*
               uri: https://github.com/special/config-repo
             local:
               pattern: local*
@@ -1458,12 +1468,14 @@ repositories:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>In the above example, if <code>{application}</code> does not match any of the
-patterns, it will use the default uri defined under
-"spring.cloud.config.server.git.uri". For the "simple" repository, the
-pattern is "simple" (i.e. it only matches one application named "simple").
-The pattern format is a comma-separated list of application names with
-wildcards (a pattern beginning with a wildcard may need to be quoted).</p>
+<p>If <code>{application}/{profile}</code> does not match any of the patterns, it
+will use the default uri defined under
+"spring.cloud.config.server.git.uri". In the above example, for the
+"simple" repository, the pattern is <code>simple/*</code> (i.e. it only matches
+one application named "simple" in all profiles). The "local"
+repository matches all application names beginning with "local" in all
+profiles (the <code>/*</code> suffix is added automatically to any pattern that
+doesn&#8217;t have a profile matcher).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1476,6 +1488,50 @@ the "one-liner" short cut used in the "simple" example above can
 only be used if the only property to be set is the URI. If you need to
 set anything else (credentials, pattern, etc.) you need to use the full
 form.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>pattern</code> property in the repo is actually an array, so you can
+use a YAML array (or <code>[0]</code>, <code>[1]</code>, etc. suffixes in properties files)
+to bind to multiple patterns. You may need to do this if you are going
+to run apps with multiple profiles. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
+          repos:
+            development:
+              pattern:
+                - */development
+                - */staging
+              uri: https://github.com/development/config-repo
+            staging:
+              pattern:
+                - */qa
+                - */production
+              uri: https://github.com/staging/config-repo</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Spring Cloud will guess that a pattern containing a profile that
+doesn&#8217;t end in <code>*</code> implies that you actually want to match a list of
+profiles starting with this pattern (so <code>*/staging</code> is a shortcut for
+<code>["*/staging", "*/staging,*"]</code>). This is common where you need to run
+apps in the "development" profile locally but also the "cloud" profile
+remotely, for instance.
 </td>
 </tr>
 </table>
@@ -1699,6 +1755,16 @@ instance:</p>
 </div>
 </div>
 <div class="paragraph">
+<p>Encrypted values in a .properties file must not be wrapped in quotes, otherwise the value will not be decrypted:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.properties</div>
+<div class="content">
+<pre>spring.datasource.username: dbuser
+spring.datasource.password: {cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>You can safely push this plain text to a shared git repository and the
 secret password is protected.</p>
 </div>
@@ -1723,6 +1789,21 @@ configured with a symmetric key or a full key pair):</p>
 <pre>$ curl localhost:8888/decrypt -d 682bc583f4641835fa2db009355293665d2647dade3375c0ee201de2a49f7bda
 mysecret</pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+If you are testing like this with curl, then use
+<code>--data-urlencode</code> (instead of <code>-d</code>) or set an explicit <code>Content-Type:
+text/plain</code> to make sure curl encodes the data correctly when there
+are special characters ('+' is particularly tricky).
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Take the encrypted value and add the <code>{cipher}</code> prefix before you put
@@ -1896,8 +1977,108 @@ handle all encryption as well as decryption.
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_embedding_the_config_server">Embedding the Config Server</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_serving_plain_text">Serving Plain Text</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Instead of using the <code>Environment</code> abstraction (or one of the
+alternative representations of it in YAML or properties format) your
+applications might need generic plain text configuration files,
+tailored to their environment. The Config Server provides these
+through an additional endpoint at <code>/{name}/{profile}/{label}/{path}</code>
+where "name", "profile" and "label" have the same meaning as the
+regular environment endpoint, but "path" is a file name
+(e.g. <code>log.xml</code>). The source files for this endpoint are located in
+the same way as for the environment endpoints: the same search path is
+used as for properties or YAML files, but instead of aggregating all
+matching resources, only the first one to match is returned.</p>
+</div>
+<div class="paragraph">
+<p>After a resource is located, placeholders in the normal format
+(<code>${&#8230;&#8203;}</code>) are resolved using the effective <code>Environment</code> for the
+application name, profile and label supplied. In this way the resource
+endpoint is tightly integrated with the environment
+endpoints. Example, if you have this layout for a GIT (or SVN)
+repository:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>application.yml
+nginx.conf</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>nginx.conf</code> looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>server {
+    listen              80;
+    server_name         ${nginx.server.name};
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and <code>application.yml</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">nginx:
+  server:
+    name: example.com
+---
+spring:
+  profiles: development
+nginx:
+  server:
+    name: develop.com</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then the <code>/foo/default/master/nginx.conf</code> resource looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>server {
+    listen              80;
+    server_name         example.com;
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and <code>/foo/development/master/nginx.conf</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>server {
+    listen              80;
+    server_name         develop.com;
+}</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+just like the source files for environment configuration, the
+"profile" is used to resolve the file name, so if you want a
+profile-specific file then <code>/*/development/*/logback.xml</code> will be
+resolved by a file called <code>logback-development.xml</code> (in preference
+to <code>logback.xml</code>).
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_embedding_the_config_server">Embedding the Config Server</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The Config Server runs best as a standalone application, but if you
 need to you can embed it in another application. Just use the
@@ -1913,6 +2094,70 @@ own remote repository. The flag is off by default because it can delay
 startup, but when embedded in another application it makes sense to
 initialize the same way as any other application.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_push_notifications_and_spring_cloud_bus">Push Notifications and Spring Cloud Bus</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Many source code repository providers (like Github, Gitlab or Bitbucket
+for instance) will notify you of changes in a repository through a
+webhook. You can configure the webhook via the provider&#8217;s user
+interface as a URL and a set of events in which you are
+interested. For instance
+<a href="https://developer.github.com/v3/activity/events/types/#pushevent">Github</a>
+will POST to the webhook with a JSON body containing a list of
+commits, and a header "X-Github-Event" equal to "push". If you add a
+dependency on the <code>spring-cloud-config-monitor</code> library and activate
+the Spring Cloud Bus in your Config Server, then a "/monitor" endpoint
+is enabled.</p>
+</div>
+<div class="paragraph">
+<p>When the webhook is activated the Config Server will send a
+<code>RefreshRemoteApplicationEvent</code> targeted at the applications it thinks
+might have changed. The change detection can be strategized, but by
+default it just looks for changes in files that match the application
+name (e.g. "foo.properties" is targeted at the "foo" application, and
+"application.properties" is targeted at all applications). The strategy
+if you want to override the behaviour is <code>PropertyPathNotificationExtractor</code>
+which accepts the request headers and body as parameters and returns a list
+of file paths that changed.</p>
+</div>
+<div class="paragraph">
+<p>The default configuration works out of the box with Github, Gitlab or
+Bitbucket. In addition to the JSON notifications from Github, Gitlab
+or Bitbucket you can trigger a change notification by POSTing to
+"/monitor" with a form-encoded body parameters <code>path={name}</code>. This will
+broadcast to applications matching the "{name}" pattern (can contain
+wildcards).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+the <code>RefreshRemoteApplicationEvent</code> will only be transmitted if
+the <code>spring-cloud-bus</code> is activated in the Config Server and in the
+client application.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+the default configuration also detects filesystem changes in
+local git repositories (the webhook is not used in that case but as
+soon as you edit a config file a refresh will be broadcast).
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -2203,15 +2448,49 @@ application, so it&#8217;s helpful if they are accurate.</p>
 </div>
 </div>
 <div class="sect2">
+<h3 id="_registering_a_secure_application">Registering a Secure Application</h3>
+<div class="paragraph">
+<p>If your app wants to be contacted over HTTPS you can set two flags in
+the <code>EurekaInstanceConfig</code>, <em>viz</em>
+<code>eureka.instance.[nonSecurePortEnabled,securePortEnabled]=[false,true]</code>
+respectively. This will make Eureka publish instance information
+showing an explicit preference for secure communication. The Spring
+Cloud <code>DiscoveryClient</code> will always return an <code><a href="https://&#8230;&#8203" class="bare">https://&#8230;&#8203</a>;</code> URI for a
+service configured this way, and the Eureka (native) instance
+information will have a secure health check URL. Because of the way
+Eureka works internally, it will still publish a non-secure URL for
+status and home page unless you also override those explicitly.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If your app is running behind a proxy, and the SSL termination
+is in the proxy (e.g. if you run in Cloud Foundry or other platforms
+as a service) then you will need to ensure that the proxy "forwarded"
+headers are intercepted and handled by the application. An embedded
+Tomcat container in a Spring Boot app does this automatically if it
+has explicit configuration for the 'X-Forwarded-\*` headers. A sign
+that you got this wrong will be that the links rendered by your app to
+itself will be wrong (the wrong host, port or protocol).
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_eureka_s_health_checks">Eureka&#8217;s Health Checks</h3>
 <div class="paragraph">
 <p>By default, Eureka uses the client heartbeat to determine if a client is up.
 Unless specified otherwise the Discovery Client will not propagate the
-application Spring Boot Actuator current health check status.  Which means
+current health check status of the application per the Spring Boot Actuator.  Which means
 that after successful registration Eureka will always announce that the
 application is in 'UP' state. This behaviour can be altered by enabling
 Eureka health checks, which results in propagating application status
-to Eureka, as a consequence every other application will not sending
+to Eureka. As a consequence every other application won&#8217;t be sending
 traffic to application in state other then 'UP'.</p>
 </div>
 <div class="listingblock">
@@ -2236,7 +2515,7 @@ implementing your own <code>com.netflix.appinfo.HealthCheckHandler</code>.</p>
 <div class="sect3">
 <h4 id="_using_eureka_on_cloudfoundry">Using Eureka on Cloudfoundry</h4>
 <div class="paragraph">
-<p>Cloudfoundry has a global router so that all instances of the same app have the same hostname (it&#8217;s the same in other PaaS solutions with a similar architecture). This isn&#8217;t necessarily a barrier to using Eureka, but if you use the router (recommended, or even mandatory depending on the way your platform was set up), you need to explicitly set the hostname and port numbers (secure or non-secure) so that they use the router. You might also want to use instance metadata so you can distinguish between the instances on the client (e.g. in a custom load balancer). For example:</p>
+<p>Cloudfoundry has a global router so that all instances of the same app have the same hostname (it&#8217;s the same in other PaaS solutions with a similar architecture). This isn&#8217;t necessarily a barrier to using Eureka, but if you use the router (recommended, or even mandatory depending on the way your platform was set up), you need to explicitly set the hostname and port numbers (secure or non-secure) so that they use the router. You might also want to use instance metadata so you can distinguish between the instances on the client (e.g. in a custom load balancer). By default, the <code>eureka.instance.instanceId</code> is <code>vcap.application.instance_id</code>. For example:</p>
 </div>
 <div class="listingblock">
 <div class="title">application.yml</div>
@@ -2244,9 +2523,7 @@ implementing your own <code>com.netflix.appinfo.HealthCheckHandler</code>.</p>
 <pre>eureka:
   instance:
     hostname: ${vcap.application.uris[0]}
-    nonSecurePort: 80
-    metadataMap:
-      instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${server.port}}}</pre>
+    nonSecurePort: 80</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2272,17 +2549,19 @@ public EurekaInstanceConfigBean eurekaInstanceConfig() {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_making_the_eureka_instance_id_unique">Making the Eureka Instance ID Unique</h4>
+<h4 id="_changing_the_eureka_instance_id">Changing the Eureka Instance ID</h4>
 <div class="paragraph">
-<p>By default a eureka instance is registered with an ID that is equal to its host name (i.e. only one service per host). Using Spring Cloud you can override this by providing a unique identifier in <code>eureka.instance.metadataMap.instanceId</code>. For example:</p>
+<p>A vanilla Netflix Eureka instance is registered with an ID that is equal to its host name (i.e. only one service per host). Spring Cloud Eureka provides a sensible default that looks like this: <code>${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}}</code>. For example <code>myhost:myappname:8080</code>.</p>
+</div>
+<div class="paragraph">
+<p>Using Spring Cloud you can override this by providing a unique identifier in <code>eureka.instance.instanceId</code>. For example:</p>
 </div>
 <div class="listingblock">
 <div class="title">application.yml</div>
 <div class="content">
 <pre>eureka:
   instance:
-    metadataMap:
-      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}</pre>
+    instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2295,17 +2574,17 @@ random value will not be needed.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_using_the_discoveryclient">Using the DiscoveryClient</h3>
+<h3 id="_using_the_eurekaclient">Using the EurekaClient</h3>
 <div class="paragraph">
-<p>Once you have an app that is <code>@EnableEurekaClient</code> you can use it to
+<p>Once you have an app that is <code>@EnableDiscoveryClient</code> (or <code>@EnableEurekaClient</code>) you can use it to
 discover service instances from the <a href="#spring-cloud-eureka-server">Eureka Server</a>. One way to do that is to use the native
-<code>com.netflix.discovery.DiscoveryClient</code> (as opposed to the Spring
+<code>com.netflix.discovery.EurekaClient</code> (as opposed to the Spring
 Cloud <code>DiscoveryClient</code>), e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>@Autowired
-private DiscoveryClient discoveryClient;
+private EurekaClient discoveryClient;
 
 public String serviceUrl() {
     InstanceInfo instance = discoveryClient.getNextServerFromEureka("STORES", false);
@@ -2321,7 +2600,7 @@ public String serviceUrl() {
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Don&#8217;t use the <code>DiscoveryClient</code> in <code>@PostConstruct</code> method or in a
+<p>Don&#8217;t use the <code>EurekaClient</code> in <code>@PostConstruct</code> method or in a
 <code>@Scheduled</code> method (or anywhere where the <code>ApplicationContext</code> might
 not be started yet). It is initialized in a <code>SmartLifecycle</code> (with
 <code>phase=0</code>) so the earliest you can rely on it being available is in
@@ -2333,9 +2612,9 @@ another <code>SmartLifecycle</code> with higher phase.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_alternatives_to_the_native_netflix_discoveryclient">Alternatives to the native Netflix DiscoveryClient</h3>
+<h3 id="_alternatives_to_the_native_netflix_eurekaclient">Alternatives to the native Netflix EurekaClient</h3>
 <div class="paragraph">
-<p>You don&#8217;t have to use the raw Netflix <code>DiscoveryClient</code> and usually it
+<p>You don&#8217;t have to use the raw Netflix <code>EurekaClient</code> and usually it
 is more convenient to use it behind a wrapper of some sort. Spring
 Cloud has support for <a href="#spring-cloud-feign">Feign</a> (a REST client
 builder) and also <a href="#spring-cloud-ribbon">Spring <code>RestTemplate</code></a> using
@@ -2994,7 +3273,7 @@ public interface StoreClient {
     List&lt;Store&gt; getStores();
 
     @RequestMapping(method = RequestMethod.POST, value = "/stores/{storeId}", consumes = "application/json")
-    Store update(@PathParameter("storeId") Long storeId, Store store);
+    Store update(@PathVariable("storeId") Long storeId, Store store);
 }</code></pre>
 </div>
 </div>
@@ -3012,6 +3291,129 @@ it will resolve the service in the Eureka service registry. If you
 don&#8217;t want to use Eureka, you can simply configure a list of servers
 in your external configuration (see
 <a href="#spring-cloud-ribbon-without-eureka">above for example</a>).</p>
+</div>
+<div class="sect2">
+<h3 id="spring-cloud-feign-overriding-defaults">Overriding Feign Defaults</h3>
+<div class="paragraph">
+<p>A central concept in Spring Cloud&#8217;s Feign support is that of the named client. Each feign client is part of an ensemble of components that work together to contact a remote server on demand, and the ensemble has a name that you give it as an application developer using the <code>@FeignClient</code> annotation. Spring Cloud creates a new ensemble as an
+<code>ApplicationContext</code> on demand for each named client using <code>FeignClientsConfiguration</code>. This contains (amongst other things) an <code>feign.Decoder</code>, a <code>feign.Encoder</code>, and a <code>feign.Contract</code>.</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud lets you take full control of the feign client by declaring additional configuration (on top of the <code>FeignClientsConfiguration</code>) using <code>@FeignClient</code>. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@FeignClient(name = "stores", configuration = FooConfiguration.class)
+public interface StoreClient {
+    //..
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the client is composed from the components already in <code>FeignClientsConfiguration</code> together with any in <code>FooConfiguration</code> (where the latter will override the former).</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+The <code>FooConfiguration</code> has to be <code>@Configuration</code> but take care that it is not in a <code>@ComponentScan</code> for the main application context, otherwise it will be shared by all the <code>@FeignClient`s. If you use `@ComponentScan</code> (or <code>@SpringBootApplication</code>) you need to take steps to avoid it being included (for instance put it in a separate, non-overlapping package, or specify the packages to scan explicitly in the <code>@ComponentScan</code>).
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The <code>serviceId</code> attribute is now deprecated in favor of the <code>name</code> attribute.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Previously, using the <code>url</code> attribute, did not require the <code>name</code> attribute. Using <code>name</code> is now required.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Netflix provides the following beans by default for feign (<code>BeanType</code> beanName: <code>ClassName</code>):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Decoder</code> feignDecoder: <code>ResponseEntityDecoder</code> (which wraps a <code>SpringDecoder</code>)</p>
+</li>
+<li>
+<p><code>Encoder</code> feignEncoder: <code>SpringEncoder</code></p>
+</li>
+<li>
+<p><code>Logger</code> feignLogger: <code>Slf4jLogger</code></p>
+</li>
+<li>
+<p><code>Contract</code> feignContract: <code>SpringMvcContract</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Netflix <em>does not</em> provide the following beans by default for feign, but still looks up beans of these types from the application context to create the feign client:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Logger.Level</code></p>
+</li>
+<li>
+<p><code>Retryer</code></p>
+</li>
+<li>
+<p><code>ErrorDecoder</code></p>
+</li>
+<li>
+<p><code>Request.Options</code></p>
+</li>
+<li>
+<p><code>Collection&lt;RequestInterceptor&gt;</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Creating a bean of one of those type and placing it in a <code>@FeignClient</code> configuration (such as <code>FooConfiguration</code> above) allows you to override each one of the beans described.  Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+public class FooConfiguration {
+    @Bean
+    public Contract feignContractg() {
+        return new feign.Contract.Default();
+    }
+
+    @Bean
+    public BasicAuthRequestInterceptor basicAuthRequestInterceptor() {
+        return new BasicAuthRequestInterceptor("user", "password");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This replaces the <code>SpringMvcContract</code> with <code>feign.Contract.Default</code> and adds a <code>RequestInterceptor</code> to the collection of <code>RequestInterceptor</code>.</p>
+</div>
+<div class="paragraph">
+<p>Default configurations can be specified in the <code>@EnableFeignClients</code> attribute <code>defaultConfiguration</code> in a similar manner as described above. The difference is that this configuration will apply to <em>all</em> feign clients.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="spring-cloud-feign-inheritance">Feign Inheritance Support</h3>
@@ -3043,9 +3445,82 @@ public class UserResource implements UserService {
 <div class="listingblock">
 <div class="title">UserClient.java</div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@FeignClient("users")
+<pre class="highlight"><code class="language-java" data-lang="java">package project.user;
+
+@FeignClient("users")
 public interface UserClient extends UserService {
 
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_feign_request_response_compression">Feign request/response compression</h3>
+<div class="paragraph">
+<p>You may consider enabling the request or response GZIP compression for your
+Feign requests. You can do this by enabling one of the properties:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">feign.compression.request.enabled=true
+feign.compression.response.enabled=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Feign request compression gives you settings similar to what you may set for your web server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">feign.compression.request.enabled=true
+feign.compression.request.mime-types=text/xml,application/xml,application/json
+feign.compression.request.min-request-size=2048</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These properties allow you to be selective about the compressed media types and minimum request threshold length.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_feign_logging">Feign logging</h3>
+<div class="paragraph">
+<p>A logger is created for each Feign client created. By default the name of the logger is the full class name of the interface used to create the Feign client. Feign logging only responds to the <code>DEBUG</code> level.</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">logging.level.project.user.UserClient: DEBUG</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Logger.Level</code> object that you may configure per client, tells Feign how much to log. Choices are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>NONE</code>, No logging (<strong>DEFAULT</strong>).</p>
+</li>
+<li>
+<p><code>BASIC</code>, Log only the request method and URL and the response status code and execution time.</p>
+</li>
+<li>
+<p><code>HEADERS</code>, Log the basic information along with request and response headers.</p>
+</li>
+<li>
+<p><code>FULL</code>, Log the headers, body, and metadata for both requests and responses.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, the following would set the <code>Logger.Level</code> to <code>FULL</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+public class FooConfiguration {
+    @Bean
+    Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
+    }
 }</code></pre>
 </div>
 </div>
@@ -3073,7 +3548,7 @@ public interface UserClient extends UserService {
 </div>
 </div>
 <div class="paragraph">
-<p>Archaius has its own set of configuration files and loading priorities.  Spring applications should generally not use Archaius directly., but the need to configure the Netflix tools natively remains.  Spring Cloud has a Spring Environment Bridge so Archaius can read properties from the Spring Environment.  This allows Spring Boot projects to use the normal configuration toolchain, while allowing them to configure the Netflix tools, for the most part, as documented.</p>
+<p>Archaius has its own set of configuration files and loading priorities.  Spring applications should generally not use Archaius directly, but the need to configure the Netflix tools natively remains.  Spring Cloud has a Spring Environment Bridge so Archaius can read properties from the Spring Environment.  This allows Spring Boot projects to use the normal configuration toolchain, while allowing them to configure the Netflix tools, for the most part, as documented.</p>
 </div>
 </div>
 </div>
@@ -3277,7 +3752,7 @@ server if you set a default route ("/"), for example <code>zuul.route.home:
 </div>
 <div class="paragraph">
 <p>If more fine-grained ignoring is needed, you can specify specific patterns to ignore.
-These patterns are being evaluated at the end of the route location process, which
+These patterns are being evaluated at the start of the route location process, which
 means prefixes should be included in the pattern to warrant a match. Ignored patterns
 span all services and supersede any other route specification.</p>
 </div>
@@ -3285,7 +3760,7 @@ span all services and supersede any other route specification.</p>
 <div class="title">application.yml</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
-  ignoredPatterns: */admin/**
+  ignoredPatterns: /**/admin/**
   routes:
     users: /myusers/**</code></pre>
 </div>
@@ -3293,6 +3768,61 @@ span all services and supersede any other route specification.</p>
 <div class="paragraph">
 <p>This means that all calls such as "/myusers/101" will be forwarded to "/101" on the "users" service.
 But calls including "/admin/" will not resolve.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_strangulation_patterns_and_local_forwards">Strangulation Patterns and Local Forwards</h3>
+<div class="paragraph">
+<p>A common pattern when migrating an existing application or API is to
+"strangle" old endpoints, slowly replacing them with different
+implementations. The Zuul proxy is a useful tool for this because you
+can use it to handle all traffic from clients of the old endpoints,
+but redirect some of the requests to new ones.</p>
+</div>
+<div class="paragraph">
+<p>Example configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
+  routes:
+    first:
+      path: /first/**
+      url: http://first.example.com
+    second:
+      path: /second/**
+      url: forward:/second
+    third:
+      path: /third/**
+      url: forward:/3rd
+    legacy:
+      path: /**
+      url: http://legacy.example.com</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example we are strangling the "legacy" app which is mapped to
+all requests that do not match one of the other patterns. Paths in
+<code>/first/<strong></code> have been extracted into a new service with an external
+URL. And paths in <code>/second/</strong></code> are forwared so they can be handled
+locally, e.g. with a normal Spring <code>@RequestMapping</code>. Paths in
+<code>/third/**</code> are also forwarded, but with a different prefix
+(i.e. <code>/third/foo</code> is forwarded to <code>/3rd/foo</code>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The ignored pattterns aren&#8217;t completely ignored, they just
+aren&#8217;t handled by the proxy (so they are also effectively forwarded
+locally).
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -3586,8 +4116,8 @@ Spring CLI v1.2.3.RELEASE</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ gvm install springboot 1.2.3.RELEASE
-$ gvm use springboot 1.2.3.RELEASE</code></pre>
+<pre class="highlight"><code>$ gvm install springboot 1.3.0.M5
+$ gvm use springboot 1.3.0.M5</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3596,7 +4126,7 @@ $ gvm use springboot 1.2.3.RELEASE</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>$ mvn install
-$ spring install org.springframework.cloud:spring-cloud-cli:1.0.2.RELEASE</code></pre>
+$ spring install org.springframework.cloud:spring-cloud-cli:1.1.0.BUILD-SNAPSHOT</code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -3696,7 +4226,7 @@ AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-09-04 08:26:05 UTC
+Last updated 2015-10-20 13:39:34 UTC
 </div>
 </div>
 </body>
