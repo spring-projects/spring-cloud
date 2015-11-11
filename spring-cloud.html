@@ -1085,9 +1085,9 @@ $ mvn spring-boot:run</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The server is a Spring Boot application so you can build the jar file
-and run that (<code>java -jar &#8230;&#8203;</code>) or pull it down from a Maven
-repository. Then try it out as a client:</p>
+<p>The server is a Spring Boot application so you can run it from your
+IDE instead if you prefer (the main class is
+<code>ConfigServerApplication</code>). Then try it out a client:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1305,11 +1305,11 @@ to use your own <code>application.properties</code>, e.g.</p>
 <div class="title">application.properties</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties">server.port: 8888
-spring.cloud.config.server.git.uri: file://${HOME}/config-repo</code></pre>
+spring.cloud.config.server.git.uri: file://${user.home}/config-repo</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>where <code>${HOME}/config-repo</code> is a git repository containing
+<p>where <code>${user.home}/config-repo</code> is a git repository containing
 YAML and properties files.</p>
 </div>
 <div class="admonitionblock tip">
@@ -3319,7 +3319,7 @@ public interface StoreClient {
 <div class="title">Warning</div>
 </td>
 <td class="content">
-The <code>FooConfiguration</code> has to be <code>@Configuration</code> but take care that it is not in a <code>@ComponentScan</code> for the main application context, otherwise it will be shared by all the <code>@FeignClient`s. If you use `@ComponentScan</code> (or <code>@SpringBootApplication</code>) you need to take steps to avoid it being included (for instance put it in a separate, non-overlapping package, or specify the packages to scan explicitly in the <code>@ComponentScan</code>).
+The <code>FooConfiguration</code> has to be <code>@Configuration</code> but take care that it is not in a <code>@ComponentScan</code> for the main application context, otherwise it will be used for every <code>@FeignClient</code>. If you use <code>@ComponentScan</code> (or <code>@SpringBootApplication</code>) you need to take steps to avoid it being included (for instance put it in a separate, non-overlapping package, or specify the packages to scan explicitly in the <code>@ComponentScan</code>).
 </td>
 </tr>
 </table>
@@ -4226,7 +4226,7 @@ AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-11-02 15:08:55 UTC
+Last updated 2015-11-11 14:30:51 UTC
 </div>
 </div>
 </body>
