@@ -210,25 +210,41 @@ is a number.
 
 Release train contents:
 
-|Component|Angel.SR3 | Brixton.BUILD-SNAPSHOT | 
-|---------|-------|------|
-|spring-cloud-aws | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-bus | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-cli | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-commons | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-config | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-netflix | 1.0.3.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-security | 1.0.2.RELEASE | 1.1.0.BUILD-SNAPSHOT |
-|spring-cloud-starters | 1.0.3.RELEASE |  |
-|spring-cloud-cloudfoundry |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-cluster |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-consul |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-lattice |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-sleuth |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-dataflow |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-stream |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-stream-modules |  | 1.0.0.BUILD-SNAPSHOT |
-|spring-cloud-zookeeper |  | 1.0.0.BUILD-SNAPSHOT |
+|Component|Angel.SR4                   | Brixton.M3    | Brixton.BUILD-SNAPSHOT | 
+|---------|-------|------|                                                                 
+|spring-cloud-aws | 1.0.3.RELEASE      | 1.1.0.M1      | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-bus | 1.0.2.RELEASE      | 1.1.0.M3      | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-cli | 1.0.4.RELEASE      | 1.1.0.M3      | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-commons | 1.0.3.RELEASE  | 1.1.0.M3      | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-config | 1.0.3.RELEASE   | 1.1.0.M3      | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-netflix | 1.0.4.RELEASE  | 1.1.0.M3      | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-security | 1.0.2.RELEASE | 1.1.0.M2      | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-starters | 1.0.4.RELEASE |                          |                        |
+|spring-cloud-cloudfoundry |           | 1.0.0.M3      | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-cluster |                | 1.0.0.M2      | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-consul |                 | 1.0.0.M4      | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-lattice |                | 1.0.0.M3      | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-sleuth |                 | 1.0.0.M3      | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-dataflow |               | 1.0.0.M2      | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-stream |                 | 1.0.0.M2      | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-stream-modules |         | 1.0.0.M2      | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-zookeeper |              | 1.0.0.M3      | 1.0.0.BUILD-SNAPSHOT   |
+|spring-boot            | 1.2.7.RELEASE| 1.3.0.RELEASE | 1.3.1.BUILD-SNAPSHOT   |
+
+The Angel release train builds on Spring Boot 1.2.x, and is
+incompatible in some areas with Spring Boot 1.3.x. Brixton builds on
+Spring Boot 1.3.x and is similarly incompatible with 1.2.x. Some
+libraries and most apps built on Angel will run fine on Brixton, but
+changes will be required anywhere that the OAuth2 features from
+spring-cloud-security 1.0.x are used (they were mostly moved to Spring
+Boot in 1.3.0).
+
+Use your dependency management tools to control the version. If you
+are using Maven remember that the first version declared wins, so
+declare the BOMs in order, with the first one usually being the most
+recent (e.g. if you want to use Spring Boot 1.3.1 with Brixton.M3, put
+the Boot BOM first). The same rule applies to Gradle if you use the
+Spring dependency management plugin.
 
 {% endcapture %}
 
