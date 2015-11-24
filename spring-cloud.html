@@ -1377,37 +1377,22 @@ repositories:</p>
         git:
           uri: https://github.com/spring-cloud-samples/config-repo
           repos:
-            simple: https://github.com/simple/config-repo
+            simple: https://github.com/pattern1/config-repo
             special:
               pattern: pattern*,*pattern1*
-              uri: https://github.com/special/config-repo
+              uri: https://github.com/pattern2/config-repo
             local:
               pattern: local*
               uri: file:/home/configsvc/config-repo</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the above example, if <code>{application}</code> does not match any of the
+<p>In the above example, if {application} does not match to any of the
 patterns, it will use the default uri defined under
 "spring.cloud.config.server.git.uri". For the "simple" repository, the
-pattern is "simple" (i.e. it only matches one application named "simple").
-The pattern format is a comma-separated list of application names with
-wildcards (a pattern beginning with a wildcard may need to be quoted).</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-the "one-liner" short cut used in the "simple" example above can
-only be used if the only property to be set is the URI. If you need to
-set anything else (credentials, pattern, etc.) you need to use the full
-form.
-</td>
-</tr>
-</table>
+pattern is "simple" (i.e. it only matches one application).  The
+pattern format is a comma-separated list of application names with
+wildcards.</p>
 </div>
 <div class="paragraph">
 <p>Every repository can also optionally store config files in
@@ -3546,7 +3531,7 @@ AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-11-16 17:52:54 UTC
+Last updated 2015-11-24 13:26:52 UTC
 </div>
 </div>
 </body>
