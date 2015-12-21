@@ -640,21 +640,30 @@ and extensibility mechanism to cover others.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Java 6 JCE Link <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html</a></p>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html">Java 6 JCE</a></p>
 </li>
 <li>
-<p>Java 7 JCE Link <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html</a></p>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html">Java 7 JCE</a></p>
 </li>
 <li>
-<p>Java 8 JCE Link <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html</a></p>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html">Java 8 JCE</a></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
 <p>Extract files into JDK/jre/lib/security folder (whichever version of JRE/JDK x64/x86 you are using).</p>
 </div>
-<div class="paragraph">
-<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Spring Cloud is released under the non-restrictive Apache 2.0 license. If you would like to contribute to this section of the documentation or if you find an error, please find the source code and issue trackers in the project at {githubmaster}/docs/src/main/asciidoc[github].
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -988,7 +997,23 @@ classpath (Maven co-ordinates
 the full strength JCE extensions in your JVM.</p>
 </div>
 <div class="paragraph">
-<p>include::jce.adoc</p>
+<p>If you are getting an exception due to "Illegal key size" and you are using Sun&#8217;s JDK, you need to install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files. See the following links for more information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html">Java 6 JCE</a></p>
+</li>
+<li>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html">Java 7 JCE</a></p>
+</li>
+<li>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html">Java 8 JCE</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Extract files into JDK/jre/lib/security folder (whichever version of JRE/JDK x64/x86 you are using).</p>
 </div>
 </div>
 <div class="sect2">
@@ -1043,7 +1068,7 @@ when RestTemplate is on the classpath and a <code>LoadBalancerClient</code> bean
 <div class="paragraph">
 <p>The URI needs to use a virtual host name (ie. service name, not a host name).
 The Ribbon client is used to create a full physical address. See
-{github-code}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java[RibbonAutoConfiguration]
+<a href="https://github.com/spring-cloud/spring-cloud-netflix/blob/master/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java">RibbonAutoConfiguration</a>
 for details of how the <code>RestTemplate</code> is set up.</p>
 </div>
 </div>
@@ -1111,7 +1136,7 @@ IDE instead if you prefer (the main class is
 </div>
 <div class="paragraph">
 <p>The default strategy for locating property sources is to clone a git
-repository (at "spring.cloud.config.server.git.uri") and use it to
+repository (at <code>spring.cloud.config.server.git.uri</code>) and use it to
 initialize a mini <code>SpringApplication</code>. The mini-application&#8217;s
 <code>Environment</code> is used to enumerate property sources and publish them
 via a JSON endpoint.</p>
@@ -1129,7 +1154,7 @@ via a JSON endpoint.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>where the "application" is injected as the "spring.config.name" in the
+<p>where the "application" is injected as the <code>spring.config.name</code> in the
 <code>SpringApplication</code> (i.e. what is normally "application" in a regular
 Spring Boot app), "profile" is an active profile (or comma-separated
 list of properties), and "label" is an optional git label (defaults to
@@ -1146,12 +1171,12 @@ from a git repository (which must be provided):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
-	  server:
-	    git:
-	      uri: https://github.com/spring-cloud-samples/config-repo</pre>
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo</code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -1217,8 +1242,7 @@ users. Example Maven configuration:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@Configuration
-@EnableAutoConfiguration
+<pre>@SpringBootApplication
 @RestController
 public class Application {
 
@@ -1323,6 +1347,19 @@ spring.cloud.config.server.git.uri: file://${user.home}/config-repo</code></pre>
 <p>where <code>${user.home}/config-repo</code> is a git repository containing
 YAML and properties files.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+in Windows you need an extra "/" in the file URL if it is
+absolute with a drive prefix, e.g. <code><a href="file:///${user.home}/config-repo" class="bare">file:///${user.home}/config-repo</a></code>.
+</td>
+</tr>
+</table>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -1401,11 +1438,11 @@ one wins (like adding entries to a <code>Map</code>).</p>
 <div class="listingblock">
 <div class="title">bootstrap.yml</div>
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   application:
     name: foo
   profiles:
-    active: dev,mysql</pre>
+    active: dev,mysql</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1464,12 +1501,12 @@ using (for example):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
       server:
         git:
-          uri: https://github.com/myorg/{application}</pre>
+          uri: https://github.com/myorg/{application}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1488,7 +1525,7 @@ quoted). Example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
       server:
@@ -1501,7 +1538,7 @@ quoted). Example:</p>
               uri: https://github.com/special/config-repo
             local:
               pattern: local*
-              uri: file:/home/configsvc/config-repo</pre>
+              uri: file:/home/configsvc/config-repo</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1537,7 +1574,7 @@ to run apps with multiple profiles. Example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
       server:
@@ -1553,7 +1590,7 @@ to run apps with multiple profiles. Example:</p>
               pattern:
                 - */qa
                 - */production
-              uri: https://github.com/staging/config-repo</pre>
+              uri: https://github.com/staging/config-repo</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1580,13 +1617,13 @@ specified as <code>searchPaths</code>. For example at the top level:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
       server:
         git:
           uri: https://github.com/spring-cloud-samples/config-repo
-          searchPaths: foo,bar*</pre>
+          searchPaths: foo,bar*</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1601,7 +1638,7 @@ at startup. For example at the top level:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
       server:
@@ -1618,7 +1655,7 @@ at startup. For example at the top level:</p>
                 uri: http://git/team-b/config-repo.git
             team-c:
                 pattern: team-c-*
-                uri: http://git/team-a/config-repo.git</pre>
+                uri: http://git/team-a/config-repo.git</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1633,14 +1670,14 @@ e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
       server:
         git:
           uri: https://github.com/spring-cloud-samples/config-repo
           username: trolley
-          password: strongpassword</pre>
+          password: strongpassword</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1661,9 +1698,25 @@ system properties (<code>-Dhttps.proxyHost</code> and <code>-Dhttps.proxyPort</c
 <p>There is also a "native" profile in the Config Server that doesn&#8217;t use
 Git, but just loads the config files from the local classpath or file
 system (any static URL you want to point to with
-"spring.cloud.config.server.native.searchLocations"). To use the native
-profile just launch the Config Server with
+"spring.cloud.config.server.native.searchLocations"). To use the
+native profile just launch the Config Server with
 "spring.profiles.active=native".</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Remember to use the <code>file:</code> prefix for file resources (the
+default without a prefix is usually the classpath). Just as with any
+Spring Boot configuration you can embed <code>${}</code>-style environment
+placeholders, but remember that absolute paths in Windows require an
+extra "/", e.g. <code><a href="file:///${user.home}/config-repo" class="bare">file:///${user.home}/config-repo</a></code>
+</td>
+</tr>
+</table>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1758,11 +1811,11 @@ hooks. To declare overrides just add a map of name-value pairs to
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
       server:
-        foo: bar</pre>
+        foo: bar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1781,10 +1834,10 @@ they are Spring Cloud Config clients.)</p>
 <td class="content">
 Normal, Spring environment placeholders with "${}" can be escaped
 (and resolved on the client) by using backslash ("\") to escape the
-"$", e.g. <code>\${app.foo:bar}</code> resolves to "bar" unless the app provides
-its own "app.foo". Note that in YAML you don&#8217;t need to escape the
-backslash itself, but in properties files you do, when you configure
-the overrides on the server.
+"$" or the "{", e.g. <code>\${app.foo:bar}</code> resolves to "bar" unless the
+app provides its own "app.foo". Note that in YAML you don&#8217;t need to
+escape the backslash itself, but in properties files you do, when you
+configure the overrides on the server.
 </td>
 </tr>
 </table>
@@ -1810,7 +1863,7 @@ along with custom profiles and custom labels, e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
       server:
@@ -1820,7 +1873,7 @@ along with custom profiles and custom labels, e.g.</p>
               label: mylabel
             myservice-dev:
               name: myservice
-              profiles: development</pre>
+              profiles: development</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1864,7 +1917,7 @@ in the JRE lib/security directory with the ones that you downloaded).
 </table>
 </div>
 <div class="paragraph">
-<p>If the remote property sources contain encryted content
+<p>If the remote property sources contain encrypted content
 (values starting with <code>{cipher}</code>) they will be decrypted before
 sending to clients over HTTP. The main advantage of this set up is
 that the property values don&#8217;t have to be in plain text when they are
@@ -1880,10 +1933,10 @@ instance:</p>
 <div class="listingblock">
 <div class="title">application.yml</div>
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   datasource:
     username: dbuser
-    password: '{cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ'</pre>
+    password: '{cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1940,10 +1993,13 @@ are special characters ('+' is particularly tricky).
 <div class="paragraph">
 <p>Take the encrypted value and add the <code>{cipher}</code> prefix before you put
 it in the YAML or properties file, and before you commit and push it
-to a remote, potentially insecure store. The <code>/encrypt</code> and <code>/decrypt</code>
-endpoints also both accept paths of the form <code>/*/{name}/{profiles}</code>
-which can be used to control cryptography per application (name)
-and profile when clients call into the main Environment resource.</p>
+to a remote, potentially insecure store.</p>
+</div>
+<div class="paragraph">
+<p>The <code>/encrypt</code> and <code>/decrypt</code> endpoints also both accept paths of the
+form <code>/*/{name}/{profiles}</code> which can be used to control cryptography
+per application (name) and profile when clients call into the main
+Environment resource.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1955,7 +2011,7 @@ and profile when clients call into the main Environment resource.</p>
 to control the cryptography in this granular way you must also
 provide a <code>@Bean</code> of type <code>TextEncryptorLocator</code> that creates a
 different encryptor per name and profiles. The one that is provided
-by default does not do this.
+by default does not do this (so all encryptions use the same key).
 </td>
 </tr>
 </table>
@@ -2049,12 +2105,12 @@ your <code>application.yml</code> for the Config Server:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>encrypt:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">encrypt:
   keyStore:
     location: classpath:/server.jks
     password: letmein
     alias: mytestkey
-    secret: changeme</pre>
+    secret: changeme</code></pre>
 </div>
 </div>
 </div>
@@ -2072,8 +2128,8 @@ i.e. with a cipher text like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>foo:
-  bar: `{cipher}{key:testkey}...`</pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">foo:
+  bar: `{cipher}{key:testkey}...`</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2214,17 +2270,41 @@ to <code>logback.xml</code>).
 <div class="paragraph">
 <p>The Config Server runs best as a standalone application, but if you
 need to you can embed it in another application. Just use the
-<code>@EnableConfigServer</code> annotation and (optionally) set
-<code>spring.cloud.config.server.prefix</code> to a path prefix, e.g. "/config",
-to serve the resources under a prefix. The prefix should start but not
-end with a "/". It is applied to the <code>@RequestMappings</code> in the Config
-Server (i.e. underneath the Spring Boot prefixes <code>server.servletPath</code>
-and <code>server.contextPath</code>). Another optional property that can be
+<code>@EnableConfigServer</code> annotation. An optional property that can be
 useful in this case is <code>spring.cloud.config.server.bootstrap</code> which is
 a flag to indicate that the server should configure itself from its
 own remote repository. The flag is off by default because it can delay
 startup, but when embedded in another application it makes sense to
 initialize the same way as any other application.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+It should be obvious, but remember that if you use the bootstrap
+flag the config server will need to have its name and repository URI
+configured in <code>bootstrap.yml</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To change the location of the server endpoints you can (optionally)
+set <code>spring.cloud.config.server.prefix</code>, e.g. "/config", to serve the
+resources under a prefix. The prefix should start but not end with a
+"/". It is applied to the <code>@RequestMappings</code> in the Config Server
+(i.e. underneath the Spring Boot prefixes <code>server.servletPath</code> and
+<code>server.contextPath</code>).</p>
+</div>
+<div class="paragraph">
+<p>If you want to read the configuration for an application directly from
+the backend repository (instead of from the config server) that&#8217;s
+basically an embedded config server with no endpoints. You can switch
+off the endpoints entirely if you don&#8217;t use the <code>@EnableConfigServer</code>
+annotation (just set <code>spring.cloud.config.server.bootstrap=true</code>).</p>
 </div>
 </div>
 </div>
@@ -2359,7 +2439,7 @@ to set <code>spring.cloud.config.failFast=true</code>, and then you need to add
 <code>spring-retry</code> and <code>spring-boot-starter-aop</code> to your classpath. The default
 behaviour is to retry 6 times with an initial backoff interval of 1000ms and an
 exponential multiplier of 1.1 for subsequent backoffs. You can configure these
-properties (and others) using <code>spring.config.retry.*</code> configuration properties.</p>
+properties (and others) using <code>spring.cloud.config.retry.*</code> configuration properties.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -2417,10 +2497,10 @@ properties, e.g.</p>
 <div class="listingblock">
 <div class="title">bootstrap.yml</div>
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
-     uri: https://user:secret@myconfig.mycompany.com</pre>
+     uri: https://user:secret@myconfig.mycompany.com</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2429,12 +2509,12 @@ properties, e.g.</p>
 <div class="listingblock">
 <div class="title">bootstrap.yml</div>
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
      uri: https://myconfig.mycompany.com
      username: user
-     password: secret</pre>
+     password: secret</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2451,10 +2531,10 @@ works locally and for a user-provided service on Cloud Foundry named
 <div class="listingblock">
 <div class="title">bootstrap.yml</div>
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     config:
-     uri: ${vcap.services.configserver.credentials.uri:http://user:password@localhost:8888}</pre>
+     uri: ${vcap.services.configserver.credentials.uri:http://user:password@localhost:8888}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4814,7 +4894,7 @@ AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-17 15:02:32 UTC
+Last updated 2015-12-21 14:46:00 UTC
 </div>
 </div>
 </body>
