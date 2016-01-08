@@ -435,6 +435,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_spring_resttemplate_as_a_load_balancer_client">Spring RestTemplate as a Load Balancer Client</a></li>
 <li><a href="#_multiple_resttemplate_objects">Multiple RestTemplate objects</a></li>
+<li><a href="#ignore-network-interfaces">Ignore Network Interfaces</a></li>
 </ul>
 </li>
 </ul>
@@ -1097,6 +1098,23 @@ the provided `@LoadBalanced</code> <code>Qualifier</code>:</p>
         return restTemplate.getForObject("http://example.com", String.class);
     }
 }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ignore-network-interfaces">Ignore Network Interfaces</h3>
+<div class="paragraph">
+<p>Sometimes it is useful to ignore certain named network interfaces so they can be excluded from Service Discovery registration (eg. running in a Docker container). A list of regular expressions can be set that will cause the desired network interfaces to be ignored. The following configuration will ignore the "docker0" interface and all interfaces that start with "veth".</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yml</div>
+<div class="content">
+<pre>spring:
+  cloud:
+    inetutils:
+      ignoredInterfaces:
+        - docker0
+        - veth.*</pre>
 </div>
 </div>
 </div>
@@ -4894,7 +4912,7 @@ AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-21 14:46:00 UTC
+Last updated 2016-01-08 16:43:47 UTC
 </div>
 </div>
 </body>
