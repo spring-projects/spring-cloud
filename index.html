@@ -245,6 +245,15 @@ recent (e.g. if you want to use Spring Boot 1.3.2 with Brixton.M4, put
 the Boot BOM first). The same rule applies to Gradle if you use the
 Spring dependency management plugin.
 
+> NOTE: starting from snapshots after Brixton.M4 the release train contains a
+> `spring-cloud-starter-dependencies` as well as the
+> `spring-cloud-starter-parent`. Use the parent as you would
+> the `spring-boot-starter-parent` (if you are using Maven).
+> If you only need dependency management, the "dependencies"
+> version is a BOM-only version of the same thing (it just
+> contains dependency management and no plugin declarations
+> or direct references to Spring or Spring Boot).
+
 {% endcapture %}
 
 {% capture related_resources %}
