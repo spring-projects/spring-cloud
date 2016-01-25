@@ -435,7 +435,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_spring_resttemplate_as_a_load_balancer_client">Spring RestTemplate as a Load Balancer Client</a></li>
 <li><a href="#_multiple_resttemplate_objects">Multiple RestTemplate objects</a></li>
-<li><a href="#ignore-network-interfaces">Ignore Network Interfaces</a></li>
 </ul>
 </li>
 </ul>
@@ -456,11 +455,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_key_management">Key Management</a></li>
 <li><a href="#_creating_a_key_store_for_testing">Creating a Key Store for Testing</a></li>
 <li><a href="#_using_multiple_keys_and_key_rotation">Using Multiple Keys and Key Rotation</a></li>
+<li><a href="#_embedding_the_config_server">Embedding the Config Server</a></li>
 </ul>
 </li>
-<li><a href="#_serving_plain_text">Serving Plain Text</a></li>
-<li><a href="#_embedding_the_config_server">Embedding the Config Server</a></li>
-<li><a href="#_push_notifications_and_spring_cloud_bus">Push Notifications and Spring Cloud Bus</a></li>
 <li><a href="#_spring_cloud_config_client">Spring Cloud Config Client</a>
 <ul class="sectlevel2">
 <li><a href="#config-first-bootstrap">Config First Bootstrap</a></li>
@@ -479,11 +476,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_registering_with_eureka">Registering with Eureka</a></li>
 <li><a href="#_status_page_and_health_indicator">Status Page and Health Indicator</a></li>
-<li><a href="#_registering_a_secure_application">Registering a Secure Application</a></li>
-<li><a href="#_eureka_s_health_checks">Eureka&#8217;s Health Checks</a></li>
 <li><a href="#_eureka_metadata_for_instances_and_clients">Eureka Metadata for Instances and Clients</a></li>
-<li><a href="#_using_the_eurekaclient">Using the EurekaClient</a></li>
-<li><a href="#_alternatives_to_the_native_netflix_eurekaclient">Alternatives to the native Netflix EurekaClient</a></li>
+<li><a href="#_using_the_discoveryclient">Using the DiscoveryClient</a></li>
+<li><a href="#_alternatives_to_the_native_netflix_discoveryclient">Alternatives to the native Netflix DiscoveryClient</a></li>
 <li><a href="#_why_is_it_so_slow_to_register_a_service">Why is it so Slow to Register a Service?</a></li>
 </ul>
 </li>
@@ -518,33 +513,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_using_the_ribbon_api_directly">Using the Ribbon API Directly</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a>
-<ul class="sectlevel2">
-<li><a href="#spring-cloud-feign-overriding-defaults">Overriding Feign Defaults</a></li>
-<li><a href="#spring-cloud-feign-hystrix">Feign Hystrix Support</a></li>
-<li><a href="#spring-cloud-feign-inheritance">Feign Inheritance Support</a></li>
-<li><a href="#_feign_request_response_compression">Feign request/response compression</a></li>
-<li><a href="#_feign_logging">Feign logging</a></li>
-</ul>
-</li>
+<li><a href="#spring-cloud-feign">Declarative REST Client: Feign</a></li>
 <li><a href="#_external_configuration_archaius">External Configuration: Archaius</a></li>
 <li><a href="#_router_and_filter_zuul">Router and Filter: Zuul</a>
 <ul class="sectlevel2">
 <li><a href="#netflix-zuul-reverse-proxy">Embedded Zuul Reverse Proxy</a></li>
-<li><a href="#_strangulation_patterns_and_local_forwards">Strangulation Patterns and Local Forwards</a></li>
 <li><a href="#_uploading_files_through_zuul">Uploading Files through Zuul</a></li>
 <li><a href="#_plain_embedded_zuul">Plain Embedded Zuul</a></li>
 <li><a href="#_disable_zuul_filters">Disable Zuul Filters</a></li>
 <li><a href="#_polyglot_support_with_sidecar">Polyglot support with Sidecar</a></li>
-</ul>
-</li>
-<li><a href="#_metrics_spectator_servo_and_atlas">Metrics: Spectator, Servo, and Atlas</a>
-<ul class="sectlevel2">
-<li><a href="#_dimensional_vs_hierarchical_metrics">Dimensional vs. Hierarchical Metrics</a></li>
-<li><a href="#_default_metrics_collection">Default Metrics Collection</a></li>
-<li><a href="#_metrics_collection_spectator">Metrics Collection: Spectator</a></li>
-<li><a href="#_metrics_collection_servo">Metrics Collection: Servo</a></li>
-<li><a href="#_metrics_backend_atlas">Metrics Backend: Atlas</a></li>
 </ul>
 </li>
 </ul>
@@ -555,8 +532,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_addressing_an_instance">Addressing an Instance</a></li>
 <li><a href="#_addressing_all_instances_of_a_service">Addressing all instances of a service</a></li>
 <li><a href="#_application_context_id_must_be_unique">Application Context ID must be unique</a></li>
-<li><a href="#_customizing_the_message_broker">Customizing the Message Broker</a></li>
-<li><a href="#_tracing_bus_events">Tracing Bus Events</a></li>
+<li><a href="#_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</a></li>
 </ul>
 </li>
 <li><a href="#_spring_boot_cloud_cli">Spring Boot Cloud CLI</a>
@@ -641,30 +617,21 @@ and extensibility mechanism to cover others.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html">Java 6 JCE</a></p>
+<p>Java 6 JCE Link <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html</a></p>
 </li>
 <li>
-<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html">Java 7 JCE</a></p>
+<p>Java 7 JCE Link <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html</a></p>
 </li>
 <li>
-<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html">Java 8 JCE</a></p>
+<p>Java 8 JCE Link <a href="http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html</a></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
 <p>Extract files into JDK/jre/lib/security folder (whichever version of JRE/JDK x64/x86 you are using).</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-Spring Cloud is released under the non-restrictive Apache 2.0 license. If you would like to contribute to this section of the documentation or if you find an error, please find the source code and issue trackers in the project at {githubmaster}/docs/src/main/asciidoc[github].
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
 </div>
 </div>
 </div>
@@ -787,8 +754,8 @@ things with their parent.</p>
 <div class="sect2">
 <h3 id="customizing-bootstrap-properties">Changing the Location of Bootstrap Properties</h3>
 <div class="paragraph">
-<p>The <code>bootstrap.yml</code> (or <code>.properties</code>) location can be specified using
-<code>spring.cloud.bootstrap.name</code> (default "bootstrap") or
+<p>The <code>bootstrap.yml</code> (or <code>.properties) location can be specified using
+`spring.cloud.bootstrap.name</code> (default "bootstrap") or
 <code>spring.cloud.bootstrap.location</code> (default empty), e.g. in System
 properties. Those properties behave like the <code>spring.config.*</code>
 variants with the same name, in fact they are used to set up the
@@ -998,23 +965,7 @@ classpath (Maven co-ordinates
 the full strength JCE extensions in your JVM.</p>
 </div>
 <div class="paragraph">
-<p>If you are getting an exception due to "Illegal key size" and you are using Sun&#8217;s JDK, you need to install the Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files. See the following links for more information:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html">Java 6 JCE</a></p>
-</li>
-<li>
-<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html">Java 7 JCE</a></p>
-</li>
-<li>
-<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html">Java 8 JCE</a></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Extract files into JDK/jre/lib/security folder (whichever version of JRE/JDK x64/x86 you are using).</p>
+<p>include::jce.adoc</p>
 </div>
 </div>
 <div class="sect2">
@@ -1069,7 +1020,7 @@ when RestTemplate is on the classpath and a <code>LoadBalancerClient</code> bean
 <div class="paragraph">
 <p>The URI needs to use a virtual host name (ie. service name, not a host name).
 The Ribbon client is used to create a full physical address. See
-<a href="https://github.com/spring-cloud/spring-cloud-netflix/blob/master/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java">RibbonAutoConfiguration</a>
+{github-code}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java[RibbonAutoConfiguration]
 for details of how the <code>RestTemplate</code> is set up.</p>
 </div>
 </div>
@@ -1101,29 +1052,17 @@ the provided `@LoadBalanced</code> <code>Qualifier</code>:</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="ignore-network-interfaces">Ignore Network Interfaces</h3>
-<div class="paragraph">
-<p>Sometimes it is useful to ignore certain named network interfaces so they can be excluded from Service Discovery registration (eg. running in a Docker container). A list of regular expressions can be set that will cause the desired network interfaces to be ignored. The following configuration will ignore the "docker0" interface and all interfaces that start with "veth".</p>
-</div>
-<div class="listingblock">
-<div class="title">application.yml</div>
-<div class="content">
-<pre>spring:
-  cloud:
-    inetutils:
-      ignoredInterfaces:
-        - docker0
-        - veth.*</pre>
-</div>
-</div>
-</div>
 </div>
 </div>
 <h1 id="_spring_cloud_config" class="sect0">Spring Cloud Config</h1>
 <div class="openblock partintro">
 <div class="content">
-Spring Cloud Config provides server and client-side support for externalized configuration in a distributed system. With the Config Server you have a central place to manage external properties for applications across all environments. The concepts on both client and server map identically to the Spring <code>Environment</code> and <code>PropertySource</code> abstractions, so they fit very well with Spring applications, but can be used with any application running in any language. As an application moves through the deployment pipeline from dev to test and into production you can manage the configuration between those environments and be certain that applications have everything they need to run when they migrate. The default implementation of the server storage backend uses git so it easily supports labelled versions of configuration environments, as well as being accessible to a wide range of tooling for managing the content.  It is easy to add alternative implementations and plug them in with Spring configuration.
+<div class="paragraph">
+<p>Spring Cloud Config provides server and client-side support for externalized configuration in a distributed system. With the Config Server you have a central place to manage external properties for applications across all environments. The concepts on both client and server map identically to the Spring <code>Environment</code> and <code>PropertySource</code> abstractions, so they fit very well with Spring applications, but can be used with any application running in any language. As an application moves through the deployment pipeline from dev to test and into production you can manage the configuration between those environments and be certain that applications have everything they need to run when they migrate. The default implementation of the server storage backend uses git so it easily supports labelled versions of configuration environments, as well as being accessible to a wide range of tooling for managing the content.  It is easy to add alternative implementations and plug them in with Spring configuration.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc" class="bare">https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/master/docs/src/main/asciidoc/contributing-docs.adoc</a></p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1139,9 +1078,9 @@ $ mvn spring-boot:run</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The server is a Spring Boot application so you can run it from your
-IDE instead if you prefer (the main class is
-<code>ConfigServerApplication</code>). Then try it out a client:</p>
+<p>The server is a Spring Boot application so you can build the jar file
+and run that (<code>java -jar &#8230;&#8203;</code>) or pull it down from a Maven
+repository. Then try it out as a client:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1154,7 +1093,7 @@ IDE instead if you prefer (the main class is
 </div>
 <div class="paragraph">
 <p>The default strategy for locating property sources is to clone a git
-repository (at <code>spring.cloud.config.server.git.uri</code>) and use it to
+repository (at "spring.cloud.config.server.git.uri") and use it to
 initialize a mini <code>SpringApplication</code>. The mini-application&#8217;s
 <code>Environment</code> is used to enumerate property sources and publish them
 via a JSON endpoint.</p>
@@ -1172,7 +1111,7 @@ via a JSON endpoint.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>where the "application" is injected as the <code>spring.config.name</code> in the
+<p>where the "application" is injected as the "spring.config.name" in the
 <code>SpringApplication</code> (i.e. what is normally "application" in a regular
 Spring Boot app), "profile" is an active profile (or comma-separated
 list of properties), and "label" is an optional git label (defaults to
@@ -1189,12 +1128,12 @@ from a git repository (which must be provided):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   cloud:
     config:
-      server:
-        git:
-          uri: https://github.com/spring-cloud-samples/config-repo</code></pre>
+	  server:
+	    git:
+	      uri: https://github.com/spring-cloud-samples/config-repo</pre>
 </div>
 </div>
 <div class="sect2">
@@ -1260,7 +1199,8 @@ users. Example Maven configuration:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@SpringBootApplication
+<pre>@Configuration
+@EnableAutoConfiguration
 @RestController
 public class Application {
 
@@ -1332,91 +1272,7 @@ the config server URL.
 <p>The Server provides an HTTP, resource-based API for external
 configuration (name-value pairs, or equivalent YAML content).  The
 server is easily embeddable in a Spring Boot application using the
-<code>@EnableConfigServer</code> annotation. So this app is a config server:</p>
-</div>
-<div class="listingblock">
-<div class="title">ConfigServer.java</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
-@EnableConfigServer
-public class ConfigServer {
-  public static void main(String[] args) {
-    SpringApplication.run(ConfigServer.class, args);
-  }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Like all Spring Boot apps it runs on port 8080 by default, but you
-can switch it to the conventional port 8888 in various ways. The
-easiest, which also sets a default configuration repository,
-is by launching it with <code>spring.config.name=configserver</code> (there
-is a <code>configserver.yml</code> in the Config Server jar). Another is
-to use your own <code>application.properties</code>, e.g.</p>
-</div>
-<div class="listingblock">
-<div class="title">application.properties</div>
-<div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">server.port: 8888
-spring.cloud.config.server.git.uri: file://${user.home}/config-repo</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>where <code>${user.home}/config-repo</code> is a git repository containing
-YAML and properties files.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-in Windows you need an extra "/" in the file URL if it is
-absolute with a drive prefix, e.g. <code><a href="file:///${user.home}/config-repo" class="bare">file:///${user.home}/config-repo</a></code>.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Here&#8217;s a recipe for creating the git repository in the example
-above:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ cd $HOME
-$ mkdir config-repo
-$ cd config-repo
-$ git init .
-$ echo info.foo: bar &gt; application.properties
-$ git add -A .
-$ git commit -m "Add application.properties"</pre>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Warning</div>
-</td>
-<td class="content">
-using the local filesystem for your git repository is
-intended for testing only. Use a server to host your
-configuration repositories in production.
-</td>
-</tr>
-</table>
+<code>@EnableConfigServer</code> annotation.</p>
 </div>
 <div class="sect2">
 <h3 id="_environment_repository">Environment Repository</h3>
@@ -1456,11 +1312,11 @@ one wins (like adding entries to a <code>Map</code>).</p>
 <div class="listingblock">
 <div class="title">bootstrap.yml</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   application:
     name: foo
   profiles:
-    active: dev,mysql</code></pre>
+    active: dev,mysql</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1508,42 +1364,13 @@ avoid ambiguity with other URL paths). Be careful with the brackets in
 the URL if you are using a command line client like curl (e.g. escape
 them from the shell with quotes '').</p>
 </div>
-<div class="sect4">
-<h5 id="_placeholders_in_git_uri">Placeholders in Git URI</h5>
 <div class="paragraph">
-<p>Spring Cloud Config Server supports a git repository URL with
-placeholders for the <code>{application}</code> and <code>{profile}</code> (and <code>{label}</code> if
-you need it, but remember that the label is applied as a git label
-anyway). So you can easily support a "one repo per application" policy
-using (for example):</p>
+<p>Spring Cloud Config Server supports a single or multiple git
+repositories:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/myorg/{application}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>or a "one repo per profile" policy using a similar pattern but with
-<code>{profile}</code>.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_pattern_matching_and_multiple_repositories">Pattern Matching and Multiple Repositories</h5>
-<div class="paragraph">
-<p>There is also support for more complex requirements with pattern
-matching on the application and profile name. The pattern format is a
-comma-separated list of <code>{application}/{profile}</code> names with wildcards
-(where a pattern beginning with a wildcard may need to be
-quoted). Example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   cloud:
     config:
       server:
@@ -1552,22 +1379,20 @@ quoted). Example:</p>
           repos:
             simple: https://github.com/simple/config-repo
             special:
-              pattern: special*/dev*,*special*/dev*
+              pattern: pattern*,*pattern1*
               uri: https://github.com/special/config-repo
             local:
               pattern: local*
-              uri: file:/home/configsvc/config-repo</code></pre>
+              uri: file:/home/configsvc/config-repo</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If <code>{application}/{profile}</code> does not match any of the patterns, it
-will use the default uri defined under
-"spring.cloud.config.server.git.uri". In the above example, for the
-"simple" repository, the pattern is <code>simple/*</code> (i.e. it only matches
-one application named "simple" in all profiles). The "local"
-repository matches all application names beginning with "local" in all
-profiles (the <code>/*</code> suffix is added automatically to any pattern that
-doesn&#8217;t have a profile matcher).</p>
+<p>In the above example, if <code>{application}</code> does not match any of the
+patterns, it will use the default uri defined under
+"spring.cloud.config.server.git.uri". For the "simple" repository, the
+pattern is "simple" (i.e. it only matches one application named "simple").
+The pattern format is a comma-separated list of application names with
+wildcards (a pattern beginning with a wildcard may need to be quoted).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1585,63 +1410,19 @@ form.
 </table>
 </div>
 <div class="paragraph">
-<p>The <code>pattern</code> property in the repo is actually an array, so you can
-use a YAML array (or <code>[0]</code>, <code>[1]</code>, etc. suffixes in properties files)
-to bind to multiple patterns. You may need to do this if you are going
-to run apps with multiple profiles. Example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/spring-cloud-samples/config-repo
-          repos:
-            development:
-              pattern:
-                - */development
-                - */staging
-              uri: https://github.com/development/config-repo
-            staging:
-              pattern:
-                - */qa
-                - */production
-              uri: https://github.com/staging/config-repo</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-Spring Cloud will guess that a pattern containing a profile that
-doesn&#8217;t end in <code>*</code> implies that you actually want to match a list of
-profiles starting with this pattern (so <code>*/staging</code> is a shortcut for
-<code>["*/staging", "*/staging,*"]</code>). This is common where you need to run
-apps in the "development" profile locally but also the "cloud" profile
-remotely, for instance.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
 <p>Every repository can also optionally store config files in
 sub-directories, and patterns to search for those directories can be
 specified as <code>searchPaths</code>. For example at the top level:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   cloud:
     config:
       server:
         git:
           uri: https://github.com/spring-cloud-samples/config-repo
-          searchPaths: foo,bar*</code></pre>
+          searchPaths: foo,bar*</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1656,7 +1437,7 @@ at startup. For example at the top level:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   cloud:
     config:
       server:
@@ -1673,7 +1454,7 @@ at startup. For example at the top level:</p>
                 uri: http://git/team-b/config-repo.git
             team-c:
                 pattern: team-c-*
-                uri: http://git/team-a/config-repo.git</code></pre>
+                uri: http://git/team-a/config-repo.git</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1688,14 +1469,14 @@ e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   cloud:
     config:
       server:
         git:
           uri: https://github.com/spring-cloud-samples/config-repo
           username: trolley
-          password: strongpassword</code></pre>
+          password: strongpassword</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1704,10 +1485,7 @@ of the box when you store keys in the default directories (<code>~/.ssh</code>)
 and the uri points to an SSH location,
 e.g. "<a href="mailto:git@github.com">git@github.com</a>:configuration/cloud-configuration". The
 repository is accessed using JGit, so any documentation you find on
-that should be applicable. HTTPS proxy settings can be set in
-<code>~/.git/config</code> or in the same way as for any other JVM process via
-system properties (<code>-Dhttps.proxyHost</code> and <code>-Dhttps.proxyPort</code>).</p>
-</div>
+that should be applicable.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1716,25 +1494,9 @@ system properties (<code>-Dhttps.proxyHost</code> and <code>-Dhttps.proxyPort</c
 <p>There is also a "native" profile in the Config Server that doesn&#8217;t use
 Git, but just loads the config files from the local classpath or file
 system (any static URL you want to point to with
-"spring.cloud.config.server.native.searchLocations"). To use the
-native profile just launch the Config Server with
+"spring.cloud.config.server.native.searchLocations"). To use the native
+profile just launch the Config Server with
 "spring.profiles.active=native".</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-Remember to use the <code>file:</code> prefix for file resources (the
-default without a prefix is usually the classpath). Just as with any
-Spring Boot configuration you can embed <code>${}</code>-style environment
-placeholders, but remember that absolute paths in Windows require an
-extra "/", e.g. <code><a href="file:///${user.home}/config-repo" class="bare">file:///${user.home}/config-repo</a></code>
-</td>
-</tr>
-</table>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1744,11 +1506,9 @@ extra "/", e.g. <code><a href="file:///${user.home}/config-repo" class="bare">fi
 </td>
 <td class="content">
 The default value of the <code>searchLocations</code> is identical to a
-local Spring Boot application (so <code>[classpath:/, classpath:/config,
-file:./, file:./config]</code>). This does not expose the
-<code>application.properties</code> from the server to all clients because any
-property sources present in the server are removed before being sent
-to the client.
+local Spring Boot application (so
+<code>[classpath:/, classpath:/config, file:./, file:./config]</code>) which will
+expose the <code>application.properties</code> from the server to all clients.
 </td>
 </tr>
 </table>
@@ -1769,101 +1529,11 @@ Config Server.
 </table>
 </div>
 <div class="paragraph">
-<p>The search locations can contain placeholders for <code>{application}</code>,
-<code>{profile}</code> and <code>{label}</code>. In this way you can segregate the
-directories in the path, and choose a strategy that makes sense for
-you (e.g. sub-directory per application, or sub-directory per
-profile).</p>
-</div>
-<div class="paragraph">
-<p>If you don&#8217;t use placeholders in the search locations, this repository
-also appends the <code>{label}</code> parameter of the HTTP resource to a suffix
-on the search path, so properties files are loaded from each search
-location <strong>and</strong> a subdirectory with the same name as the label (the
-labelled properties take precedence in the Spring Environment). Thus
-the default behaviour with no placeholders is the same as adding a
-search location ending with <code>/{label}/. For example `file:/tmp/config</code>
-is the same as <code>file:/tmp/config,file:/tmp/config/{label}</code></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_sharing_configiration_with_all_applications">Sharing Configiration With All Applications</h4>
-<div class="paragraph">
-<p>With file-based (i.e. git, svn and native) repositories, resources
-with file names in <code>application*</code> are shared between all client
-applications (so <code>application.properties</code>, <code>application.yml</code>,
-<code>application-*.properties</code> etc.). You can use resources with these
-file names to configure global defaults and have them overridden by
-application-specific files as necessary.</p>
-</div>
-<div class="paragraph">
-<p>The #_property_overrides[property overrides] feature can also be used
-for setting global defaults, and with placeholders applications are
-allowed to override them locally.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-With the "native" profile (local file system backend) it is
-recommended that you use an explicit search location that isn&#8217;t part
-of the server&#8217;s own configuration. Otherwise the <code>application*</code>
-resources in the default search locations are removed because they are
-part of the server.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_property_overrides">Property Overrides</h4>
-<div class="paragraph">
-<p>The Config Server has an "overrides" feature that allows the operator
-to provide configuration properties to all applications that cannot be
-accidentally changed by the application using the normal Spring Boot
-hooks. To declare overrides just add a map of name-value pairs to
-<code>spring.cloud.config.server.overrides</code>. For example</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    config:
-      server:
-        foo: bar</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>will cause all applications that are config clients to read <code>foo=bar</code>
-independent of their own configuration. (Of course an application can
-use the data in the Config Server in any way it likes, so overrides
-are not enforceable, but they do provide useful default behaviour if
-they are Spring Cloud Config clients.)</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-Normal, Spring environment placeholders with "${}" can be escaped
-(and resolved on the client) by using backslash ("\") to escape the
-"$" or the "{", e.g. <code>\${app.foo:bar}</code> resolves to "bar" unless the
-app provides its own "app.foo". Note that in YAML you don&#8217;t need to
-escape the backslash itself, but in properties files you do, when you
-configure the overrides on the server.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>You can change the priority of all overrides in the client to be more
-like default values, allowing applications to supply their own values
-in environment variables or System properties, by setting the flag `</p>
+<p>This repository implementation maps the <code>{label}</code> parameter of the
+HTTP resource to a suffix on the search path, so properties files are
+loaded from each search location <strong>and</strong> a subdirectory with the same
+name as the label (the labelled properties take precedence in the
+Spring Environment).</p>
 </div>
 </div>
 </div>
@@ -1881,7 +1551,7 @@ along with custom profiles and custom labels, e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   cloud:
     config:
       server:
@@ -1891,7 +1561,7 @@ along with custom profiles and custom labels, e.g.</p>
               label: mylabel
             myservice-dev:
               name: myservice
-              profiles: development</code></pre>
+              profiles: development</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1935,7 +1605,7 @@ in the JRE lib/security directory with the ones that you downloaded).
 </table>
 </div>
 <div class="paragraph">
-<p>If the remote property sources contain encrypted content
+<p>If the remote property sources contain encryted content
 (values starting with <code>{cipher}</code>) they will be decrypted before
 sending to clients over HTTP. The main advantage of this set up is
 that the property values don&#8217;t have to be in plain text when they are
@@ -1951,20 +1621,10 @@ instance:</p>
 <div class="listingblock">
 <div class="title">application.yml</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   datasource:
     username: dbuser
-    password: '{cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Encrypted values in a .properties file must not be wrapped in quotes, otherwise the value will not be decrypted:</p>
-</div>
-<div class="listingblock">
-<div class="title">application.properties</div>
-<div class="content">
-<pre>spring.datasource.username: dbuser
-spring.datasource.password: {cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ</pre>
+    password: '{cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ'</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1993,31 +1653,13 @@ configured with a symmetric key or a full key pair):</p>
 mysecret</pre>
 </div>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-If you are testing like this with curl, then use
-<code>--data-urlencode</code> (instead of <code>-d</code>) or set an explicit <code>Content-Type:
-text/plain</code> to make sure curl encodes the data correctly when there
-are special characters ('+' is particularly tricky).
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>Take the encrypted value and add the <code>{cipher}</code> prefix before you put
+<p>Take the encypted value and add the <code>{cipher}</code> prefix before you put
 it in the YAML or properties file, and before you commit and push it
-to a remote, potentially insecure store.</p>
-</div>
-<div class="paragraph">
-<p>The <code>/encrypt</code> and <code>/decrypt</code> endpoints also both accept paths of the
-form <code>/*/{name}/{profiles}</code> which can be used to control cryptography
-per application (name) and profile when clients call into the main
-Environment resource.</p>
+to a remote, potentially insecure store. The <code>/encypt</code> and <code>/decrypt</code>
+endpoints also both accept paths of the form <code>/*/{name}/{profiles}</code>
+which can be used to control cryptography per application (name)
+and profile when clients call into the main Environment resource.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2029,7 +1671,7 @@ Environment resource.</p>
 to control the cryptography in this granular way you must also
 provide a <code>@Bean</code> of type <code>TextEncryptorLocator</code> that creates a
 different encryptor per name and profiles. The one that is provided
-by default does not do this (so all encryptions use the same key).
+by default does not do this.
 </td>
 </tr>
 </table>
@@ -2047,7 +1689,7 @@ mysecret</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To use a key in a file (e.g. an RSA public key for encryption) prepend
+<p>To use a key in a file (e.g. an RSA public key for encyption) prepend
 the key value with "@" and provide the file path, e.g.</p>
 </div>
 <div class="listingblock">
@@ -2123,12 +1765,12 @@ your <code>application.yml</code> for the Config Server:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">encrypt:
+<pre>encrypt:
   keyStore:
     location: classpath:/server.jks
     password: letmein
     alias: mytestkey
-    secret: changeme</code></pre>
+    secret: changeme</pre>
 </div>
 </div>
 </div>
@@ -2146,8 +1788,8 @@ i.e. with a cipher text like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">foo:
-  bar: `{cipher}{key:testkey}...`</code></pre>
+<pre>foo:
+  bar: `{cipher}{key:testkey}...`</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2183,211 +1825,23 @@ handle all encryption as well as decryption.
 </table>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_serving_plain_text">Serving Plain Text</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Instead of using the <code>Environment</code> abstraction (or one of the
-alternative representations of it in YAML or properties format) your
-applications might need generic plain text configuration files,
-tailored to their environment. The Config Server provides these
-through an additional endpoint at <code>/{name}/{profile}/{label}/{path}</code>
-where "name", "profile" and "label" have the same meaning as the
-regular environment endpoint, but "path" is a file name
-(e.g. <code>log.xml</code>). The source files for this endpoint are located in
-the same way as for the environment endpoints: the same search path is
-used as for properties or YAML files, but instead of aggregating all
-matching resources, only the first one to match is returned.</p>
-</div>
-<div class="paragraph">
-<p>After a resource is located, placeholders in the normal format
-(<code>${&#8230;&#8203;}</code>) are resolved using the effective <code>Environment</code> for the
-application name, profile and label supplied. In this way the resource
-endpoint is tightly integrated with the environment
-endpoints. Example, if you have this layout for a GIT (or SVN)
-repository:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>application.yml
-nginx.conf</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>where <code>nginx.conf</code> looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>server {
-    listen              80;
-    server_name         ${nginx.server.name};
-}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and <code>application.yml</code> like this:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">nginx:
-  server:
-    name: example.com
----
-spring:
-  profiles: development
-nginx:
-  server:
-    name: develop.com</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>then the <code>/foo/default/master/nginx.conf</code> resource looks like this:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>server {
-    listen              80;
-    server_name         example.com;
-}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and <code>/foo/development/master/nginx.conf</code> like this:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>server {
-    listen              80;
-    server_name         develop.com;
-}</pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-just like the source files for environment configuration, the
-"profile" is used to resolve the file name, so if you want a
-profile-specific file then <code>/*/development/*/logback.xml</code> will be
-resolved by a file called <code>logback-development.xml</code> (in preference
-to <code>logback.xml</code>).
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_embedding_the_config_server">Embedding the Config Server</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_embedding_the_config_server">Embedding the Config Server</h3>
 <div class="paragraph">
 <p>The Config Server runs best as a standalone application, but if you
 need to you can embed it in another application. Just use the
-<code>@EnableConfigServer</code> annotation. An optional property that can be
+<code>@EnableConfigServer</code> annotation and (optionally) set
+<code>spring.cloud.config.server.prefix</code> to a path prefix, e.g. "/config",
+to serve the resources under a prefix. The prefix should start but not
+end with a "/". It is applied to the <code>@RequestMappings</code> in the Config
+Server (i.e. underneath the Spring Boot prefixes <code>server.servletPath</code>
+and <code>server.contextPath</code>). Another optional property that can be
 useful in this case is <code>spring.cloud.config.server.bootstrap</code> which is
 a flag to indicate that the server should configure itself from its
 own remote repository. The flag is off by default because it can delay
 startup, but when embedded in another application it makes sense to
 initialize the same way as any other application.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-It should be obvious, but remember that if you use the bootstrap
-flag the config server will need to have its name and repository URI
-configured in <code>bootstrap.yml</code>.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>To change the location of the server endpoints you can (optionally)
-set <code>spring.cloud.config.server.prefix</code>, e.g. "/config", to serve the
-resources under a prefix. The prefix should start but not end with a
-"/". It is applied to the <code>@RequestMappings</code> in the Config Server
-(i.e. underneath the Spring Boot prefixes <code>server.servletPath</code> and
-<code>server.contextPath</code>).</p>
-</div>
-<div class="paragraph">
-<p>If you want to read the configuration for an application directly from
-the backend repository (instead of from the config server) that&#8217;s
-basically an embedded config server with no endpoints. You can switch
-off the endpoints entirely if you don&#8217;t use the <code>@EnableConfigServer</code>
-annotation (just set <code>spring.cloud.config.server.bootstrap=true</code>).</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_push_notifications_and_spring_cloud_bus">Push Notifications and Spring Cloud Bus</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Many source code repository providers (like Github, Gitlab or Bitbucket
-for instance) will notify you of changes in a repository through a
-webhook. You can configure the webhook via the provider&#8217;s user
-interface as a URL and a set of events in which you are
-interested. For instance
-<a href="https://developer.github.com/v3/activity/events/types/#pushevent">Github</a>
-will POST to the webhook with a JSON body containing a list of
-commits, and a header "X-Github-Event" equal to "push". If you add a
-dependency on the <code>spring-cloud-config-monitor</code> library and activate
-the Spring Cloud Bus in your Config Server, then a "/monitor" endpoint
-is enabled.</p>
-</div>
-<div class="paragraph">
-<p>When the webhook is activated the Config Server will send a
-<code>RefreshRemoteApplicationEvent</code> targeted at the applications it thinks
-might have changed. The change detection can be strategized, but by
-default it just looks for changes in files that match the application
-name (e.g. "foo.properties" is targeted at the "foo" application, and
-"application.properties" is targeted at all applications). The strategy
-if you want to override the behaviour is <code>PropertyPathNotificationExtractor</code>
-which accepts the request headers and body as parameters and returns a list
-of file paths that changed.</p>
-</div>
-<div class="paragraph">
-<p>The default configuration works out of the box with Github, Gitlab or
-Bitbucket. In addition to the JSON notifications from Github, Gitlab
-or Bitbucket you can trigger a change notification by POSTing to
-"/monitor" with a form-encoded body parameters <code>path={name}</code>. This will
-broadcast to applications matching the "{name}" pattern (can contain
-wildcards).</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-the <code>RefreshRemoteApplicationEvent</code> will only be transmitted if
-the <code>spring-cloud-bus</code> is activated in the Config Server and in the
-client application.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-the default configuration also detects filesystem changes in
-local git repositories (the webhook is not used in that case but as
-soon as you edit a config file a refresh will be broadcast).
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
@@ -2457,7 +1911,7 @@ to set <code>spring.cloud.config.failFast=true</code>, and then you need to add
 <code>spring-retry</code> and <code>spring-boot-starter-aop</code> to your classpath. The default
 behaviour is to retry 6 times with an initial backoff interval of 1000ms and an
 exponential multiplier of 1.1 for subsequent backoffs. You can configure these
-properties (and others) using <code>spring.cloud.config.retry.*</code> configuration properties.</p>
+properties (and others) using <code>spring.config.retry.*</code> configuration properties.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -2515,10 +1969,10 @@ properties, e.g.</p>
 <div class="listingblock">
 <div class="title">bootstrap.yml</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   cloud:
     config:
-     uri: https://user:secret@myconfig.mycompany.com</code></pre>
+     uri: https://user:secret@myconfig.mycompany.com</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2527,12 +1981,12 @@ properties, e.g.</p>
 <div class="listingblock">
 <div class="title">bootstrap.yml</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   cloud:
     config:
      uri: https://myconfig.mycompany.com
      username: user
-     password: secret</code></pre>
+     password: secret</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2549,10 +2003,10 @@ works locally and for a user-provided service on Cloud Foundry named
 <div class="listingblock">
 <div class="title">bootstrap.yml</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre>spring:
   cloud:
     config:
-     uri: ${vcap.services.configserver.credentials.uri:http://user:password@localhost:8888}</code></pre>
+     uri: ${vcap.services.configserver.credentials.uri:http://user:password@localhost:8888}</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2667,74 +2121,14 @@ non-default context path or servlet path
 <div class="content">
 <pre>eureka:
   instance:
-    statusPageUrlPath: ${management.context-path}/info
-    healthCheckUrlPath: ${management.context-path}/health</pre>
+    statusPageUrlPath: ${management.contextPath}/info
+    healthCheckUrlPath: ${management.contextPath}/health</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>These links show up in the metadata that is consumed by clients, and
+<p>These links show up in the metadata that is consumers by clients, and
 used in some scenarios to decide whether to send requests to your
 application, so it&#8217;s helpful if they are accurate.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_registering_a_secure_application">Registering a Secure Application</h3>
-<div class="paragraph">
-<p>If your app wants to be contacted over HTTPS you can set two flags in
-the <code>EurekaInstanceConfig</code>, <em>viz</em>
-<code>eureka.instance.[nonSecurePortEnabled,securePortEnabled]=[false,true]</code>
-respectively. This will make Eureka publish instance information
-showing an explicit preference for secure communication. The Spring
-Cloud <code>DiscoveryClient</code> will always return an <code><a href="https://&#8230;&#8203" class="bare">https://&#8230;&#8203</a>;</code> URI for a
-service configured this way, and the Eureka (native) instance
-information will have a secure health check URL. Because of the way
-Eureka works internally, it will still publish a non-secure URL for
-status and home page unless you also override those explicitly.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-If your app is running behind a proxy, and the SSL termination
-is in the proxy (e.g. if you run in Cloud Foundry or other platforms
-as a service) then you will need to ensure that the proxy "forwarded"
-headers are intercepted and handled by the application. An embedded
-Tomcat container in a Spring Boot app does this automatically if it
-has explicit configuration for the 'X-Forwarded-\*` headers. A sign
-that you got this wrong will be that the links rendered by your app to
-itself will be wrong (the wrong host, port or protocol).
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_eureka_s_health_checks">Eureka&#8217;s Health Checks</h3>
-<div class="paragraph">
-<p>By default, Eureka uses the client heartbeat to determine if a client is up.
-Unless specified otherwise the Discovery Client will not propagate the
-current health check status of the application per the Spring Boot Actuator.  Which means
-that after successful registration Eureka will always announce that the
-application is in 'UP' state. This behaviour can be altered by enabling
-Eureka health checks, which results in propagating application status
-to Eureka. As a consequence every other application won&#8217;t be sending
-traffic to application in state other then 'UP'.</p>
-</div>
-<div class="listingblock">
-<div class="title">application.yml</div>
-<div class="content">
-<pre>eureka:
-  client:
-    healthcheck:
-      enabled: true</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If you require more control over the health checks, you may consider
-implementing your own <code>com.netflix.appinfo.HealthCheckHandler</code>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2745,7 +2139,7 @@ implementing your own <code>com.netflix.appinfo.HealthCheckHandler</code>.</p>
 <div class="sect3">
 <h4 id="_using_eureka_on_cloudfoundry">Using Eureka on Cloudfoundry</h4>
 <div class="paragraph">
-<p>Cloudfoundry has a global router so that all instances of the same app have the same hostname (it&#8217;s the same in other PaaS solutions with a similar architecture). This isn&#8217;t necessarily a barrier to using Eureka, but if you use the router (recommended, or even mandatory depending on the way your platform was set up), you need to explicitly set the hostname and port numbers (secure or non-secure) so that they use the router. You might also want to use instance metadata so you can distinguish between the instances on the client (e.g. in a custom load balancer). By default, the <code>eureka.instance.instanceId</code> is <code>vcap.application.instance_id</code>. For example:</p>
+<p>Cloudfoundry has a global router so that all instances of the same app have the same hostname (it&#8217;s the same in other PaaS solutions with a similar architecture). This isn&#8217;t necessarily a barrier to using Eureka, but if you use the router (recommended, or even mandatory depending on the way your platform was set up), you need to explicitly set the hostname and port numbers (secure or non-secure) so that they use the router. You might also want to use instance metadata so you can distinguish between the instances on the client (e.g. in a custom load balancer). For example:</p>
 </div>
 <div class="listingblock">
 <div class="title">application.yml</div>
@@ -2753,7 +2147,9 @@ implementing your own <code>com.netflix.appinfo.HealthCheckHandler</code>.</p>
 <pre>eureka:
   instance:
     hostname: ${vcap.application.uris[0]}
-    nonSecurePort: 80</pre>
+    nonSecurePort: 80
+    metadataMap:
+      instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${server.port}}}</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2779,19 +2175,17 @@ public EurekaInstanceConfigBean eurekaInstanceConfig() {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_changing_the_eureka_instance_id">Changing the Eureka Instance ID</h4>
+<h4 id="_making_the_eureka_instance_id_unique">Making the Eureka Instance ID Unique</h4>
 <div class="paragraph">
-<p>A vanilla Netflix Eureka instance is registered with an ID that is equal to its host name (i.e. only one service per host). Spring Cloud Eureka provides a sensible default that looks like this: <code>${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}}</code>. For example <code>myhost:myappname:8080</code>.</p>
-</div>
-<div class="paragraph">
-<p>Using Spring Cloud you can override this by providing a unique identifier in <code>eureka.instance.instanceId</code>. For example:</p>
+<p>By default a eureka instance is registered with an ID that is equal to its host name (i.e. only one service per host). Using Spring Cloud you can override this by providing a unique identifier in <code>eureka.instance.metadataMap.instanceId</code>. For example:</p>
 </div>
 <div class="listingblock">
 <div class="title">application.yml</div>
 <div class="content">
 <pre>eureka:
   instance:
-    instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}</pre>
+    metadataMap:
+      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2804,17 +2198,17 @@ random value will not be needed.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_using_the_eurekaclient">Using the EurekaClient</h3>
+<h3 id="_using_the_discoveryclient">Using the DiscoveryClient</h3>
 <div class="paragraph">
-<p>Once you have an app that is <code>@EnableDiscoveryClient</code> (or <code>@EnableEurekaClient</code>) you can use it to
+<p>Once you have an app that is <code>@EnableEurekaClient</code> you can use it to
 discover service instances from the <a href="#spring-cloud-eureka-server">Eureka Server</a>. One way to do that is to use the native
-<code>com.netflix.discovery.EurekaClient</code> (as opposed to the Spring
+<code>com.netflix.discovery.DiscoveryClient</code> (as opposed to the Spring
 Cloud <code>DiscoveryClient</code>), e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>@Autowired
-private EurekaClient discoveryClient;
+private DiscoveryClient discoveryClient;
 
 public String serviceUrl() {
     InstanceInfo instance = discoveryClient.getNextServerFromEureka("STORES", false);
@@ -2830,7 +2224,7 @@ public String serviceUrl() {
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Don&#8217;t use the <code>EurekaClient</code> in <code>@PostConstruct</code> method or in a
+<p>Don&#8217;t use the <code>DiscoveryClient</code> in <code>@PostConstruct</code> method or in a
 <code>@Scheduled</code> method (or anywhere where the <code>ApplicationContext</code> might
 not be started yet). It is initialized in a <code>SmartLifecycle</code> (with
 <code>phase=0</code>) so the earliest you can rely on it being available is in
@@ -2842,9 +2236,9 @@ another <code>SmartLifecycle</code> with higher phase.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_alternatives_to_the_native_netflix_eurekaclient">Alternatives to the native Netflix EurekaClient</h3>
+<h3 id="_alternatives_to_the_native_netflix_discoveryclient">Alternatives to the native Netflix DiscoveryClient</h3>
 <div class="paragraph">
-<p>You don&#8217;t have to use the raw Netflix <code>EurekaClient</code> and usually it
+<p>You don&#8217;t have to use the raw Netflix <code>DiscoveryClient</code> and usually it
 is more convenient to use it behind a wrapper of some sort. Spring
 Cloud has support for <a href="#spring-cloud-feign">Feign</a> (a REST client
 builder) and also <a href="#spring-cloud-ribbon">Spring <code>RestTemplate</code></a> using
@@ -3147,6 +2541,9 @@ for details on the properties available.</p>
 <div class="paragraph">
 <p>The same thing applies if you are using <code>@SessionScope</code> or <code>@RequestScope</code>. You will know when you need to do this because of a runtime exception that says it can&#8217;t find the scoped context.</p>
 </div>
+<div class="paragraph">
+<p>In particular you might be interested</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_health_indicator_2">Health Indicator</h3>
@@ -3361,7 +2758,7 @@ explicitly in the <code>@ComponentScan</code>).
 <p><code>IPing</code> ribbonPing: <code>NoOpPing</code></p>
 </li>
 <li>
-<p><code>ServerList&lt;Server&gt;</code> ribbonServerList: <code>ConfigurationBasedServerList</code></p>
+<p><code>ServerList&lt;Server&gt; ribbonServerList: `ConfigurationBasedServerList</code></p>
 </li>
 <li>
 <p><code>ServerListFilter&lt;Server&gt;</code> ribbonServerListFilter: <code>ZonePreferenceServerListFilter</code></p>
@@ -3406,7 +2803,7 @@ server list will be constructed with "zone" information as provided in
 the instance metadata (so on the client set
 <code>eureka.instance.metadataMap.zone</code>), and if that is missing it can use
 the domain name from the server hostname as a proxy for zone (if the
-flag <code>approximateZoneFromHostname</code> is set). Once the zone information is
+flag <code>approximateZoneFromDomain</code> is set). Once the zone information is
 available it can be used in a <code>ServerListFilter</code> (by default it will
 be used to locate a server in the same zone as the client because the
 default is a <code>ZonePreferenceServerListFilter</code>).</p>
@@ -3503,7 +2900,7 @@ public interface StoreClient {
     List&lt;Store&gt; getStores();
 
     @RequestMapping(method = RequestMethod.POST, value = "/stores/{storeId}", consumes = "application/json")
-    Store update(@PathVariable("storeId") Long storeId, Store store);
+    Store update(@PathParameter("storeId") Long storeId, Store store);
 }</code></pre>
 </div>
 </div>
@@ -3521,277 +2918,6 @@ it will resolve the service in the Eureka service registry. If you
 don&#8217;t want to use Eureka, you can simply configure a list of servers
 in your external configuration (see
 <a href="#spring-cloud-ribbon-without-eureka">above for example</a>).</p>
-</div>
-<div class="sect2">
-<h3 id="spring-cloud-feign-overriding-defaults">Overriding Feign Defaults</h3>
-<div class="paragraph">
-<p>A central concept in Spring Cloud&#8217;s Feign support is that of the named client. Each feign client is part of an ensemble of components that work together to contact a remote server on demand, and the ensemble has a name that you give it as an application developer using the <code>@FeignClient</code> annotation. Spring Cloud creates a new ensemble as an
-<code>ApplicationContext</code> on demand for each named client using <code>FeignClientsConfiguration</code>. This contains (amongst other things) an <code>feign.Decoder</code>, a <code>feign.Encoder</code>, and a <code>feign.Contract</code>.</p>
-</div>
-<div class="paragraph">
-<p>Spring Cloud lets you take full control of the feign client by declaring additional configuration (on top of the <code>FeignClientsConfiguration</code>) using <code>@FeignClient</code>. Example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@FeignClient(name = "stores", configuration = FooConfiguration.class)
-public interface StoreClient {
-    //..
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this case the client is composed from the components already in <code>FeignClientsConfiguration</code> together with any in <code>FooConfiguration</code> (where the latter will override the former).</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Warning</div>
-</td>
-<td class="content">
-The <code>FooConfiguration</code> has to be <code>@Configuration</code> but take care that it is not in a <code>@ComponentScan</code> for the main application context, otherwise it will be used for every <code>@FeignClient</code>. If you use <code>@ComponentScan</code> (or <code>@SpringBootApplication</code>) you need to take steps to avoid it being included (for instance put it in a separate, non-overlapping package, or specify the packages to scan explicitly in the <code>@ComponentScan</code>).
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-The <code>serviceId</code> attribute is now deprecated in favor of the <code>name</code> attribute.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Warning</div>
-</td>
-<td class="content">
-Previously, using the <code>url</code> attribute, did not require the <code>name</code> attribute. Using <code>name</code> is now required.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Placeholders are supported in the <code>name</code> and <code>url</code> attributes.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@FeignClient(name = "${feign.name}", url = "${feign.url}")
-public interface StoreClient {
-    //..
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Spring Cloud Netflix provides the following beans by default for feign (<code>BeanType</code> beanName: <code>ClassName</code>):</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>Decoder</code> feignDecoder: <code>ResponseEntityDecoder</code> (which wraps a <code>SpringDecoder</code>)</p>
-</li>
-<li>
-<p><code>Encoder</code> feignEncoder: <code>SpringEncoder</code></p>
-</li>
-<li>
-<p><code>Logger</code> feignLogger: <code>Slf4jLogger</code></p>
-</li>
-<li>
-<p><code>Contract</code> feignContract: <code>SpringMvcContract</code></p>
-</li>
-<li>
-<p><code>Feign.Builder</code> feignBuilder: <code>HystrixFeign.Builder</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Spring Cloud Netflix <em>does not</em> provide the following beans by default for feign, but still looks up beans of these types from the application context to create the feign client:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>Logger.Level</code></p>
-</li>
-<li>
-<p><code>Retryer</code></p>
-</li>
-<li>
-<p><code>ErrorDecoder</code></p>
-</li>
-<li>
-<p><code>Request.Options</code></p>
-</li>
-<li>
-<p><code>Collection&lt;RequestInterceptor&gt;</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Creating a bean of one of those type and placing it in a <code>@FeignClient</code> configuration (such as <code>FooConfiguration</code> above) allows you to override each one of the beans described.  Example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-public class FooConfiguration {
-    @Bean
-    public Contract feignContractg() {
-        return new feign.Contract.Default();
-    }
-
-    @Bean
-    public BasicAuthRequestInterceptor basicAuthRequestInterceptor() {
-        return new BasicAuthRequestInterceptor("user", "password");
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This replaces the <code>SpringMvcContract</code> with <code>feign.Contract.Default</code> and adds a <code>RequestInterceptor</code> to the collection of <code>RequestInterceptor</code>.</p>
-</div>
-<div class="paragraph">
-<p>Default configurations can be specified in the <code>@EnableFeignClients</code> attribute <code>defaultConfiguration</code> in a similar manner as described above. The difference is that this configuration will apply to <em>all</em> feign clients.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="spring-cloud-feign-hystrix">Feign Hystrix Support</h3>
-<div class="paragraph">
-<p>If Hystrix is on the classpath, by default Feign will wrap all methods with a circuit breaker. Returning a <code>com.netflix.hystrix.HystrixCommand</code> is also available. This lets you use reactive patterns (with a call to <code>.toObservable()</code> or <code>.observe()</code> or asynchronous use (with a call to <code>.queue()</code>).</p>
-</div>
-<div class="paragraph">
-<p>To disable Hystrix support for Feign, set <code>feign.hystrix.enabled=false</code>.</p>
-</div>
-<div class="paragraph">
-<p>To disable Hystrix support on a per-client basis create a vanilla <code>Feign.Builder</code> with the "prototype" scope, e.g.:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-public class FooConfiguration {
-    @Bean
-	@Scope("prototype")
-	public Feign.Builder feignBuilder() {
-		return Feign.builder();
-	}
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="spring-cloud-feign-inheritance">Feign Inheritance Support</h3>
-<div class="paragraph">
-<p>Feign supports boilerplate apis via single-inheritance interfaces.
-This allows grouping common operations into convenient base interfaces.
-Together with Spring MVC you can share the same contract for your
-REST endpoint and Feign client.</p>
-</div>
-<div class="listingblock">
-<div class="title">UserService.java</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface UserService {
-
-    @RequestMapping(method = RequestMethod.GET, value ="/users/{id}")
-    User getUser(@PathVariable("id") long id);
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">UserResource.java</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@RestController
-public class UserResource implements UserService {
-
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">UserClient.java</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">package project.user;
-
-@FeignClient("users")
-public interface UserClient extends UserService {
-
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_feign_request_response_compression">Feign request/response compression</h3>
-<div class="paragraph">
-<p>You may consider enabling the request or response GZIP compression for your
-Feign requests. You can do this by enabling one of the properties:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">feign.compression.request.enabled=true
-feign.compression.response.enabled=true</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Feign request compression gives you settings similar to what you may set for your web server:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">feign.compression.request.enabled=true
-feign.compression.request.mime-types=text/xml,application/xml,application/json
-feign.compression.request.min-request-size=2048</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>These properties allow you to be selective about the compressed media types and minimum request threshold length.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_feign_logging">Feign logging</h3>
-<div class="paragraph">
-<p>A logger is created for each Feign client created. By default the name of the logger is the full class name of the interface used to create the Feign client. Feign logging only responds to the <code>DEBUG</code> level.</p>
-</div>
-<div class="listingblock">
-<div class="title">application.yml</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">logging.level.project.user.UserClient: DEBUG</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>Logger.Level</code> object that you may configure per client, tells Feign how much to log. Choices are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>NONE</code>, No logging (<strong>DEFAULT</strong>).</p>
-</li>
-<li>
-<p><code>BASIC</code>, Log only the request method and URL and the response status code and execution time.</p>
-</li>
-<li>
-<p><code>HEADERS</code>, Log the basic information along with request and response headers.</p>
-</li>
-<li>
-<p><code>FULL</code>, Log the headers, body, and metadata for both requests and responses.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>For example, the following would set the <code>Logger.Level</code> to <code>FULL</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-public class FooConfiguration {
-    @Bean
-    Logger.Level feignLoggerLevel() {
-        return Logger.Level.FULL;
-    }
-}</code></pre>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -3816,7 +2942,7 @@ public class FooConfiguration {
 </div>
 </div>
 <div class="paragraph">
-<p>Archaius has its own set of configuration files and loading priorities.  Spring applications should generally not use Archaius directly, but the need to configure the Netflix tools natively remains.  Spring Cloud has a Spring Environment Bridge so Archaius can read properties from the Spring Environment.  This allows Spring Boot projects to use the normal configuration toolchain, while allowing them to configure the Netflix tools, for the most part, as documented.</p>
+<p>Archaius has its own set of configuration files and loading priorities.  Spring applications should generally not use Archaius directly., but the need to configure the Netflix tools natively remains.  Spring Cloud has a Spring Environment Bridge so Archaius can read properties from the Spring Environment.  This allows Spring Boot projects to use the normal configuration toolchain, while allowing them to configure the Netflix tools, for the most part, as documented.</p>
 </div>
 </div>
 </div>
@@ -3896,7 +3022,7 @@ configured routes map, then it will be unignored. Example:</p>
 <div class="title">application.yml</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
-  ignoredServices: '*'
+  ignoredServices: *
   routes:
     users: /myusers/**</code></pre>
 </div>
@@ -3980,28 +3106,6 @@ users:
 </div>
 </div>
 <div class="paragraph">
-<p>You can provide convention between serviceId and routes using regexmapper.
-It uses regular expression named group to extract variables from serviceId and inject them
-into a route pattern.</p>
-</div>
-<div class="listingblock">
-<div class="title">application.yml</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
-  regexMapper:
-   enabled: true
-   servicePattern: "(?&lt;name&gt;^.+)-(?&lt;version&gt;v.+$)"
-   routePattern: "${version}/${name}"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This means that a serviceId "myusers-v1" will be mapped to route "/v1/myusers/<strong>".
-Any regular expression is accepted but all named group must be present in both servicePattern and routePattern.
-If servicePattern do not match a serviceId, the default behavior is used. In exemple above,
-a serviceId "myusers" will be mapped to route "/myusers/</strong>" (no version detected)
-These feature is disable by default and is only applied to discovered services.</p>
-</div>
-<div class="paragraph">
 <p>To add a prefix to all mappings, set <code>zuul.prefix</code> to a value, such as
 <code>/api</code>. The proxy prefix is stripped from the request before the
 request is forwarded by default (switch this behaviour off with
@@ -4029,7 +3133,7 @@ Set that flag to "true" to have the Ribbon client automatically retry failed req
 the Ribbon client configuration).</p>
 </div>
 <div class="paragraph">
-<p>The <code>X-Forwarded-Host</code> header is added to the forwarded requests by
+<p>The <code>X-Forwarded-Host</code> header added to the forwarded requests by
 default.  To turn it off set <code>zuul.addProxyHeaders = false</code>.  The
 prefix path is stripped by default, and the request to the backend
 picks up a header "X-Forwarded-Prefix" ("/myusers" in the examples
@@ -4039,80 +3143,6 @@ above).</p>
 <p>An application with the <code>@EnableZuulProxy</code> could act as a standalone
 server if you set a default route ("/"), for example <code>zuul.route.home:
 /</code> would route all traffic (i.e. "/**") to the "home" service.</p>
-</div>
-<div class="paragraph">
-<p>If more fine-grained ignoring is needed, you can specify specific patterns to ignore.
-These patterns are being evaluated at the start of the route location process, which
-means prefixes should be included in the pattern to warrant a match. Ignored patterns
-span all services and supersede any other route specification.</p>
-</div>
-<div class="listingblock">
-<div class="title">application.yml</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
-  ignoredPatterns: /**/admin/**
-  routes:
-    users: /myusers/**</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This means that all calls such as "/myusers/101" will be forwarded to "/101" on the "users" service.
-But calls including "/admin/" will not resolve.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_strangulation_patterns_and_local_forwards">Strangulation Patterns and Local Forwards</h3>
-<div class="paragraph">
-<p>A common pattern when migrating an existing application or API is to
-"strangle" old endpoints, slowly replacing them with different
-implementations. The Zuul proxy is a useful tool for this because you
-can use it to handle all traffic from clients of the old endpoints,
-but redirect some of the requests to new ones.</p>
-</div>
-<div class="paragraph">
-<p>Example configuration:</p>
-</div>
-<div class="listingblock">
-<div class="title">application.yml</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml"> zuul:
-  routes:
-    first:
-      path: /first/**
-      url: http://first.example.com
-    second:
-      path: /second/**
-      url: forward:/second
-    third:
-      path: /third/**
-      url: forward:/3rd
-    legacy:
-      path: /**
-      url: http://legacy.example.com</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this example we are strangling the "legacy" app which is mapped to
-all requests that do not match one of the other patterns. Paths in
-<code>/first/<strong></code> have been extracted into a new service with an external
-URL. And paths in <code>/second/</strong></code> are forwared so they can be handled
-locally, e.g. with a normal Spring <code>@RequestMapping</code>. Paths in
-<code>/third/**</code> are also forwarded, but with a different prefix
-(i.e. <code>/third/foo</code> is forwarded to <code>/3rd/foo</code>).</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-The ignored pattterns aren&#8217;t completely ignored, they just
-aren&#8217;t handled by the proxy (so they are also effectively forwarded
-locally).
-</td>
-</tr>
-</table>
 </div>
 </div>
 <div class="sect2">
@@ -4296,325 +3326,6 @@ info:
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_metrics_spectator_servo_and_atlas">Metrics: Spectator, Servo, and Atlas</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>When used together, Spectator/Servo and Atlas provide a near real-time operational insight platform.</p>
-</div>
-<div class="paragraph">
-<p>Spectator and Servo are Netflix&#8217;s metrics collection libraries. Atlas is a Netflix metrics backend to manage dimensional time series data.</p>
-</div>
-<div class="paragraph">
-<p>Servo served Netflix for several years and is still usable, but is gradually being phased out in favor of Spectator, which is only designed to work with Java 8.  Spring Cloud Netflix provides support for both, but Java 8 based applications are encouraged to use Spectator.</p>
-</div>
-<div class="sect2">
-<h3 id="_dimensional_vs_hierarchical_metrics">Dimensional vs. Hierarchical Metrics</h3>
-<div class="paragraph">
-<p>Spring Boot Actuator metrics are hierarchical and metrics are separated only by name. These names often follow a naming convention that embeds key/value attribute pairs (dimensions) into the name separated by periods. Consider the following metrics for two endpoints, root and star-star:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-    "counter.status.200.root": 20,
-    "counter.status.400.root": 3,
-    "counter.status.200.star-star": 5,
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The first metric gives us a normalized count of successful requests against the root endpoint per unit of time. But what if the system had 20 endpoints and you want to get a count of successful requests against all the endpoints? Some hierarchical metrics backends would allow you to specify a wild card such as <code>counter.status.200.<strong></code> that would read all 20 metrics and aggregate the results. Alternatively, you could provide a <code>HandlerInterceptorAdapter</code> that intercepts and records a metric like <code>counter.status.200.all</code> for all successful requests irrespective of the endpoint, but now you must write 20+1 different metrics. Similarly if you want to know the total number of successful requests for all endpoints in the service, you could specify a wild card such as <code>counter.status.2</strong>.*</code>.</p>
-</div>
-<div class="paragraph">
-<p>Even in the presence of wildcarding support on a hierarchical metrics backend, naming consistency can be difficult. Specifically the position of these tags in the name string can slip with time, breaking queries. For example, suppose we add an additional dimension to the hierarchical metrics above for HTTP method. Then <code>counter.status.200.root</code> becomes <code>counter.status.200.method.get.root</code>, etc. Our <code>counter.status.200.*</code> suddenly no longer has the same semantic meaning.  Furthermore, if the new dimension is not applied uniformly across the codebase, certain queries may become impossible. This can quickly get out of hand.</p>
-</div>
-<div class="paragraph">
-<p>Netflix metrics are tagged (a.k.a. dimensional). Each metric has a name, but this single named metric can contain multiple statistics and 'tag' key/value pairs that allows more querying flexibility. In fact, the statistics themselves are recorded in a special tag.</p>
-</div>
-<div class="paragraph">
-<p>Recorded with Netflix Servo or Spectator, a timer for the root endpoint described above contains 4 statistics per status code, where the count statistic is identical to Spring Boot Actuator&#8217;s counter. In the event that we have encountered an HTTP 200 and 400 thus far, there will be 8 available data points:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-    "root(status=200,stastic=count)": 20,
-    "root(status=200,stastic=max)": 0.7265630630000001,
-    "root(status=200,stastic=totalOfSquares)": 0.04759702862580789,
-    "root(status=200,stastic=totalTime)": 0.2093076914666667,
-    "root(status=400,stastic=count)": 1,
-    "root(status=400,stastic=max)": 0,
-    "root(status=400,stastic=totalOfSquares)": 0,
-    "root(status=400,stastic=totalTime)": 0,
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_default_metrics_collection">Default Metrics Collection</h3>
-<div class="paragraph">
-<p>Without any additional dependencies or configuration, a Spring Cloud based service will autoconfigure a Servo <code>MonitorRegistry</code> and begin collecting metrics on every Spring MVC request. By default, a Servo timer with the name <code>rest</code> will be recorded for each MVC request which is tagged with:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>HTTP method</p>
-</li>
-<li>
-<p>HTTP status (e.g. 200, 400, 500)</p>
-</li>
-<li>
-<p>URI (or "root" if the URI is empty), sanitized for Atlas</p>
-</li>
-<li>
-<p>The exception class name, if the request handler threw an exception</p>
-</li>
-<li>
-<p>The caller, if a request header with a key matching <code>netflix.metrics.rest.callerHeader</code> is set on the request. There is no default key for <code>netflix.metrics.rest.callerHeader</code>. You must add it to your application properties if you wish to collect caller information.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Set the <code>netflix.metrics.rest.metricName</code> property to change the name of the metric from <code>rest</code> to a name you provide.</p>
-</div>
-<div class="paragraph">
-<p>If Spring AOP is enabled and <code>org.aspectj:aspectjweaver</code> is present on your runtime classpath, Spring Cloud will also collect metrics on every client call made with <code>RestTemplate</code>. A Servo timer with the name of <code>restclient</code> will be recorded for each MVC request which is tagged with:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>HTTP method</p>
-</li>
-<li>
-<p>HTTP status (e.g. 200, 400, 500), "CLIENT_ERROR" if the response returned null, or "IO_ERROR" if an <code>IOException</code> occurred during the execution of the <code>RestTemplate</code> method</p>
-</li>
-<li>
-<p>URI, sanitized for Atlas</p>
-</li>
-<li>
-<p>Client name</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_metrics_collection_spectator">Metrics Collection: Spectator</h3>
-<div class="paragraph">
-<p>To enable Spectator metrics, include a dependency on <code>spring-boot-starter-spectator</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-cloud-starter-spectator&lt;/artifactId&gt;
-    &lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In Spectator parlance, a meter is a named, typed, and tagged configuration and a metric represents the value of a given meter at a point in time. Spectator meters are created and controlled by a registry, which currently has several different implementations. Spectator provides 4 meter types: counter, timer, gauge, and distribution summary.</p>
-</div>
-<div class="paragraph">
-<p>Spring Cloud Spectator integration configures an injectable <code>com.netflix.spectator.api.Registry</code> instance for you. Specifically, it configures a <code>ServoRegistry</code> instance in order to unify the collection of REST metrics and the exporting of metrics to the Atlas backend under a single Servo API. Practically, this means that your code may use a mixture of Servo monitors and Spectator meters and both will be scooped up by Spring Boot Actuator <code>MetricReader</code> instances and both will be shipped to the Atlas backend.</p>
-</div>
-<div class="sect3">
-<h4 id="_spectator_counter">Spectator Counter</h4>
-<div class="paragraph">
-<p>A counter is used to measure the rate at which some event is occurring.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// create a counter with a name and a set of tags
-Counter counter = registry.counter("counterName", "tagKey1", "tagValue1", ...);
-counter.increment(); // increment when an event occurs
-counter.increment(10); // increment by a discrete amount</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The counter records a single time-normalized statistic.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_spectator_timer">Spectator Timer</h4>
-<div class="paragraph">
-<p>A timer is used to measure how long some event is taking. Spring Cloud automatically records timers for Spring MVC requests and conditionally <code>RestTemplate</code> requests, which can later be used to create dashboards for request related metrics like latency:</p>
-</div>
-<div class="paragraph">
-<div class="title">Request Latency</div>
-<p>image::RequestLatency.png []</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// create a timer with a name and a set of tags
-Timer timer = registry.timer("timerName", "tagKey1", "tagValue1", ...);
-
-// execute an operation and time it at the same time
-T result = timer.record(() -&gt; fooReturnsT());
-
-// alternatively, if you must manually record the time
-Long start = System.nanoTime();
-T result = fooReturnsT();
-timer.record(System.nanoTime() - start, TimeUnit.NANOSECONDS);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The timer simultaneously records 4 statistics: count, max, totalOfSquares, and totalTime.  The count statistic will always match the single normalized value provided by a counter if you had called <code>increment()</code> once on the counter for each time you recorded a timing, so it is rarely necessary to count and time separately for a single operation.</p>
-</div>
-<div class="paragraph">
-<p>For <a href="https://github.com/Netflix/spectator/wiki/Timer-Usage#longtasktimer">long running operations</a>, Spectator provides a special <code>LongTaskTimer</code>.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_spectator_gauge">Spectator Gauge</h4>
-<div class="paragraph">
-<p>Gauges are used to determine some current value like the size of a queue or number of threads in a running state. Since gauges are sampled, they provide no information about how these values fluctuate between samples.</p>
-</div>
-<div class="paragraph">
-<p>The normal use of a gauge involves registering the gauge once in initialization with an id, a reference to the object to be sampled, and a function to get or compute a numeric value based on the object. The reference to the object is passed in separately and the Spectator registry will keep a weak reference to the object. If the object is garbage collected, then Spectator will automatically drop the registration. See <a href="https://github.com/Netflix/spectator/wiki/Gauge-Usage#using-lambda">the note</a> in Spectator&#8217;s documentation about potential memory leaks if this API is misused.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// the registry will automatically sample this gauge periodically
-registry.gauge("gaugeName", pool, Pool::numberOfRunningThreads);
-
-// manually sample a value in code at periodic intervals -- last resort!
-registry.gauge("gaugeName", Arrays.asList("tagKey1", "tagValue1", ...), 1000);</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_spectator_distribution_summaries">Spectator Distribution Summaries</h4>
-<div class="paragraph">
-<p>A distribution summary is used to track the distribution of events. It is similar to a timer, but more general in that the size does not have to be a period of time. For example, a distribution summary could be used to measure the payload sizes of requests hitting a server.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// the registry will automatically sample this gauge periodically
-DistributionSummary ds = registry.distributionSummary("dsName", "tagKey1", "tagValue1", ...);
-ds.record(request.sizeInBytes());</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_metrics_collection_servo">Metrics Collection: Servo</h3>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Warning</div>
-</td>
-<td class="content">
-If your code is compiled on Java 8, please use Spectator instead of Servo as Spectator is destined to replace Servo entirely in the long term.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>In Servo parlance, a monitor is a named, typed, and tagged configuration and a metric represents the value of a given monitor at a point in time. Servo monitors are logically equivalent to Spectator meters. Servo monitors are created and controlled by a <code>MonitorRegistry</code>. In spite of the above warning, Servo does have a <a href="https://github.com/Netflix/servo/wiki/Getting-Started">wider array</a> of monitor options than Spectator has meters.</p>
-</div>
-<div class="paragraph">
-<p>Spring Cloud integration configures an injectable <code>com.netflix.servo.MonitorRegistry</code> instance for you. Once you have created the appropriate <code>Monitor</code> type in Servo, the process of recording data is wholly similar to Spectator.</p>
-</div>
-<div class="sect3">
-<h4 id="_creating_servo_monitors">Creating Servo Monitors</h4>
-<div class="paragraph">
-<p>If you are using the Servo <code>MonitorRegistry</code> instance provided by Spring Cloud (specifically, an instance of <code>DefaultMonitorRegistry</code>), Servo provides convenience classes for retrieving <a href="https://github.com/Netflix/spectator/wiki/Servo-Comparison#dynamiccounter">counters</a> and <a href="https://github.com/Netflix/spectator/wiki/Servo-Comparison#dynamictimer">timers</a>.  These convenience classes ensure that only one <code>Monitor</code> is registered for each unique combination of name and tags.</p>
-</div>
-<div class="paragraph">
-<p>To manually create a Monitor type in Servo, especially for the more exotic monitor types for which convenience methods are not provided, instantiate the appropriate type by providing a <code>MonitorConfig</code> instance:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">MonitorConfig config = MonitorConfig.builder("timerName").withTag("tagKey1", "tagValue1").build();
-
-// somewhere we should cache this Monitor by MonitorConfig
-Timer timer = new BasicTimer(config);
-monitorRegistry.register(timer);</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_metrics_backend_atlas">Metrics Backend: Atlas</h3>
-<div class="paragraph">
-<p>Atlas was developed by Netflix to manage dimensional time series data for near real-time operational insight. Atlas features in-memory data storage, allowing it to gather and report very large numbers of metrics, very quickly.</p>
-</div>
-<div class="paragraph">
-<p>Atlas captures operational intelligence. Whereas business intelligence is data gathered for analyzing trends over time, operational intelligence provides a picture of what is currently happening within a system.</p>
-</div>
-<div class="paragraph">
-<p>Spring Cloud provides a <code>spring-cloud-starter-atlas</code> that has all the dependencies you need. Then just annotate your Spring Boot application with <code>@EnableAtlas</code> and provide a location for your running Atlas server with the <code>netflix.atlas.uri</code> property.</p>
-</div>
-<div class="sect3">
-<h4 id="_global_tags">Global tags</h4>
-<div class="paragraph">
-<p>Spring Cloud enables you to add tags to every metric sent to the Atlas backend. Global tags can be used to separate metrics by application name, environment, region, etc.</p>
-</div>
-<div class="paragraph">
-<p>Each bean implementing <code>AtlasTagProvider</code> will contribute to the global tag list:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
-AtlasTagProvider atlasCommonTags(
-    @Value("${spring.application.name}") String appName) {
-  return () -&gt; Collections.singletonMap("app", appName);
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_using_atlas">Using Atlas</h4>
-<div class="paragraph">
-<p>To bootstrap a in-memory standalone Atlas instance:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl -LO https://github.com/Netflix/atlas/releases/download/v1.4.2/atlas-1.4.2-standalone.jar
-$ java -jar atlas-1.4.2-standalone.jar</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-An Atlas standalone node running on an r3.2xlarge (61GB RAM) can handle roughly 2 million metrics per minute for a given 6 hour window.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Once running and you have collected a handful of metrics, verify that your setup is correct by listing tags on the Atlas server:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl http://ATLAS/api/v1/tags</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-After executing several requests against your service, you can gather some very basic information on the request latency of every request by pasting the following url in your browser: <code><a href="http://ATLAS/api/v1/graph?q=name,rest,:eq,:avg" class="bare">http://ATLAS/api/v1/graph?q=name,rest,:eq,:avg</a></code>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The Atlas wiki contains a <a href="https://github.com/Netflix/atlas/wiki/Single-Line">compilation of sample queries</a> for various scenarios.</p>
-</div>
-<div class="paragraph">
-<p>Make sure to check out the <a href="https://github.com/Netflix/atlas/wiki/Alerting-Philosophy">alerting philosophy</a> and docs on using <a href="https://github.com/Netflix/atlas/wiki/DES">double exponential smoothing</a> to generate dynamic alert thresholds.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
 <h1 id="_spring_cloud_bus" class="sect0">Spring Cloud Bus</h1>
 <div class="openblock partintro">
 <div class="content">
@@ -4673,98 +3384,21 @@ After executing several requests against your service, you can gather some very 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_customizing_the_message_broker">Customizing the Message Broker</h2>
+<h2 id="_customizing_the_amqp_connectionfactory_2">Customizing the AMQP ConnectionFactory</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud Bus uses
-<a href="https://cloud.spring.io/spring-cloud-stream">Spring Cloud Stream</a> to
-broadcast the messages so to get messages to flow you only need to
-include the binder implementation of your choice in the
-classpath. There are convenient starters specifically for the bus with
-AMQP, Kafka and Redis
-(<code>spring-cloud-starter-bus-[amqp,kafka,redis]</code>). Generally speaking
-Spring Cloud Stream relies on Spring Boot autoconfiguration
-conventions for configuring middleware, so for instance the AMQP
-broker address can be changed with <code>spring.rabbitmq.*</code>
-configuration properties. Spring Cloud Bus has a handful of native
-configuration properties in <code>spring.cloud.bus.*</code>
-(e.g. <code>spring.cloud.bus.destination</code> is the name of the topic to use
-the the externall middleware). Normally the defaults will suffice.</p>
+<p>If you are using AMQP there needs to be a <code>ConnectionFactory</code> (from
+Spring Rabbit) in the application context. If there is a single
+<code>ConnectionFactory</code> it will be used, or if there is a one qualified as
+<code>@BusConnectionFactory</code> it will be preferred over others, otherwise
+the <code>@Primary</code> one will be used. If there are multiple unqualified
+connection factories there will be an error.</p>
 </div>
 <div class="paragraph">
-<p>To lean more about how to customize the message broker settings
-consult the Spring Cloud Stream documentation.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_tracing_bus_events">Tracing Bus Events</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Bus events (subclasses of <code>RemoteApplicationEvent</code>) can be traced by
-setting <code>spring.cloud.bus.trace.enabled=true</code>. If you do this then the
-Spring Boot <code>TraceRepository</code> (if it is present) will show each event
-sent and all the acks from each service instance. Example (from the
-<code>/trace</code> endpoint):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-  "timestamp": "2015-11-26T10:24:44.411+0000",
-  "info": {
-    "signal": "spring.cloud.bus.ack",
-    "type": "RefreshRemoteApplicationEvent",
-    "id": "c4d374b7-58ea-4928-a312-31984def293b",
-    "origin": "stores:8081",
-    "destination": "*:**"
-  }
-  },
-  {
-  "timestamp": "2015-11-26T10:24:41.864+0000",
-  "info": {
-    "signal": "spring.cloud.bus.sent",
-    "type": "RefreshRemoteApplicationEvent",
-    "id": "c4d374b7-58ea-4928-a312-31984def293b",
-    "origin": "customers:9000",
-    "destination": "*:**"
-  }
-  },
-  {
-  "timestamp": "2015-11-26T10:24:41.862+0000",
-  "info": {
-    "signal": "spring.cloud.bus.ack",
-    "type": "RefreshRemoteApplicationEvent",
-    "id": "c4d374b7-58ea-4928-a312-31984def293b",
-    "origin": "customers:9000",
-    "destination": "*:**"
-  }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This trace shows that a <code>RefreshRemoteApplicationEvent</code> was sent from
-<code>customers:9000</code>, broadcast to all services, and it was received
-(acked) by <code>customers:9000</code> and <code>stores:8081</code>.</p>
-</div>
-<div class="paragraph">
-<p>To handle the ack signals yourself you could add an <code>@EventListener</code>
-for the <code>AckRemoteAppplicationEvent</code> and <code>SentApplicationEvent</code> types
-to your app (and enable tracing). Or you could tap into the
-<code>TraceRepository</code> and mine the data from there.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-Any Bus application can trace acks, but sometimes it will be
-useful to do this in a central service that can do more complex
-queries on the data. Or forward it to a specialized tracing service.
-</td>
-</tr>
-</table>
+<p>Note that Spring Boot (as of 1.2.2) creates a <code>ConnectionFactory</code> that
+is <em>not</em> <code>@Primary</code>, so if you want to use one connection factory for
+the bus and another for business messages, you need to create both,
+and annotate them <code>@BusConnectionFactory</code> and <code>@Primary</code> respectively.</p>
 </div>
 </div>
 </div>
@@ -4802,8 +3436,8 @@ Spring CLI v1.2.3.RELEASE</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>$ gvm install springboot 1.3.0.M5
-$ gvm use springboot 1.3.0.M5</code></pre>
+<pre class="highlight"><code>$ gvm install springboot 1.2.3.RELEASE
+$ gvm use springboot 1.2.3.RELEASE</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4812,7 +3446,7 @@ $ gvm use springboot 1.3.0.M5</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>$ mvn install
-$ spring install org.springframework.cloud:spring-cloud-cli:1.1.0.BUILD-SNAPSHOT</code></pre>
+$ spring install org.springframework.cloud:spring-cloud-cli:1.0.2.RELEASE</code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -4912,7 +3546,7 @@ AQAjPgt3eFZQXwt8tsHAVv/QHiY5sI2dRcR+...</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-01-08 16:43:47 UTC
+Last updated 2016-01-25 15:22:31 UTC
 </div>
 </div>
 </body>
