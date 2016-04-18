@@ -217,25 +217,25 @@ is a number.
 
 Release train contents:
 
-|Component|Angel.SR6                   | Brixton.RC1   | Brixton.BUILD-SNAPSHOT | 
+|Component|Angel.SR6                   | Brixton.RC2   | Brixton.BUILD-SNAPSHOT | 
 |---------|----------------------------|---------------|------------------------|                                                                 
-|spring-cloud-aws | 1.0.4.RELEASE      | 1.1.0.RC1     | 1.1.0.BUILD-SNAPSHOT   |
-|spring-cloud-bus | 1.0.3.RELEASE      | 1.1.0.RC1     | 1.1.0.BUILD-SNAPSHOT   |
-|spring-cloud-cli | 1.0.6.RELEASE      | 1.1.0.RC1     | 1.1.0.BUILD-SNAPSHOT   |
-|spring-cloud-commons | 1.0.5.RELEASE  | 1.1.0.RC2     | 1.1.0.BUILD-SNAPSHOT   |
-|spring-cloud-config | 1.0.4.RELEASE   | 1.1.0.RC1     | 1.1.0.BUILD-SNAPSHOT   |
-|spring-cloud-netflix | 1.0.7.RELEASE  | 1.1.0.RC1     | 1.1.0.BUILD-SNAPSHOT   |
-|spring-cloud-security | 1.0.3.RELEASE | 1.1.0.RC1     | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-aws | 1.0.4.RELEASE      | 1.1.0.RC2     | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-bus | 1.0.3.RELEASE      | 1.1.0.RC2     | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-cli | 1.0.6.RELEASE      | 1.1.0.RC2     | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-commons | 1.0.5.RELEASE  | 1.1.0.RC3     | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-config | 1.0.4.RELEASE   | 1.1.0.RC2     | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-netflix | 1.0.7.RELEASE  | 1.1.0.RC2     | 1.1.0.BUILD-SNAPSHOT   |
+|spring-cloud-security | 1.0.3.RELEASE | 1.1.0.RC2     | 1.1.0.BUILD-SNAPSHOT   |
 |spring-cloud-starters | 1.0.6.RELEASE |                          |                        |
-|spring-cloud-cloudfoundry |           | 1.0.0.RC1     | 1.0.0.BUILD-SNAPSHOT   |
-|spring-cloud-cluster |                | 1.0.0.RC1     | 1.0.0.BUILD-SNAPSHOT   |
-|spring-cloud-consul |                 | 1.0.0.RC1     | 1.0.0.BUILD-SNAPSHOT   |
-|spring-cloud-sleuth |                 | 1.0.0.RC1     | 1.0.0.BUILD-SNAPSHOT   |
-|spring-cloud-stream |                 | 1.0.0.RC1     | 1.0.0.BUILD-SNAPSHOT   |
-|spring-cloud-zookeeper |              | 1.0.0.RC1     | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-cloudfoundry |           | 1.0.0.RC2     | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-cluster |                | 1.0.0.RC2     | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-consul |                 | 1.0.0.RC2     | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-sleuth |                 | 1.0.0.RC2     | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-stream |                 | 1.0.0.RC2     | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-zookeeper |              | 1.0.0.RC2     | 1.0.0.BUILD-SNAPSHOT   |
 |spring-boot            | 1.2.8.RELEASE| 1.3.3.RELEASE | 1.3.3.RELEASE          |
-|spring-cloud-stream-modules* |        |               | 1.0.0.BUILD-SNAPSHOT   |
-|spring-cloud-dataflow* |              |               | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-stream-app-starters* |        |               | 1.0.0.BUILD-SNAPSHOT   |
+|spring-cloud-task* |              |               | 1.0.0.BUILD-SNAPSHOT   |
 
 (*) These projects are not yet part of Brixton but they will be when they are released
 
@@ -250,11 +250,11 @@ Boot in 1.3.0).
 Use your dependency management tools to control the version. If you
 are using Maven remember that the first version declared wins, so
 declare the BOMs in order, with the first one usually being the most
-recent (e.g. if you want to use Spring Boot 1.3.2 with Brixton.M4, put
+recent (e.g. if you want to use Spring Boot 1.3.4 with Brixton.RC2, put
 the Boot BOM first). The same rule applies to Gradle if you use the
 Spring dependency management plugin.
 
-> NOTE: starting from snapshots after Brixton.M4 the release train contains a
+> NOTE: starting after Brixton.M4 the release train contains a
 > `spring-cloud-starter-dependencies` as well as the
 > `spring-cloud-starter-parent`. Use the parent as you would
 > the `spring-boot-starter-parent` (if you are using Maven).
