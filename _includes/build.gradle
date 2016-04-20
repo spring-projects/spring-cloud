@@ -1,10 +1,17 @@
 buildscript {
-  dependencies {
-    classpath "io.spring.gradle:dependency-management-plugin:0.4.0.RELEASE"
-  }
+	ext {
+		springBootVersion = '{@= bootVersion @}'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+	}
 }
 
-apply plugin: "io.spring.dependency-management"
+apply plugin: 'java'
+apply plugin: 'spring-boot' 
 
 dependencyManagement {
   imports {
@@ -16,3 +23,4 @@ dependencies {
     compile '{@= groupId @}:spring-cloud-starter-config'
     compile '{@= groupId @}:spring-cloud-starter-eureka'
 }
+

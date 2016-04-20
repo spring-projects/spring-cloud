@@ -1,8 +1,20 @@
 <parent>
-    <groupId>{@= groupId @}</groupId>
+    <groupId>org.springframework.boot</groupId>
     <artifactId>spring-cloud-starter-parent</artifactId>
-    <version>{@= version @}</version>
+    <version>{@= bootVersion @}</version>
 </parent>
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>{@= groupId @}</groupId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dependencies</artifactId>
+            <version>{@= version @}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
 <dependencies>
     <dependency>
         <groupId>{@= groupId @}</groupId>
