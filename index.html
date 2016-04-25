@@ -45,6 +45,7 @@ get started really quickly, and then when you need to, you can
 configure or extend to create a custom solution. 
 
 <span id="quick-start"></span>
+
 ## Quick Start
 
 The release train label (see below) is actually only used explicitly
@@ -69,6 +70,20 @@ Spring Cloud focuses on providing good out of box experience for typical use cas
 * Global locks
 * Leadership election and cluster state
 * Distributed messaging
+
+Spring Cloud takes a very declarative approach, and often you get a
+lot of fetaures with just a classpath change and/or an
+annotation. Example application that is a discovery client:
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+public class Application {
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+}
+```
 
 <a name="main-projects"></a>
 
