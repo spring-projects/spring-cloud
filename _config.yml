@@ -1,6 +1,8 @@
 ### Global gh-pages pre-amble
 safe: true
 lsi: false
+highlighter: rouge
+markdown: kramdown
 
 ### The following properties will change on a project-by-project basis
 
