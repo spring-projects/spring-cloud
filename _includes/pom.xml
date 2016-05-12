@@ -6,7 +6,6 @@
 <dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>{@= groupId @}</groupId>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-dependencies</artifactId>
             <version>{@= version @}</version>
