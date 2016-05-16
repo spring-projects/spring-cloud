@@ -1,6 +1,6 @@
 <parent>
     <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-cloud-starter-parent</artifactId>
+    <artifactId>spring-boot-starter-parent</artifactId>
     <version>{@= bootVersion @}</version>
 </parent>
 <dependencyManagement>
