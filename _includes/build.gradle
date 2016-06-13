@@ -15,7 +15,7 @@ apply plugin: 'spring-boot'
 
 dependencyManagement {
   imports {
-    mavenBom '{@= groupId @}:spring-cloud-starter-parent:{@= version @}'
+    mavenBom '{@= groupId @}:spring-cloud-dependencies:{@= version @}'
   }
 }
 
