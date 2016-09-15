@@ -277,15 +277,17 @@ the Boot BOM first). The same rule applies to Gradle if you use the
 Spring dependency management plugin.
 
 > NOTE: starting after Brixton.M4 the release train contains a
-> `spring-cloud-starter-dependencies` as well as the
-> `spring-cloud-starter-parent`. Use the parent as you would
+> `spring-cloud-dependencies` as well as the
+> `spring-cloud-starter-parent`. You can use the parent as you would
 > the `spring-boot-starter-parent` (if you are using Maven).
 > If you only need dependency management, the "dependencies"
 > version is a BOM-only version of the same thing (it just
 > contains dependency management and no plugin declarations
 > or direct references to Spring or Spring Boot). If you are
 > using the Spring Boot parent POM, then you can use the BOM from
-> Spring Cloud.
+> Spring Cloud. The opposite is not true: using the Cloud parent
+> makes it impossible, or at least unreliable, to also use the
+> Boot BOM to change the version of Spring Boot and its dependencies.
 
 {% endcapture %}
 
