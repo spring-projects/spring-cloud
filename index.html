@@ -154,31 +154,38 @@ Distributed tracing for Spring Cloud applications, compatible with Zipkin, HTrac
 
 <!-- Spring Cloud Data Flow -->
 {% capture project_description %}
-A cloud native programming and operating model for composable data microservices on a structured platform.
+A cloud-native orchestration service for composable microservice applications on modern runtimes. Easy-to-use DSL, drag-and-drop GUI, and REST-APIs together simplifies the overall orchestration of microservice based data pipelines.
 {% endcapture %}
 
 {% include project_block.md site_url="http://cloud.spring.io/spring-cloud-dataflow" repo_url="https://github.com/spring-cloud/spring-cloud-dataflow" project_title="Spring Cloud Data Flow" project_description=project_description %}
 
 <!-- Spring Cloud Stream -->
 {% capture project_description %}
-Messaging microservices with Redis, Rabbit or Kafka. Simple declarative model to send and receive messages in a Spring Cloud app.
+A lightweight event-driven microservices framework to quickly build applications that can connect to external systems. Simple declarative model to send and receive messages using Apache Kafka or RabbitMQ between Spring Boot apps.
 {% endcapture %}
 
 {% include project_block.md site_url="http://cloud.spring.io/spring-cloud-stream" repo_url="http://github.com/spring-cloud/spring-cloud-stream" project_title="Spring Cloud Stream" project_description=project_description %}
 
-<!-- Spring Cloud Stream Modules -->
+<!-- Spring Cloud Stream App Starters -->
 {% capture project_description %}
-Spring Cloud Stream Modules can be used with Spring Cloud Stream to create, build, and scale message-driven data microservices.
+Spring Cloud Stream App Starters are Spring Boot based Spring Integration applications that provide integration with external systems.
 {% endcapture %}
 
-{% include project_block.md site_url="http://cloud.spring.io/spring-cloud-stream-modules" repo_url="https://github.com/spring-cloud/spring-cloud-stream-modules" project_title="Spring Cloud Stream Modules" project_description=project_description %}
+{% include project_block.md site_url="http://cloud.spring.io/spring-cloud-stream-app-starters" repo_url="https://github.com/spring-cloud/spring-cloud-stream-app-starters" project_title="Spring Cloud Stream App Starters" project_description=project_description %}
 
 <!-- Spring Cloud Task -->
 {% capture project_description %}
-Short lived microservices. Simple declarative for adding both functional and non-functional features to Spring Boot apps.
+A short-lived microservices framework to quickly build applications that perform finite amounts of data processing. Simple declarative for adding both functional and non-functional features to Spring Boot apps.
 {% endcapture %}
 
 {% include project_block.md site_url="http://cloud.spring.io/spring-cloud-task" repo_url="http://github.com/spring-cloud/spring-cloud-task" project_title="Spring Cloud Task" project_description=project_description %}
+
+<!-- Spring Cloud Task App Starters -->
+{% capture project_description %}
+Spring Cloud Task Application Starters are Spring Boot applications that may be any process including Spring Batch jobs that do not run forever, and they end/stop after a finite period of data processing.
+{% endcapture %}
+
+{% include project_block.md site_url="http://cloud.spring.io/spring-cloud-task-app-starters" repo_url="https://github.com/spring-cloud/spring-cloud-task-app-starters" project_title="Spring Cloud Task App Starters" project_description=project_description %}
 
 <!-- Spring Cloud Zookeeper -->
 {% capture project_description %}
