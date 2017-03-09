@@ -38,6 +38,6 @@ custom_gradle_template: true
 
 ### The following properties are constant for most projects
 
-main_site_url: http://spring.io
-projects_site_url: http://cloud.spring.io
-questions_url: http://spring.io/questions
+main_site_url: https://spring.io
+projects_site_url: https://cloud.spring.io
+questions_url: https://spring.io/questions
