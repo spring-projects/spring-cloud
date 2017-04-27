@@ -252,31 +252,32 @@ is a number.
 
 Release train contents:
 
-|Component|Angel.SR6                   | Brixton.SR7   | Camden.SR6             | Camden.BUILD-SNAPSHOT | 
-|---------|----------------------------|---------------|------------------------|------------------------|                                                                
-|spring-cloud-aws | 1.0.4.RELEASE      | 1.1.3.RELEASE | 1.1.3.RELEASE          | 1.1.4.BUILD-SNAPSHOT   |
-|spring-cloud-bus | 1.0.3.RELEASE      | 1.1.2.RELEASE | 1.2.2.RELEASE              | 1.2.2.BUILD-SNAPSHOT   |
-|spring-cloud-cli | 1.0.6.RELEASE      | 1.1.6.RELEASE | 1.2.4.RELEASE              | 1.2.0.BUILD-SNAPSHOT   |
-|spring-cloud-commons | 1.0.5.RELEASE  | 1.1.3.RELEASE | 1.1.8.RELEASE          | 1.1.8.BUILD-SNAPSHOT   |
-|spring-cloud-contract |               |               | 1.0.4.RELEASE              | 1.0.4.BUILD-SNAPSHOT   |
-|spring-cloud-config | 1.0.4.RELEASE   | 1.1.3.RELEASE | 1.2.3.RELEASE              | 1.2.2.BUILD-SNAPSHOT   |
-|spring-cloud-netflix | 1.0.7.RELEASE  | 1.1.7.RELEASE | 1.2.6.RELEASE              | 1.2.6.BUILD-SNAPSHOT   |
-|spring-cloud-security | 1.0.3.RELEASE | 1.1.3.RELEASE | 1.1.3.RELEASE          |  1.1.3.BUILD-SNAPSHOT   |
-|spring-cloud-starters | 1.0.6.RELEASE |               |                        |                        |
-|spring-cloud-cloudfoundry |           | 1.0.1.RELEASE | 1.0.1.RELEASE          | 1.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-cluster |                | 1.0.1.RELEASE | |						  |						 
-|spring-cloud-consul |                 | 1.0.2.RELEASE | 1.1.3.RELEASE              | 1.1.3.BUILD-SNAPSHOT   |
-|spring-cloud-sleuth |                 | 1.0.11.RELEASE | 1.1.3.RELEASE          | 1.1.3.BUILD-SNAPSHOT   |
-|spring-cloud-stream |                 | 1.0.2.RELEASE | Brooklyn.SR3           | Brooklyn.BUILD-SNAPSHOT   |
-|spring-cloud-zookeeper |              | 1.0.3.RELEASE | 1.0.4.RELEASE   | 1.0.4.BUILD-SNAPSHOT   |
-|spring-boot            | 1.2.8.RELEASE| 1.3.8.RELEASE | 1.4.5.RELEASE          | 1.5.1.BUILD-SNAPSHOT          |
-|spring-cloud-task   |                |1.0.3.RELEASE   | 1.0.3.RELEASE          | 1.0.4.BUILD-SNAPSHOT   |
+|Component                             | Camden.SR6     | Dalston.RELEASE| 
+|--------------------------------------|----------------|----------------| 
+|spring-cloud-aws                      | 1.1.3.RELEASE  | 1.2.0.RELEASE  |
+|spring-cloud-bus                      | 1.2.2.RELEASE  | 1.3.0.RELEASE  |
+|spring-cloud-cli                      | 1.2.4.RELEASE  | 1.3.1.RELEASE  |
+|spring-cloud-commons                  | 1.1.8.RELEASE  | 1.3.0.RELEASE  |
+|spring-cloud-contract                 | 1.0.4.RELEASE  | 1.1.0.RELEASE  |
+|spring-cloud-config                   | 1.2.3.RELEASE  | 1.3.0.RELEASE  |
+|spring-cloud-netflix                  | 1.2.6.RELEASE  | 1.3.0.RELEASE  |
+|spring-cloud-security                 | 1.1.3.RELEASE  | 1.2.0.RELEASE  |
+|spring-cloud-cloudfoundry             | 1.0.1.RELEASE  | 1.1.0.RELEASE  |
+|spring-cloud-consul                   | 1.1.3.RELEASE  | 1.2.0.RELEASE  |
+|spring-cloud-sleuth                   | 1.1.3.RELEASE  | 1.2.0.RELEASE  |
+|spring-cloud-stream                   | Brooklyn.SR3   | Chelsea.SR1    |
+|spring-cloud-zookeeper                | 1.0.4.RELEASE  | 1.1.0.RELEASE  |
+|spring-boot                           | 1.4.5.RELEASE  | 1.5.2.RELEASE  |
+|spring-cloud-task                     | 1.0.3.RELEASE  | 1.1.3.RELEASE  |
 
 The Brixton release train builds on Spring Boot 1.3.x, but is also
 tested with 1.4.x.
 	
 The Camden release train builds on Spring Boot 1.4.x, but is also
 tested with 1.5.x.
+
+The Dalston release train builds on Spring Boot 1.5.x, and is not expected
+to work with Spring 2.0.x.
 
 The Angel release train builds on Spring Boot 1.2.x, and is
 incompatible in some areas with Spring Boot 1.3.x. Brixton builds on
@@ -293,7 +294,7 @@ recent (e.g. if you want to use Spring Boot 1.3.6 with Brixton.RELEASE, put
 the Boot BOM first). The same rule applies to Gradle if you use the
 Spring dependency management plugin.
 
-> NOTE: starting after Brixton.M4 the release train contains a
+> NOTE: The release train contains a
 > `spring-cloud-dependencies` as well as the
 > `spring-cloud-starter-parent`. You can use the parent as you would
 > the `spring-boot-starter-parent` (if you are using Maven).
