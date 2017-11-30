@@ -104,9 +104,9 @@ Spring.SnippetView = Backbone.View.extend({
   },
 
   render: function () {
-    this.model.bootVersion = this.model.version.indexOf("Finchley")!=-1 ? "2.0.0.M3" :
-                             this.model.version.indexOf("Edgware")!=-1 ? "1.5.6.RELEASE" :
-                             this.model.version.indexOf("Dalston")!=-1 ? "1.5.6.RELEASE" :
+    this.model.bootVersion = this.model.version.indexOf("Finchley")!=-1 ? "2.0.0.M6" :
+                             this.model.version.indexOf("Edgware")!=-1 ? "1.5.9.RELEASE" :
+                             this.model.version.indexOf("Dalston")!=-1 ? "1.5.9.RELEASE" :
                              this.model.version.indexOf("Camden")!=-1 ? "1.4.5.RELEASE" :
                              this.model.version.indexOf("Brixton")!=-1 ? "1.3.8.RELEASE" :
                              "1.2.8.RELEASE";
