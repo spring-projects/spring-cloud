@@ -110,6 +110,8 @@ Spring.SnippetView = Backbone.View.extend({
                              this.model.version.indexOf("Camden")!=-1 ? "1.4.5.RELEASE" :
                              this.model.version.indexOf("Brixton")!=-1 ? "1.3.8.RELEASE" :
                              "1.2.8.RELEASE";
+    this.model.eurekaStarter = this.model.version.indexOf("Finchley") !=-1 ? "spring-cloud-starter-netflix-eureka-client" :
+        `spring-cloud-starter-eureka`;
     console.log(JSON.stringify(this.model))
     var html = $(this.combinedTemplate(this.model));
     this.$el.html(html);
