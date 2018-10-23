@@ -200,7 +200,7 @@ Easy integration with hosted Amazon Web Services. It offers a convenient way to 
 {% endcapture %}
 
 {% capture site_url %}
-{{ site.projects_site_url }}/spring-cloud-aws
+/spring-cloud-aws
 {% endcapture %}
 
 {% include project_block.md site_url=site_url repo_url="http://github.com/spring-cloud/spring-cloud-aws" project_title="Spring Cloud for Amazon Web Services" project_description=project_description %}
@@ -212,7 +212,7 @@ databases and message brokers (the project formerly known as "Spring Cloud").
 {% endcapture %}
 
 {% capture site_url %}
-{{ site.projects_site_url }}/spring-cloud-connectors
+/spring-cloud-connectors
 {% endcapture %}
 
 {% include project_block.md site_url=site_url repo_url="http://github.com/spring-cloud/spring-cloud-connectors" project_title="Spring Cloud Connectors" project_description=project_description %}
@@ -279,33 +279,32 @@ the release train will push out "service releases" with names ending ".SRX", whe
 is a number.
 
 Release train contents:
-	
+
 <!-- BEGIN COMPONENTS -->
-	
-|Component                             | Edgware.SR5     | Finchley.SR1    | Finchley.BUILD-SNAPSHOT|
+|Component                             |Edgware.SR5|Finchley.SR2|Finchley.BUILD-SNAPSHOT|
 |--------------------------------------|-----------------|---------------------|------------------------|
-|spring-cloud-aws                      | 1.2.3.RELEASE   | 2.0.0.RELEASE       | 2.0.1.BUILD-SNAPSHOT   |
-|spring-cloud-bus                      | 1.3.3.RELEASE   | 2.0.0.RELEASE       | 2.0.1.BUILD-SNAPSHOT   |
-|spring-cloud-cli                      | 1.4.1.RELEASE   | 2.0.0.RELEASE       | 2.0.1.BUILD-SNAPSHOT   |
-|spring-cloud-commons                  | 1.3.5.RELEASE   | 2.0.1.RELEASE       | 2.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-contract                 | 1.2.6.RELEASE   | 2.0.1.RELEASE       | 2.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-config                   | 1.4.5.RELEASE   | 2.0.1.RELEASE       | 2.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-netflix                  | 1.4.6.RELEASE   | 2.0.1.RELEASE       | 2.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-security                 | 1.2.3.RELEASE   | 2.0.0.RELEASE       | 2.0.1.BUILD-SNAPSHOT   |
-|spring-cloud-cloudfoundry             | 1.1.2.RELEASE   | 2.0.0.RELEASE       | 2.0.1.BUILD-SNAPSHOT   |
-|spring-cloud-consul                   | 1.3.5.RELEASE   | 2.0.1.RELEASE       | 2.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-sleuth                   | 1.3.5.RELEASE   | 2.0.1.RELEASE       | 2.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-stream                   | Ditmars.SR4     | Elmhurst.SR1        | Elmhurst.BUILD-SNAPSHOT|
-|spring-cloud-zookeeper                | 1.2.2.RELEASE   | 2.0.0.RELEASE       | 2.0.1.BUILD-SNAPSHOT   |
-|spring-boot                           | 1.5.16.RELEASE  | 2.0.4.RELEASE       | 2.0.4.BUILD-SNAPSHOT   |
-|spring-cloud-task                     | 1.2.3.RELEASE   | 2.0.0.RELEASE       | 2.0.1.BUILD-SNAPSHOT   |
-|spring-cloud-vault                    | 1.1.2.RELEASE   | 2.0.1.RELEASE       | 2.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-gateway                  | 1.0.2.RELEASE   | 2.0.1.RELEASE       | 2.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-openfeign                |                 | 2.0.1.RELEASE       | 2.0.2.BUILD-SNAPSHOT   |
-|spring-cloud-function                 | 1.0.1.RELEASE   | 1.0.0.RELEASE       | 1.0.1.BUILD-SNAPSHOT   |
-	
+ |spring-cloud-aws|1.2.3.RELEASE|2.0.1.RELEASE|2.0.1.BUILD-SNAPSHOT|
+ |spring-cloud-bus|1.3.3.RELEASE|2.0.0.RELEASE|2.0.1.BUILD-SNAPSHOT|
+ |spring-cloud-cli|1.4.1.RELEASE|2.0.0.RELEASE|2.0.1.BUILD-SNAPSHOT|
+ |spring-cloud-commons|1.3.5.RELEASE|2.0.2.RELEASE|2.0.2.BUILD-SNAPSHOT|
+ |spring-cloud-contract|1.2.6.RELEASE|2.0.2.RELEASE|2.0.2.BUILD-SNAPSHOT|
+ |spring-cloud-config|1.4.5.RELEASE|2.0.2.RELEASE|2.0.2.BUILD-SNAPSHOT|
+ |spring-cloud-netflix|1.4.6.RELEASE|2.0.2.RELEASE|2.0.2.BUILD-SNAPSHOT|
+ |spring-cloud-security|1.2.3.RELEASE|2.0.1.RELEASE|2.0.1.BUILD-SNAPSHOT|
+ |spring-cloud-cloudfoundry|1.1.2.RELEASE|2.0.1.RELEASE|2.0.1.BUILD-SNAPSHOT|
+ |spring-cloud-consul|1.3.5.RELEASE|2.0.1.RELEASE|2.0.2.BUILD-SNAPSHOT|
+ |spring-cloud-sleuth|1.3.5.RELEASE|2.0.2.RELEASE|2.0.2.BUILD-SNAPSHOT|
+ |spring-cloud-stream|Ditmars.SR4|Elmhurst.SR1|Elmhurst.BUILD-SNAPSHOT|
+ |spring-cloud-zookeeper|1.2.2.RELEASE|2.0.0.RELEASE|2.0.1.BUILD-SNAPSHOT|
+ |spring-boot|1.5.16.RELEASE|2.0.6.RELEASE|2.0.4.BUILD-SNAPSHOT|
+ |spring-cloud-task|1.2.3.RELEASE|2.0.0.RELEASE|2.0.1.BUILD-SNAPSHOT|
+ |spring-cloud-vault|1.1.2.RELEASE|2.0.2.RELEASE|2.0.2.BUILD-SNAPSHOT|
+ |spring-cloud-gateway|1.0.2.RELEASE|2.0.2.RELEASE|2.0.2.BUILD-SNAPSHOT|
+ |spring-cloud-openfeign||2.0.2.RELEASE|2.0.2.BUILD-SNAPSHOT|
+ |spring-cloud-function|1.0.1.RELEASE|1.0.0.RELEASE|1.0.1.BUILD-SNAPSHOT|
+
 <!-- END COMPONENTS -->
-	
+
 Finchley builds and works with Spring Boot 2.0.x, and is not expected
 to work with Spring Boot 1.5.x.
 
