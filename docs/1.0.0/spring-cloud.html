@@ -8,7 +8,7 @@
 <title>Spring Cloud</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400">
 <style>
-/* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
 /* Remove the comments around the @import statement below when using this as a custom stylesheet */
 /*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400";*/
 article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
@@ -1723,7 +1723,7 @@ fine if you ensure that your application has a
 ID, or VIP).</p>
 </div>
 <div class="paragraph">
-<p>See <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaInstanceConfigBean.java">EurekaInstanceConfigBean</a> and <a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaClientConfigBean.java">EurekaClientConfigBean</a> for more details of the configurable options.</p>
+<p>See <a href="https://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaInstanceConfigBean.java">EurekaInstanceConfigBean</a> and <a href="https://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/eureka/EurekaClientConfigBean.java">EurekaClientConfigBean</a> for more details of the configurable options.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1903,7 +1903,7 @@ normal Eureka functionality under <code>/eureka/*</code>.</p>
 <td class="content">
 <div class="paragraph">
 <p>You can run the Eureka server as an executable JAR (or WAR) using the
-<a href="http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#build-tool-plugins">Spring
+<a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#build-tool-plugins">Spring
 Boot build tools</a>, but to avoid problems with classpath scanning in
 Jersey 1.x you have to tell the build plugins to unpack the jars that
 contain JAX-RS resources, e.g. (for Maven)</p>
@@ -2095,7 +2095,7 @@ IP Address rather than its hostname.</p>
 <h2 id="_circuit_breaker_hystrix_clients">Circuit Breaker: Hystrix Clients</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Netflix has created a library called <a href="https://github.com/Netflix/Hystrix">Hystrix</a> that implements the <a href="http://martinfowler.com/bliki/CircuitBreaker.html">circuit breaker pattern</a>.  In a microservice architecture it is common to have multiple layers of service calls.</p>
+<p>Netflix has created a library called <a href="https://github.com/Netflix/Hystrix">Hystrix</a> that implements the <a href="https://martinfowler.com/bliki/CircuitBreaker.html">circuit breaker pattern</a>.  In a microservice architecture it is common to have multiple layers of service calls.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2214,7 +2214,7 @@ for details on the properties available.</p>
 <p>Looking at an individual instances Hystrix data is not very useful in terms of the overall health of the system.  <a href="https://github.com/Netflix/Turbine">Turbine</a> is an application that aggregates all of the relevant <code>/hystrix.stream</code> endpoints into a combined <code>/turbine.stream</code> for use in the Hystrix Dashboard.  Individual instances are located via Eureka.  Running Turbine is as simple as annotating your main class with the <code>@EnableTurbine</code> annotation.  All of the documented configuration properties from <a href="https://github.com/Netflix/Turbine/wiki/Configuration-(1.x)">the Turbine 1 wiki</a> apply.  The only difference is that the <code>turbine.instanceUrlSuffix</code> does not need the port prepended as this is handled automatically unless <code>turbine.instanceInsertPort=false</code>.</p>
 </div>
 <div class="paragraph">
-<p>Configuration key <code>turbine.appConfig</code> is a list of eureka serviceId&#8217;s that turbine will use to lookup instances.  The turbine stream is then used in the Hystrix dashboard using a url that looks like: <code><a href="http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt" class="bare">http://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt</a>;</code> (the cluster parameter can be omitted if the name is "default"). The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>. Value returned from eureka are uppercase, thus we expect this example to work if there is an app registered with Eureka called "customers":</p>
+<p>Configuration key <code>turbine.appConfig</code> is a list of eureka serviceId&#8217;s that turbine will use to lookup instances.  The turbine stream is then used in the Hystrix dashboard using a url that looks like: <code><a href="https://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt" class="bare">https://my.turbine.sever:8080/turbine.stream?cluster=&lt;CLUSTERNAME&gt</a>;</code> (the cluster parameter can be omitted if the name is "default"). The <code>cluster</code> parameter must match an entry in <code>turbine.aggregator.clusterConfig</code>. Value returned from eureka are uppercase, thus we expect this example to work if there is an app registered with Eureka called "customers":</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2451,7 +2451,7 @@ configuration like this</p>
 <p>The URI is inspected to see if it has a full host name, or a virtual
 one. If it is virtual the Ribbon client is used to create a full
 physical address. See
-<a href="http://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java">RibbonAutoConfiguration</a>
+<a href="https://github.com/{github-repo}/tree/{github-tag}/spring-cloud-netflix-core/src/main/java/org/springframework/cloud/netflix/ribbon/RibbonAutoConfiguration.java">RibbonAutoConfiguration</a>
 for details of how the <code>RestTemplate</code> is set up.</p>
 </div>
 </div>
@@ -2516,7 +2516,7 @@ in your external configuration (see
 <h2 id="_external_configuration_archaius">External Configuration: Archaius</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://github.com/Netflix/archaius">Archaius</a> is the Netflix client side configuration library.  It is the library used by all of the Netflix OSS components for configuration.  Archaius is an extension of the <a href="http://commons.apache.org/proper/commons-configuration">Apache Commons Configuration</a> project.  It allows updates to configuration by either polling a source for changes or for a source to push changes to the client.  Archaius uses Dynamic&lt;Type&gt;Property classes as handles to properties.</p>
+<p><a href="https://github.com/Netflix/archaius">Archaius</a> is the Netflix client side configuration library.  It is the library used by all of the Netflix OSS components for configuration.  Archaius is an extension of the <a href="https://commons.apache.org/proper/commons-configuration">Apache Commons Configuration</a> project.  It allows updates to configuration by either polling a source for changes or for a source to push changes to the client.  Archaius uses Dynamic&lt;Type&gt;Property classes as handles to properties.</p>
 </div>
 <div class="listingblock">
 <div class="title">Archaius Example</div>
@@ -2544,7 +2544,7 @@ in your external configuration (see
 <p>Routing in an integral part of a microservice architecture.  For example, <code>/</code> may be mapped to your web application, <code>/api/users</code> is mapped to the user service and <code>/api/shop</code> is mapped to the shop service.  <a href="https://github.com/Netflix/zuul">Zuul</a> is a JVM based router and server side load balancer by Netflix.</p>
 </div>
 <div class="paragraph">
-<p><a href="http://www.slideshare.net/MikeyCohen1/edge-architecture-ieee-international-conference-on-cloud-engineering-32240146/27">Netflix uses Zuul</a> for the following:</p>
+<p><a href="https://www.slideshare.net/MikeyCohen1/edge-architecture-ieee-international-conference-on-cloud-engineering-32240146/27">Netflix uses Zuul</a> for the following:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2669,7 +2669,7 @@ level, but "/myusers/</strong>*" matches hierarchically.</p>
   routes:
     users:
       path: /myusers/**
-      url: http://example.com/users_service</code></pre>
+      url: https://example.com/users_service</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2827,7 +2827,7 @@ and the Sidecar is on port 5678, then it can be accessed at
 </div>
 <div class="paragraph">
 <p>Non-jvm app can take advantage of the Config Server&#8217;s ability to return YAML
-documents.  For example, a call to <a href="http://sidecar.local.spring.io:5678/configserver/default-master.yml" class="bare">http://sidecar.local.spring.io:5678/configserver/default-master.yml</a>
+documents.  For example, a call to <a href="https://sidecar.local.spring.io:5678/configserver/default-master.yml" class="bare">https://sidecar.local.spring.io:5678/configserver/default-master.yml</a>
 might result in a YAML document like the following</p>
 </div>
 <div class="listingblock">
@@ -3391,7 +3391,7 @@ Server.</p>
 <h4 id="_client_token_relay">Client Token Relay</h4>
 <div class="paragraph">
 <p>If your app has a
-<a href="http://cloud.spring.io/spring-cloud.html#netflix-zuul-reverse-proxy">Spring
+<a href="https://cloud.spring.io/spring-cloud.html#netflix-zuul-reverse-proxy">Spring
 Cloud Zuul</a> embedded reverse proxy (using <code>@EnableZuulProxy</code>) then you
 can ask it to forward OAuth2 access tokens downstream to the services
 it is proxying. Thus the SSO app above can be enhanced simply like this:</p>
