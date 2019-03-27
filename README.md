@@ -1,5 +1,5 @@
 This project is an umbrella and the git repository is used only for
-documentation (see gh-pages branch). Home page: http://projects.spring.io/spring-cloud.
+documentation (see gh-pages branch). Home page: https://projects.spring.io/spring-cloud.
 
 The sub-projects of Spring Cloud live in a different Github
 organization: https://github.com/spring-cloud. Please use the 
