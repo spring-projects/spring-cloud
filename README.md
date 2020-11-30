@@ -8,4 +8,4 @@ request new features. Each project has a README with instructions
 on how to build the source code and how to contribute ideas and code.
 
 If you are looking for the project formerly known as Spring Cloud, please 
-go https://github.com/spring-cloud/spring-cloud-connectors.
+go to https://github.com/spring-cloud/spring-cloud-connectors.
